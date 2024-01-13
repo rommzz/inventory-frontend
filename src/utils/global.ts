@@ -1,0 +1,1 @@
+export const numToString = (num: number): string => num.toString()
