@@ -1,32 +1,38 @@
+import router from '@/router'
+import { authApi } from '@/utils/apis'
+
 import storage from '@/utils/storage'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export type Auth = {
-  name: string
-  email: string
-  // password: string
+  iduser: string
+  user_type: string
+  nama: string
   token: string
-  role: 'employee' | 'admin'
+  karyawan: any
+  access_level: any
 }
 
 export const useAuthStore = defineStore('auth', () => {
   const auth = ref<Auth | null>(null)
   const login = async (email: string, password: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    auth.value = {
-      name: 'John Doe',
-      email,
-      token: '123456789',
-      role: Math.random() > 0.5 ? 'admin' : 'employee',
-    }
-    storage.setAuth(auth.value)
+		try {
+			const res = await authApi.loginEmail(email, password)
+			console.log(res);
+			auth.value = res
+			storage.setAuth(auth.value)
+			router.push('/')
+		} catch (error) {
+			console.log(error);
+		}
   }
   const logout = ():void => {
     auth.value = null
     storage.clearAuth()
     window.location.reload()
   }
+	const getToken = computed(() => auth.value?.token)
 
-  return { auth, login, logout }
+  return { auth, login, logout, getToken }
 })
