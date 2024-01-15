@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import auth from "@/modules/auth/routes";
-import storage from '@/utils/storage';
+import auth from '@/modules/auth/routes'
+import storage from '@/utils/storage'
 export const isRequiredAuth = {
   requiredAuth: true
 }
@@ -20,15 +20,15 @@ const router = createRouter({
             ...isRequiredAuth
           }
         },
-        ...auth,
+        ...auth
       ]
-    },
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   const auth = storage.getAuth()
-  if (to.matched.some(record => record.meta.requiredAuth) && !auth) {
+  if (to.matched.some((record) => record.meta.requiredAuth) && !auth) {
     next({ name: 'Login' })
   } else {
     next()

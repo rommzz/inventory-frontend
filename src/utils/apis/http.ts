@@ -1,79 +1,95 @@
-import { useAuthStore } from '@/modules/auth/stores';
-import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
+import { useAuthStore } from '@/modules/auth/stores'
+import axios, {
+  AxiosError,
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig
+} from 'axios'
 
 export type ResponeseV1<T = any> = {
-	code: number
+  code: number
   data: T
   msg: string
   reason: any
   status: boolean
 }
 
-
 class Http {
-  private instance: AxiosInstance;
+  private instance: AxiosInstance
 
   constructor() {
     this.instance = axios.create({
-      baseURL: import.meta.env.VITE_APP_API_URL,
-    });
-    this.instance.interceptors.request.use(
-      this.requestInterceptor,
-      this.requestErrorInterceptor,
-    );
+      baseURL: import.meta.env.VITE_APP_API_URL
+    })
+    this.instance.interceptors.request.use(this.requestInterceptor, this.requestErrorInterceptor)
   }
 
   private requestInterceptor(config: InternalAxiosRequestConfig) {
-    const token = useAuthStore().getToken;
+    const token = useAuthStore().getToken
     if (token) {
       config.headers.Authorization = 'bearer' + token
     }
-    return config;
+    return config
   }
 
   private requestErrorInterceptor(error: any) {
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
 
   private errorHandler(err: any) {
     return (err as AxiosError).response
   }
 
-  public async get<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+  public async get<T = any, R = AxiosResponse<T>>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<R> {
     try {
-      const response = await this.instance.get<T, R>(url, config);
-      return response;
+      const response = await this.instance.get<T, R>(url, config)
+      return response
     } catch (error: any) {
-      throw this.errorHandler(error);
+      throw this.errorHandler(error)
     }
   }
 
-  public async post<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  public async post<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<R> {
     try {
-      const response = await this.instance.post<T, R>(url, data, config);
-      return response;
+      const response = await this.instance.post<T, R>(url, data, config)
+      return response
     } catch (error: any) {
-      throw this.errorHandler(error);
+      throw this.errorHandler(error)
     }
   }
 
-  public async put<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  public async put<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<R> {
     try {
-      const response = await this.instance.put<T, R>(url, data, config);
-      return response;
+      const response = await this.instance.put<T, R>(url, data, config)
+      return response
     } catch (error: any) {
-      throw new error as AxiosError;
+      throw new error() as AxiosError
     }
   }
 
-  public async delete<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+  public async delete<T = any, R = AxiosResponse<T>>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<R> {
     try {
-      const response = await this.instance.delete<T, R>(url, config);
-      return response;
+      const response = await this.instance.delete<T, R>(url, config)
+      return response
     } catch (error: any) {
-      throw new error as AxiosError;
+      throw new error() as AxiosError
     }
   }
 }
 
-export default new Http();
+export default new Http()

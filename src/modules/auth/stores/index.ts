@@ -17,22 +17,22 @@ export type Auth = {
 export const useAuthStore = defineStore('auth', () => {
   const auth = ref<Auth | null>(null)
   const login = async (email: string, password: string) => {
-		try {
-			const res = await authApi.loginEmail(email, password)
-			console.log(res);
-			auth.value = res
-			storage.setAuth(auth.value)
-			router.push('/')
-		} catch (error) {
-			console.log(error);
-		}
+    try {
+      const res = await authApi.loginEmail(email, password)
+      console.log(res)
+      auth.value = res
+      storage.setAuth(auth.value)
+      router.push('/')
+    } catch (error) {
+      console.log(error)
+    }
   }
-  const logout = ():void => {
+  const logout = (): void => {
     auth.value = null
     storage.clearAuth()
     window.location.reload()
   }
-	const getToken = computed(() => auth.value?.token)
+  const getToken = computed(() => auth.value?.token)
 
   return { auth, login, logout, getToken }
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/modules/auth/stores';
+import { useAuthStore } from '@/modules/auth/stores'
 import TheWelcome from '../components/TheWelcome.vue'
 </script>
 

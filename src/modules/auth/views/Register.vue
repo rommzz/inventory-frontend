@@ -1,10 +1,8 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 <template>
-    <div>
-        <h1>register</h1>
+  <div>
+    <h1>register</h1>
 
-        <button type="button"></button>
-    </div>
+    <button type="button"></button>
+  </div>
 </template>
