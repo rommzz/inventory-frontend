@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { numToString } from '@/utils/global'
 import { ref } from 'vue'
 import { useAuthStore } from '../stores'
 

@@ -1,5 +1,5 @@
 import route from './auth/routes'
-import store from './auth/stores/index'
+import {useAuthStore as store} from './auth/stores/index'
 
 export default {
   route,
