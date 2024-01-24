@@ -37,8 +37,8 @@ class Http {
     return Promise.reject(error)
   }
 
-  private errorHandler(err: any) {
-    return (err as AxiosError).response
+  private errorHandler(err: any): AxiosError {
+    return err as AxiosError
   }
 
   public async get<T = any, R = AxiosResponse<T>>(
