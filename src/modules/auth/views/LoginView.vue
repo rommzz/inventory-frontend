@@ -1,22 +1,35 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAuthStore } from '../stores'
+import BCheckbox from '@/components/BCheckbox.vue';
+import BTextInput from '@/components/BTextInput.vue';
+import BButton from '@/components/BButton.vue';
 
 const email = ref<string>('')
 const password = ref<string>('')
+const isRemember = ref<boolean>(false)
 const store = useAuthStore()
 </script>
 <template>
   <div>
-    <h1>Login</h1>
-    <div>
-      <label for="email"></label>
-      <input type="text" id="email" v-model="email" />
+    <div class="">
+      <h1>Login</h1>
+      <BTextInput
+        label="Email"
+        v-model="email"
+      />
+      <BTextInput
+        label="Password"
+        class="q-mt-md"
+        type="password"
+        v-model="password"
+      />
+      <BCheckbox label="Ingat saya" v-model="isRemember" />
+      <BButton
+        label="Masuk"
+        @click="store.login(email, password)"
+        full-width
+      />
     </div>
-    <div>
-      <label for="password"></label>
-      <input type="password" id="password" v-model="password" />
-    </div>
-    <button type="button" @click="store.login(email, password)">login</button>
   </div>
 </template>
