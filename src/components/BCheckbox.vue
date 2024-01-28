@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { QCheckbox } from 'quasar';
-
+import type { VCheckbox } from 'vuetify/components';
 
 
   const model = defineModel<boolean>()
@@ -20,5 +19,12 @@ import { QCheckbox } from 'quasar';
   })
 </script>
 <template>
-  <QCheckbox v-model="model" :label="label" :size="size" />
+  <VCheckbox
+    v-model="model"
+    :label="label"
+    base-color="primary"
+    color="primary"
+    density="compact"
+    hide-details
+  />
 </template>

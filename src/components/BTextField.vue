@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { QInput } from 'quasar';
 import { computed } from 'vue';
+import { defineModel, defineProps, defineEmits } from 'vue';
+
 const model = defineModel<string>()
 const props = defineProps({
   label: {
@@ -11,17 +12,9 @@ const props = defineProps({
     type: String as () => "number" | "text" | "date" | "time" | "email" | "password" | "textarea" | "search" | "tel" | "file" | "url" | "datetime-local",
     default: 'text'
   },
-  size: {
-    type: String,
-    default: 'sm'
-  },
   placeholder: {
     type: String,
     default: '',
-  },
-  outlined: {
-    type: Boolean,
-    default: true
   },
   class: {
     type: String,
@@ -30,20 +23,37 @@ const props = defineProps({
   clearable: {
     type: Boolean,
     default: false
-  }
+  },
+  required: {
+    type: Boolean,
+    default: false
+  },
+  appendInnerIcon: {
+    type: String,
+    default: null
+  },
 })
+
+const emit = defineEmits<{
+  (e: 'click:appendInner'): void
+}>()
+
 const classProps = computed(() => {
   return props.class})
 </script>
 <template>
-  <QInput
-    v-model="model"
-    :type="type"
+  <VTextField
+    variant="outlined"
+    dense
+    color="primary"
+    :required="required"
     :label="label"
-    :size="size"
+    :type="type"
     :placeholder="placeholder"
-    :outlined="outlined"
-    :clearable="clearable"
     :class="classProps"
+    :clearable="clearable"
+    v-model="model"
+    :append-inner-icon="appendInnerIcon"
+    @click:append-inner="emit('click:appendInner')" 
   />
 </template>

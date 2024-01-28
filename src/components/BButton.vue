@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { QBtn } from 'quasar';
 import { computed } from 'vue';
 const props = defineProps({
   label: {
@@ -17,6 +16,18 @@ const props = defineProps({
   fullWidth: {
     type: Boolean,
     default: false
+  },
+  type: {
+    type: String as () => 'button' | 'submit' | 'reset',
+    default: 'button'
+  },
+  variant: {
+    type: String as () => "flat" | "text" | "elevated" | "tonal" | "outlined" | "plain",
+    default: 'flat'
+  },
+  isLoading: {
+    type: Boolean,
+    default: false
   }
 })
 defineEmits(['click'])
@@ -24,10 +35,18 @@ const classProps = computed(() => {
   return props.class})
 </script>
 <template>
-  <QBtn
+  <VBtn
+    :variant="variant"
+    class="text-none"
+    :class="classProps"
+    :loading="isLoading"
     @click="$emit('click')"
-    :label="label"
+    :type="type"
     :disable="disabled"
-    :class="{'full-width': fullWidth, classProps}"
-  />
+    :block="fullWidth"
+    color="primary"
+    rounded="pill"
+  >
+    {{ label }}
+  </VBtn>
 </template>
