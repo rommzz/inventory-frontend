@@ -16,6 +16,7 @@ import vuetifyPlugin from "./plugin/vuetify";
 // import 'material-design-icons-iconfont/dist/material-design-icons.css' 
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import "@mdi/font/css/materialdesignicons.css";
+import 'material-icons/iconfont/material-icons.css';
 
 
 const vuetify = createVuetify({

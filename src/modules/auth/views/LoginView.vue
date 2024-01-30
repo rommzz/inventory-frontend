@@ -6,6 +6,7 @@ import BTextField from '@/components/BTextField.vue';
 import BCheckbox from '@/components/BCheckbox.vue';
 import logo from "@/assets/img/main-logo.svg";
 import BBanner from '@/components/BBanner.vue';
+import BIcon from '@/components/BIcon.vue';
 
 const email = ref<string>('')
 const password = ref<string>('')
@@ -13,15 +14,22 @@ const isRemember = ref<boolean>(false)
 const showPassword = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
 const store = useAuthStore()
-const isError = ref<boolean>(false)
+const isError = ref<string>()
+const form = ref()
 
 const login = async () => {
+  const valid = await form.value.validate()
+  if (!valid.valid) return
   isLoading.value = true
-  isError.value = false
-  setTimeout(() => {
+  //ganti login be
+  store.login(email.value, password.value, isRemember.value).then(() => {
+    
+  }).catch((error) => {
+    console.log(error);
+    isError.value = error as any
+  }).finally(() => {
     isLoading.value = false
-    isError.value = true
-  }, 1000);
+  })
 }
 </script>
 <template>
@@ -52,7 +60,7 @@ const login = async () => {
       </div>
       <BBanner
         v-if="isError"
-        message="Informasi yang anda masukkan salah. Silakan coba lagi"
+        :message="isError"
         class="tw-mt-4"
         type="error"
       />
@@ -62,14 +70,20 @@ const login = async () => {
         v-model="email"
         required
         class="tw-mt-10"
+        :rules="[
+          v => !!v || 'Email harus diisi',
+          v => /.+@.+\..+/.test(v) || 'Email tidak valid',
+        ]"
       />
       <BTextField
         label="Kata Sandi"
+        class="tw-mt-2"
         :type="showPassword ? 'text' : 'password'"
         v-model="password"
         required
-        :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+        :append-inner-icon="showPassword ? 'visibility_off' : 'visibility'"
         @click:append-inner="showPassword = !showPassword"
+        :rules="[ v => !!v || 'Password harus diisi', ]"
       />
       <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
         <BCheckbox label="Ingat Saya" v-model="isRemember" ></BCheckbox>

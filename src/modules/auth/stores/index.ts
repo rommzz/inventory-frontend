@@ -16,15 +16,16 @@ export type Auth = {
 
 export const useAuthStore = defineStore('auth', () => {
   const auth = ref<Auth | null>(null)
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, isRemember: boolean) => {
     try {
-      const res = await authApi.loginEmail(email, password)
+      const res = await authApi.loginEmail(email, password, isRemember)
       console.log(res)
       auth.value = res
       storage.setAuth(auth.value)
       router.push('/')
     } catch (error) {
       console.log(error)
+      throw error
     }
   }
   const logout = (): void => {

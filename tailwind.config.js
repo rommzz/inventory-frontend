@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import { pallete } from "./src/assets/palette";
+import { pallete } from "./src/plugin/palette";
 export default {
   prefix: "tw-",
   content: [

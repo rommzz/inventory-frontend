@@ -1,5 +1,5 @@
 import { createVuetify, type ThemeDefinition } from 'vuetify'
-import { pallete } from "@/assets/palette";
+import { pallete } from "./palette";
 
 const myCustomLightTheme: ThemeDefinition = {
   dark: false,
@@ -13,4 +13,5 @@ export default createVuetify({
       myCustomLightTheme,
     },
   },
+
 })
