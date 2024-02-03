@@ -10,7 +10,6 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/App.vue'),
       children: [
         {
           path: '',

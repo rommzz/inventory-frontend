@@ -10,15 +10,21 @@ export type Auth = {
   user_type: string
   nama: string
   token: string
-  karyawan: any
-  access_level: any
+  karyawan?: any
+  access_level?: any
 }
 
 export const useAuthStore = defineStore('auth', () => {
   const auth = ref<Auth | null>(null)
   const login = async (email: string, password: string, isRemember: boolean) => {
     try {
-      const res = await authApi.loginEmail(email, password, isRemember)
+      // const res = await authApi.loginEmail(email, password, isRemember)
+      const res = {
+        iduser: '1',
+        user_type: 'admin',
+        nama: 'Admin',
+        token: 'token'
+      }
       console.log(res)
       auth.value = res
       storage.setAuth(auth.value)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { defineModel, defineProps, defineEmits } from 'vue';
+import { defineModel } from 'vue';
 import type { BIconName } from './types/BIcon';
 import BIcon from './BIcon.vue';
 
