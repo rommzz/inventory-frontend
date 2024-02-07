@@ -3,6 +3,8 @@ import { ref } from 'vue';
 import type { BIconName } from './types/BIcon';
 import BIcon from './BIcon.vue';
 import { useRouter } from 'vue-router';
+import type { pallete } from '@/plugin/palette';
+import logo from "@/assets/img/main-logo.svg";
 
 const expandedMenus = ref<string[]>([])
 
@@ -12,11 +14,13 @@ interface Menu {
   title: string,
   icon: BIconName,
   children?: string[]
+  iconColor?: keyof typeof pallete.schemes.light,
 }
 const menus: Menu[] = [
   {
     title: 'Dashboard',
     icon: 'home',
+    iconColor: 'primary'
   },
   {
     title: 'Manajemen Data',
@@ -77,6 +81,11 @@ const isCurrentRoute = (target: string) => {
   }
   return currentPath === `/${to}`
 }
+const isChildRoute = (menu: string[]) => {
+  const currentPath = router.currentRoute.value.path;
+  const childRoute = menu.map((item) => `/${item.toLowerCase().replace(' ', '-')}`)
+  return childRoute.includes(currentPath)
+}
 
 const onClickMenu = (menu: Menu) => {
   if (menu.children?.length) {
@@ -91,15 +100,23 @@ const onClickMenu = (menu: Menu) => {
 }
 </script>
 <template>
-  <v-navigation-drawer v-model="model" width="320" class="bg-surface">
+  <v-navigation-drawer v-model="model" width="320" color="onPrimary" class="!tw-h-5/6 !tw-mx-9 !tw-top-10 !tw-bottom-10 tw-rounded-xl !tw-border-0 ">
+    <div class="tw-flex tw-items-center tw-gap-2 tw-justify-center my-6">
+      <img :src="logo" alt="" class="tw-w-10">
+      <!-- <VImg :src="logo" class="tw-w-10"></VImg> -->
+      <div class="tw-text-onSurface tw-text-lg tw-font-semibold">
+        Wiranata Parts
+      </div>
+    </div>
+    <VDivider></VDivider>
     <VList class="tw-m-4">
-      <div v-for="menu in menus" :key="menu.title" class="">
+      <div v-for="menu in menus" :key="menu.title" class="tw-mb-2 tw-text-sm tw-text-onSurfaceVariant">
         <div
           v-ripple="{class: 'tw-delay-0'}"
-          class="tw-flex tw-items-center tw-gap-3 tw-rounded-full tw-p-4 tw-bg-opacity-0 hover:tw-bg-opacity-5 hover:tw-cursor-pointer tw-bg-onSurface " @click="onClickMenu(menu)"
-          :class="{'tw-bg-secondaryContainer tw-bg-opacity-100 tw-font-semibold hover:tw-bg-opacity-100': isCurrentRoute(menu.title)}"
+          class=" tw-flex tw-items-center tw-gap-3 tw-rounded tw-py-4 px-6 hover:tw-cursor-pointer hover:tw-bg-surfaceBright" @click="onClickMenu(menu)"
+          :class="{'tw-bg-surfaceBright tw-font-semibold tw-text-onSurface': isChildRoute(menu.children ?? [])}"
         >
-          <BIcon :icon="menu.icon"></BIcon>
+          <BIcon :icon="menu.icon" :filled="isCurrentRoute(menu.title) || isChildRoute(menu.children ?? [])" :color="menu.iconColor" size="18"></BIcon>
           <div class="tw-flex-grow">
             {{ menu.title }}
           </div>
@@ -113,8 +130,8 @@ const onClickMenu = (menu: Menu) => {
               v-for="submenu in menu.children"
               :key="submenu"
               @click="routeNavigation(submenu)"
-              class="tw-rounded-full tw-p-4 tw-pl-[53px] mt-1 tw-bg-onSurface tw-bg-opacity-0 hover:tw-bg-opacity-5 hover:tw-cursor-pointer"
-              :class="{'tw-bg-secondaryContainer tw-bg-opacity-100 tw-font-semibold hover:tw-bg-opacity-100': isCurrentRoute(submenu)}"
+              class="tw-p-4 tw-pl-[53px] mt-1 tw-bg-opacity-0 hover:tw-cursor-pointer hover:tw-text-onSurface hover:tw-font-semibold"
+              :class="{'tw-bg-opacity-0 tw-font-semibold hover:tw-bg-opacity-100 tw-text-onSurface': isCurrentRoute(submenu)}"
             >
               {{ submenu }}
             </div>

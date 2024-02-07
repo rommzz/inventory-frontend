@@ -14,9 +14,10 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import vuetifyPlugin from "./plugin/vuetify";
 // import 'material-design-icons-iconfont/dist/material-design-icons.css' 
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import {  mdi } from 'vuetify/iconsets/mdi'
 import "@mdi/font/css/materialdesignicons.css";
-import 'material-icons/iconfont/material-icons.css';
+import 'material-symbols/outlined.css';
+import { aliases, md } from "vuetify/iconsets/md";
 
 
 const vuetify = createVuetify({
@@ -27,6 +28,7 @@ const vuetify = createVuetify({
     aliases,
     sets: {
       mdi,
+      md
     },
   },
 })

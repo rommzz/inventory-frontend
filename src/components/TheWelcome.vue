@@ -5,9 +5,13 @@ import ToolingIcon from './icons/IconTooling.vue'
 import EcosystemIcon from './icons/IconEcosystem.vue'
 import CommunityIcon from './icons/IconCommunity.vue'
 import SupportIcon from './icons/IconSupport.vue'
+import BTextField from './BTextField.vue'
+import BIcon from './BIcon.vue'
 </script>
 
 <template>
+  <BTextField label="ok" ></BTextField>
+  <BIcon icon="home" color="primary"></BIcon>
   <WelcomeItem>
     <template #icon>
       <DocumentationIcon />

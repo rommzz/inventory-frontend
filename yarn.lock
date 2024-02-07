@@ -2468,10 +2468,10 @@ material-design-icons-iconfont@^6.7.0:
   resolved "https://registry.yarnpkg.com/material-design-icons-iconfont/-/material-design-icons-iconfont-6.7.0.tgz#55cf0f3d7e4c76e032855b7e810b6e30535eff3c"
   integrity sha512-lSj71DgVv20kO0kGbs42icDzbRot61gEDBLQACzkUuznRQBUYmbxzEkGU6dNBb5fRWHMaScYlAXX96HQ4/cJWA==
 
-material-icons@^1.13.12:
-  version "1.13.12"
-  resolved "https://registry.yarnpkg.com/material-icons/-/material-icons-1.13.12.tgz#eed4082bf0426642edeb027e75397e3064adc536"
-  integrity sha512-/2YoaB79IjUK2B2JB+vIXXYGtBfHb/XG66LvoKVM5ykHW7yfrV5SP6d7KLX6iijY6/G9GqwgtPQ/sbhFnOURVA==
+material-symbols@^0.14.7:
+  version "0.14.7"
+  resolved "https://registry.yarnpkg.com/material-symbols/-/material-symbols-0.14.7.tgz#ce7c81320efabefb01960bdf4af537c141372163"
+  integrity sha512-65aJAnHtKx98tm41vz9gS6fQfUo+8pCg2sETOC/linpHKEv6gw7U+iHN5Bha6tfM8hDSGfjCwaKOWb+Rs/XyDg==
 
 mdn-data@2.0.30:
   version "2.0.30"

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { BIconName } from './types/BIcon';
+import { pallete } from "@/plugin/palette";
 
 const props = defineProps<{
   icon: BIconName,
-  size?: '18' | '24' | '36' | '48',
-  color?: string
+  size?: '16' | '18' | '24' | '36' | '48',
+  color?: keyof typeof pallete.schemes.light,
   class?: string
+  filled?: boolean
 }>()
 
 const iconSize = computed(() => {
@@ -26,7 +28,8 @@ const iconSize = computed(() => {
 </script>
 <template>
   <span
-    :class="`material-icons-outlined ${iconSize} tw-text-onSurfaceVariant tw-max-w-fit hover:tw-cursor-pointer ${props.class ?? ''} ${props.color ?? ''}`"
+    :class="`material-symbols-outlined tw-text-onSurfaceVariant tw-max-w-fit hover:tw-cursor-pointer ${props.class ?? ''} ${props.color ? 'text-' + props.color : ''}`"
+    :style="`font-variation-settings: 'FILL' ${filled ? 1 : 0}; font-size: ${props.size}px;`"
   >
     {{ props.icon }}
   </span>

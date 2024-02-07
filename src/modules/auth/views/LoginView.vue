@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAuthStore } from '../stores'
-import BButton from '@/components/BButton.vue';
-import BTextField from '@/components/BTextField.vue';
-import BCheckbox from '@/components/BCheckbox.vue';
 import logo from "@/assets/img/main-logo.svg";
 import BBanner from '@/components/BBanner.vue';
-import BIcon from '@/components/BIcon.vue';
+import BButton from '@/components/BButton.vue';
+import BCheckbox from '@/components/BCheckbox.vue';
+import BTextField from '@/components/BTextField.vue';
+import { ref } from 'vue';
+import { useAuthStore } from '../stores';
 
 const email = ref<string>('')
 const password = ref<string>('')
