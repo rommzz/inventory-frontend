@@ -26,7 +26,7 @@ const classProps = computed(() => {
 
 <template>
   <div :class="classProps">
-    <label :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">{{ label }}</label>
+    <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">{{ label }}</div>
     <VTextField
       variant="outlined"
       density="comfortable"
