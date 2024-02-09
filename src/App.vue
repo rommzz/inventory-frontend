@@ -8,7 +8,7 @@ import BIcon from './components/BIcon.vue';
 const drawer = ref<boolean>(true)
 const route = useRoute();
 const showLayout = computed<boolean>(() =>
-  route.name !== 'login') 
+  route.name !== 'Login') 
 </script>
 
 <template>

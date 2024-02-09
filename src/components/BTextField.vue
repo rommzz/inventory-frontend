@@ -25,21 +25,32 @@ const classProps = computed(() => {
 </script>
 
 <template>
-  <VTextField
-    variant="outlined"
-    density="comfortable"
-    color="primary"
-    :required="required"
-    :label="label"
-    :type="type"
-    :placeholder="placeholder"
-    :class="classProps"
-    :clearable="clearable"
-    v-model="model"
-    :rules="rules"
-  >
-    <template v-slot:append-inner v-if="appendInnerIcon">
-      <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
-    </template>
-  </VTextField>
+  <div :class="classProps">
+    <label :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">{{ label }}</label>
+    <VTextField
+      variant="outlined"
+      density="comfortable"
+      color="primary"
+      label=""
+      :required="required"
+      :type="type"
+      :placeholder="placeholder"
+      :clearable="clearable"
+      v-model="model"
+      :rules="rules"
+    >
+      <template v-slot:append-inner v-if="appendInnerIcon">
+        <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
+      </template>
+    </VTextField>
+  </div>
 </template>
+<style scoped>
+.v-input :deep(.v-field) {
+  border-radius: 8px;
+}
+
+.v-input :deep(.v-input__details) {
+  padding: 0;
+}
+</style>
