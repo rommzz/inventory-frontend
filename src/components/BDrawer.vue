@@ -5,6 +5,7 @@ import BIcon from './BIcon.vue';
 import { useRouter } from 'vue-router';
 import type { pallete } from '@/plugin/palette';
 import logo from "@/assets/img/main-logo.svg";
+import { onMounted } from 'vue';
 
 const expandedMenus = ref<string[]>([])
 
@@ -13,7 +14,10 @@ const router = useRouter()
 interface Menu {
   title: string,
   icon: BIconName,
-  children?: string[]
+  children?: {
+    title: string,
+    routeName?: string,
+  }[],
   iconColor?: keyof typeof pallete.schemes.light,
 }
 const menus: Menu[] = [
@@ -25,40 +29,41 @@ const menus: Menu[] = [
   {
     title: 'Manajemen Data',
     icon: 'folder',
+    iconColor: 'warning',
     children: [
-      'Jenis Satuan',
-      'Daftar Pemasok',
-      'Kelola Barang',
-      'Daftar Harga Barang',
-      'Daftar Pelanggan',
-      'Promo Member',
+      {title: 'Jenis Satuan',},
+      {title: 'Daftar Pemasok', routeName: 'supplier-list'},
+      {title: 'Kelola Barang',},
+      {title: 'Daftar Harga Barang',},
+      {title: 'Daftar Pelanggan',},
+      {title: 'Promo Member',},
     ]
   },
   {
     title: 'Pembelian',
     icon: 'archive',
     children: [
-      'Barang dari Pemasok',
-      'Riwayat Pembelian',
-      'Pembayaran Pembelian',
+      {title: 'Barang dari Pemasok',},
+      {title: 'Riwayat Pembelian',},
+      {title: 'Pembayaran Pembelian',},
     ]
   },
   {
     title: 'Penjualan',
     icon: 'unarchive',
     children: [
-      'Penjualan ke Pelanggan',
-      'Riwayat Penjualan',
-      'Pembayaran Penjualan',
+      {title: 'Penjualan ke Pelanggan',},
+      {title: 'Riwayat Penjualan',},
+      {title: 'Pembayaran Penjualan',},
     ]
   },
   {
     title: 'Laporan',
     icon: 'analytics',
     children: [
-      'Penjualan per Periode',
-      'Laba Rugi per Periode',
-      'Stok Per Barang',
+      {title: 'Penjualan per Periode',},
+      {title: 'Laba Rugi per Periode',},
+      {title: 'Stok Per Barang',},
     ]
   },
   {
@@ -74,17 +79,10 @@ const routeNavigation = (target: string) => {
 }
 
 const isCurrentRoute = (target: string) => {
-  const currentPath = router.currentRoute.value.path;
-  const to = target.toLowerCase().replace(' ', '-')
-  if (currentPath == '/') {
-    return to === 'dashboard'
-  }
-  return currentPath === `/${to}`
+  return target == router.currentRoute.value.name;
 }
-const isChildRoute = (menu: string[]) => {
-  const currentPath = router.currentRoute.value.path;
-  const childRoute = menu.map((item) => `/${item.toLowerCase().replace(' ', '-')}`)
-  return childRoute.includes(currentPath)
+const isChildRoute = (childRoute: string[]) => {
+  return childRoute.includes(router.currentRoute.value.name as string)
 }
 
 const onClickMenu = (menu: Menu) => {
@@ -98,6 +96,16 @@ const onClickMenu = (menu: Menu) => {
     routeNavigation(menu.title.toLowerCase() == 'dashboard' ? '/' : menu.title);
   }
 }
+
+onMounted(() => {
+  menus.forEach((menu) => {
+    menu.children?.forEach(children => {
+      if (children.routeName == router.currentRoute.value.name && children.routeName != undefined) {
+        expandedMenus.value.push(menu.title)
+      }
+    })
+  })
+})
 </script>
 <template>
   <v-navigation-drawer v-model="model" width="320" color="onPrimary" class="!tw-h-5/6 !tw-mx-9 !tw-top-10 !tw-bottom-10 tw-rounded-xl !tw-border-0 ">
@@ -114,9 +122,9 @@ const onClickMenu = (menu: Menu) => {
         <div
           v-ripple="{class: 'tw-delay-0'}"
           class=" tw-flex tw-items-center tw-gap-3 tw-rounded tw-py-4 px-6 hover:tw-cursor-pointer hover:tw-bg-surfaceBright" @click="onClickMenu(menu)"
-          :class="{'tw-bg-surfaceBright tw-font-semibold tw-text-onSurface': isChildRoute(menu.children ?? [])}"
+          :class="{'tw-bg-surfaceBright tw-font-semibold tw-text-onSurface': isChildRoute(menu.children?.map(item => item.routeName ?? '') ?? [])}"
         >
-          <BIcon :icon="menu.icon" :filled="isCurrentRoute(menu.title) || isChildRoute(menu.children ?? [])" :color="menu.iconColor" size="18"></BIcon>
+          <BIcon :icon="menu.icon" :filled="isCurrentRoute(menu.title) || isChildRoute(menu.children?.map(item => item.routeName ?? '') ?? [])" :color="menu.iconColor" size="18"></BIcon>
           <div class="tw-flex-grow">
             {{ menu.title }}
           </div>
@@ -128,12 +136,12 @@ const onClickMenu = (menu: Menu) => {
           <div v-show="expandedMenus.includes(menu.title)">
             <div
               v-for="submenu in menu.children"
-              :key="submenu"
-              @click="routeNavigation(submenu)"
+              :key="submenu.title"
+              @click="router.push({ name: submenu.routeName })"
               class="tw-p-4 tw-pl-[53px] mt-1 tw-bg-opacity-0 hover:tw-cursor-pointer hover:tw-text-onSurface hover:tw-font-semibold"
-              :class="{'tw-bg-opacity-0 tw-font-semibold hover:tw-bg-opacity-100 tw-text-onSurface': isCurrentRoute(submenu)}"
+              :class="{'tw-bg-opacity-0 tw-font-semibold hover:tw-bg-opacity-100 tw-text-onSurface': isCurrentRoute(submenu.routeName ?? '')}"
             >
-              {{ submenu }}
+              {{ submenu.title }}
             </div>
           </div>
         </VExpandTransition>

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import BDrawer from './components/BDrawer.vue';
-import { ref } from 'vue';
-import BIcon from './components/BIcon.vue';
 
 const drawer = ref<boolean>(true)
 const route = useRoute();

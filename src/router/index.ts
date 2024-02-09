@@ -1,6 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import auth from '@/modules/auth/routes'
+import authRoutes from '@/modules/auth/routes'
+import supplierRoutes from '@/modules/supplier/routes'
 import storage from '@/utils/storage'
+
+export interface RouteChildren {
+  path: string
+  name: string
+  component: () => Promise<any>
+  meta?: {
+    requiredAuth?: boolean, 
+    drawerTitle?: string
+  }
+}
+
 export const isRequiredAuth = {
   requiredAuth: true
 }
@@ -16,10 +28,11 @@ const router = createRouter({
           name: 'Home',
           component: () => import('@/views/HomeView.vue'),
           meta: {
-            ...isRequiredAuth
+            ...isRequiredAuth,
           }
         },
-        ...auth
+        ...authRoutes,
+        ...supplierRoutes,
       ]
     }
   ]

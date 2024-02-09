@@ -7,12 +7,12 @@
   "extendedColors": [],
   "schemes": {
       "light": {
-          "primary": "#176684",
+          "primary": "#00509D",
           "surfaceTint": "#176684",
           "onPrimary": "#FFFFFF",
           "primaryContainer": "#C1E8FF",
           "onPrimaryContainer": "#001E2B",
-          "secondary": "#4D616C",
+          "secondary": "#8392ab",
           "onSecondary": "#FFFFFF",
           "secondaryContainer": "#D0E6F3",
           "onSecondaryContainer": "#091E27",
@@ -24,7 +24,7 @@
           "onError": "#FFFFFF",
           "errorContainer": "#FFDAD6",
           "onErrorContainer": "#410002",
-          "background": "#F6FAFE",
+          "background": "#F5F7F8",
           "onBackground": "#171C1F",
           "surface": "#F6FAFE",
           "onSurface": "#171C1F",
@@ -55,7 +55,11 @@
           "surfaceContainerLow": "#F0F4F8",
           "surfaceContainer": "#EAEEF2",
           "surfaceContainerHigh": "#E4E9ED",
-          "surfaceContainerHighest": "#DFE3E7"
+          "surfaceContainerHighest": "#DFE3E7",
+          "info": "#11CDEF",
+          "success": "#2DCE89",
+          "danger": "#F5365C",
+          "warning": "#FB6340",
       },
       "light-medium-contrast": {
           "primary": "#004961",
