@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import BIcon from './BIcon.vue';
+import type { BIconName } from './types/BIcon';
 const props = defineProps({
   label: {
     type: String,
@@ -28,6 +30,10 @@ const props = defineProps({
   isLoading: {
     type: Boolean,
     default: false
+  },
+  prependIcon: {
+    type: String as () => BIconName,
+    default: ''
   }
 })
 defineEmits(['click'])
@@ -47,6 +53,9 @@ const classProps = computed(() => {
     color="primary"
     rounded="pill"
   >
-    {{ label }}
+    <template v-slot:prepend>
+      <BIcon :icon="prependIcon" color="onPrimary"></BIcon>
+    </template>
+    <span>{{ label }}</span>
   </VBtn>
 </template>

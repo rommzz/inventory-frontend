@@ -13,11 +13,15 @@ const props = defineProps<{
   clearable?: boolean,
   required?: boolean,
   appendInnerIcon?: BIconName,
+  prependInnerIcon?: BIconName,
   rules?: string[] | ((value: string) => string | boolean)[],
+  density?: "comfortable" | "compact" | "default",
+  hideDetails?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'click:appendInner'): void
+  (e: 'click:prependInner'): void
 }>()
 
 const classProps = computed(() => {
@@ -29,7 +33,7 @@ const classProps = computed(() => {
     <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">{{ label }}</div>
     <VTextField
       variant="outlined"
-      density="comfortable"
+      :density="props.density ?? 'comfortable'"
       color="primary"
       label=""
       :required="required"
@@ -38,9 +42,13 @@ const classProps = computed(() => {
       :clearable="clearable"
       v-model="model"
       :rules="rules"
+      :hide-details="hideDetails"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
+      </template>
+      <template v-slot:prepend-inner v-if="prependInnerIcon">
+        <BIcon :icon="prependInnerIcon" @click="emit('click:appendInner')"></BIcon>
       </template>
     </VTextField>
   </div>
