@@ -1,18 +1,19 @@
-import type { Auth } from '@/modules/auth/stores'
-import endpoints from './endpoints'
-import http, { type ResponeseV1 } from './http'
+import endpoints from './endpoints';
+import http from './http';
+import type { LoginResponse } from './models/response';
 
 export const authApi = {
-  loginEmail: async (email: string, password: string, isRemember: boolean): Promise<Auth> => {
+  login: async (username: string, password: string): Promise<LoginResponse> => {
     try {
-      const res = await http.post<ResponeseV1<Auth>>(endpoints.auth.loginEmail, {
-        email,
+      const res = await http.post<LoginResponse>('/v1' + endpoints.auth.login, {
+        username,
         password,
-        isRemember
       })
-      return res.data.data
+      
+      return res.data
     } catch (error) {
-      throw new Error(error as string)
+      console.log('error coy', error);
+      throw error
     }
   }
 }

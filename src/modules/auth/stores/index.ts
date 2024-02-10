@@ -1,33 +1,22 @@
 import router from '@/router'
 import { authApi } from '@/utils/apis'
+import type { User } from '@/utils/apis/models/model'
 
 import storage from '@/utils/storage'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
-export type Auth = {
-  iduser: string
-  user_type: string
-  nama: string
-  token: string
-  karyawan?: any
-  access_level?: any
-}
 
 export const useAuthStore = defineStore('auth', () => {
-  const auth = ref<Auth | null>(null)
-  const login = async (email: string, password: string, isRemember: boolean) => {
+  const auth = ref<User | null>(null)
+  const login = async (username: string, password: string,) => {
     try {
-      // const res = await authApi.loginEmail(email, password, isRemember)
-      const res = {
-        iduser: '1',
-        user_type: 'admin',
-        nama: 'Admin',
-        token: 'token'
-      }
-      console.log(res)
-      auth.value = res
-      storage.setAuth(auth.value)
+      const res = await authApi.login(username, password)
+      console.log(res);
+      auth.value = res.user
+      
+      storage.setToken(res.token)
+      storage.setRefreshToken(res.refresh_token)
       router.push('/')
     } catch (error) {
       console.log(error)
@@ -36,10 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
   }
   const logout = (): void => {
     auth.value = null
-    storage.clearAuth()
+    storage.clearAllTokens()
     window.location.reload()
   }
-  const getToken = computed(() => auth.value?.token)
 
-  return { auth, login, logout, getToken }
+  return { auth, login, logout }
 })

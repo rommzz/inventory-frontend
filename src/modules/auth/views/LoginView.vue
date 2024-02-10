@@ -7,7 +7,7 @@ import BTextField from '@/components/BTextField.vue';
 import { ref } from 'vue';
 import { useAuthStore } from '../stores';
 
-const email = ref<string>('')
+const username = ref<string>('')
 const password = ref<string>('')
 const isRemember = ref<boolean>(false)
 const showPassword = ref<boolean>(false)
@@ -21,7 +21,7 @@ const login = async () => {
   if (!valid.valid) return
   isLoading.value = true
   //ganti login be
-  store.login(email.value, password.value, isRemember.value).then(() => {
+  store.login(username.value, password.value).then(() => {
     
   }).catch((error) => {
     console.log(error);
@@ -66,12 +66,11 @@ const login = async () => {
       <BTextField
         label="Username"
         placeholder="example@email.com"
-        v-model="email"
+        v-model="username"
         required
         class="tw-mt-10"
         :rules="[
-          v => !!v || 'Email harus diisi',
-          v => /.+@.+\..+/.test(v) || 'Email tidak valid',
+          v => !!v || 'Username harus diisi',
         ]"
       />
       <BTextField

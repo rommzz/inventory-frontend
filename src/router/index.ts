@@ -39,7 +39,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const auth = storage.getAuth()
+  const auth = storage.getToken()
   if (to.matched.some((record) => record.meta.requiredAuth) && !auth) {
     next({ name: 'Login' })
   } else {

@@ -6,6 +6,7 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig
 } from 'axios'
+import storage from '../storage'
 
 export type ResponeseV1<T = any> = {
   code: number
@@ -20,13 +21,13 @@ class Http {
 
   constructor() {
     this.instance = axios.create({
-      baseURL: import.meta.env.VITE_APP_API_URL
+      baseURL: import.meta.env.VITE_API_URL
     })
     this.instance.interceptors.request.use(this.requestInterceptor, this.requestErrorInterceptor)
   }
 
   private requestInterceptor(config: InternalAxiosRequestConfig) {
-    const token = useAuthStore().getToken
+    const token = storage.getToken()
     if (token) {
       config.headers.Authorization = 'bearer' + token
     }

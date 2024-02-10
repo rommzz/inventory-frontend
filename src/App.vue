@@ -5,10 +5,9 @@ import BDrawer from './components/BDrawer.vue';
 
 const drawer = ref<boolean>(true)
 const route = useRoute();
-const showLayout = computed<boolean>(() =>
-  route.name !== 'Login') 
-</script>
+const showLayout = computed<boolean>(() => route.name !== 'Login') 
 
+</script>
 <template>
   <v-layout class="rounded rounded-md" v-if="showLayout">
     <BDrawer v-model="drawer" />

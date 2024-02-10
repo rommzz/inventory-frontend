@@ -1,22 +1,27 @@
-import type { Auth } from '@/modules/auth/stores'
+
 
 const KEY = {
-  AUTH: 'auth'
+  AUTH: 'auth',
+  TOKEN: 'token',
+  REFRESH_TOKEN: 'refresh_token'
 }
 
 const storage = {
-  getAuth(): Auth | null {
-    const auth = localStorage.getItem(KEY.AUTH)
-    if (auth) {
-      return JSON.parse(auth)
-    }
-    return null
+  setToken(token: string): void {
+    localStorage.setItem(KEY.TOKEN, token)
   },
-  setAuth(auth: Auth): void {
-    localStorage.setItem(KEY.AUTH, JSON.stringify(auth))
+  getToken(): string | null {
+    return localStorage.getItem(KEY.TOKEN)
   },
-  clearAuth(): void {
-    localStorage.removeItem(KEY.AUTH)
+  setRefreshToken(token: string): void {
+    localStorage.setItem(KEY.REFRESH_TOKEN, token)
+  },
+  getRefreshToken(): string | null {
+    return localStorage.getItem(KEY.REFRESH_TOKEN)
+  },
+  clearAllTokens(): void {
+    localStorage.removeItem(KEY.TOKEN)
+    localStorage.removeItem(KEY.REFRESH_TOKEN)
   }
 }
 
