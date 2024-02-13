@@ -5,25 +5,24 @@ import BIcon from './BIcon.vue';
 import BButton from './BButton.vue';
 
 const slots = useSlots()
-const props = defineProps<{
+defineProps<{
   items: T[]
   perPage: 10 | 15 | 20
   totalItems: number
+  emptyText?: string
+  showedItem: T[]
+  headers: string[]
+  labelAddButton?: string
 }>()
 
-const headers = (): string[] => {
-  let headers: string[] = []
-  props.items.forEach((item) => {
-    headers = headers.concat(Object.keys(item))
-  })
-  console.log('headers', headers);
-  
-  return headers
-}
+const emit = defineEmits<{
+  (event: "onClickAdd"): void;
+}>()
+
 </script>
 <template>
-  <div class="tw-bg-onPrimary tw-rounded-xl">
-    <div class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant">
+  <div class="!tw-bg-onPrimary tw-rounded-xl">
+    <div class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant tw-bg-onPrimary tw-rounded-t-xl">
       <div class="tw-flex tw-gap-4">
         <VMenu>
           <template v-slot:activator="{ props }">
@@ -44,24 +43,31 @@ const headers = (): string[] => {
         </VMenu>
         <BTextField label="" density="compact" placeholder="cari pemasok" class="tw-min-w-52" hide-details prepend-inner-icon="search"></BTextField>
       </div>
-      <BButton label="walawe" prepend-icon="add"></BButton>
+      <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('onClickAdd')"/>
     </div>
 
-    <slot v-if="slots['body']" name="body"/>
-    <table v-else class="tw-table-auto">
-      <thead>
-        <tr>
-          <th v-for="header in headers()" :key="header">{{header}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item, index in props.items" :key="index">
-          <td v-for="value, indexValue in Object.values(item)" :key="indexValue">{{value}}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant">
-      <span>Menampilkan 1 hingga 10 dari 3 entri</span>
+    <div v-if="!showedItem.length" class="tw-text-center tw-pt-4 tw-pb-6 tw-text-onSurfaceVariant">
+      {{ emptyText || 'Tidak ada data' }}
+    </div>
+    <template v-else>
+      <slot v-if="slots['body']" name="body"/>
+      <table class="tw-table-auto tw-w-full tw-text-sm tw-text-onSurface" v-else>
+          <thead>
+            <tr class="tw-text-left !tw-p-4">
+              <th v-for="header in headers" :key="header" class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-font-semibold">
+                {{ header }}
+              </th>
+            </tr>
+            <tr v-for="row, index  in showedItem" :key="index" class="tw-border-t tw-border-outlineVariant">
+              <td v-for="item, indexItem in row" :key="indexItem" class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+                {{ item }}
+              </td>
+            </tr>
+          </thead>
+        </table>
+    </template>
+    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm">
+      <span>Menampilkan 1 hingga 10 dari {{ totalItems }} entri</span>
       <VPagination variant="elevated" density="compact" color="primary" :length="13" rounded="circle" total-visible="5">
         <!-- <template v-slot:next>
           <div class="tw-w-8 tw-rounded-full tw-border-surfaceVariant border tw-flex tw-place-items-center tw-h-8">

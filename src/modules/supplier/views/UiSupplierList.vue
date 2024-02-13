@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import BTable from '@/components/BTable.vue';
-import { onMounted } from 'vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 type Supplier = {
   readid: string
   name: string
@@ -48,7 +49,7 @@ onMounted(() => {
       name: 'John Doe 3',
       company: 'John Doe Company 3',
       email: 'email 3',
-      address: 'address',
+      address: 'address cokkk',
       phone: 'phone',
       logo: 'logo',
       created_at: 'created_at',
@@ -63,14 +64,21 @@ onMounted(() => {
   <div>
     <BTable
       :items="supplier"
+      :headers="['Perusahaan', 'Nama', 'Email', 'No. Telepon', 'Alamat', 'Aksi']"
+      :showed-item="supplier.map((item) => {
+        return {
+          company: item.company,
+          name: item.name,
+          email: item.email,
+          phone: item.phone,
+          address: item.address,
+        };
+      })"
       :per-page="20"
       :total-items="100"
+      label-add-button="Pemasok Baru"
+      @on-click-add="router.push('/data/supplier/add')"
     >
-      <template v-slot:body>
-        <div>
-          body
-        </div>
-      </template>
     </BTable>
   </div>
 </template>
