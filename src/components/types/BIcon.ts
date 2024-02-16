@@ -1912,6 +1912,7 @@ export type BIconName = "123" |
       "square" |
       "square_foot" |
       "ssid_chart" |
+      "stacks" |
       "stacked_bar_chart" |
       "stacked_line_chart" |
       "stadium" |

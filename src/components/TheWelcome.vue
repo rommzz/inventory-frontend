@@ -5,18 +5,19 @@ import ToolingIcon from './icons/IconTooling.vue'
 import EcosystemIcon from './icons/IconEcosystem.vue'
 import CommunityIcon from './icons/IconCommunity.vue'
 import SupportIcon from './icons/IconSupport.vue'
-import BTextField from './BTextField.vue'
-import BIcon from './BIcon.vue'
+import BButton from './BButton.vue'
+import { ref } from 'vue'
+
+const name = ref<string>('tes')
 </script>
 
 <template>
-  <BTextField label="ok" ></BTextField>
-  <BIcon icon="home" color="primary"></BIcon>
+  <BButton label="ancok" @click="name = 'walawe'"></BButton>
   <WelcomeItem>
     <template #icon>
       <DocumentationIcon />
     </template>
-    <template #heading>Documentation</template>
+    <template #heading>{{ name }}</template>
 
     Vue’s
     <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>

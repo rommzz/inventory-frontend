@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/modules/auth/stores'
 import axios, {
   AxiosError,
   type AxiosInstance,
@@ -9,11 +8,11 @@ import axios, {
 import storage from '../storage'
 
 export type ResponeseV1<T = any> = {
-  code: number
-  data: T
-  msg: string
-  reason: any
-  status: boolean
+  code?: number
+  data?: T
+  msg?: string
+  reason?: any
+  status?: boolean
 }
 
 class Http {

@@ -21,7 +21,7 @@ const emit = defineEmits<{
 
 </script>
 <template>
-  <div class="!tw-bg-onPrimary tw-rounded-xl">
+  <div class="!tw-bg-onPrimary tw-rounded-xl tw-shadow">
     <div class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant tw-bg-onPrimary tw-rounded-t-xl">
       <div class="tw-flex tw-gap-4">
         <VMenu>

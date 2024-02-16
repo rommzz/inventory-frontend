@@ -60,6 +60,7 @@
           "success": "#2DCE89",
           "danger": "#F5365C",
           "warning": "#FB6340",
+          "white": "#FFFFFF"
       },
       "light-medium-contrast": {
           "primary": "#004961",

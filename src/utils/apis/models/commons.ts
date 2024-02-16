@@ -1,5 +1,5 @@
 export type TimeStamp = {
-  createdAt?: string
-  updatedAt?: string
-  deletdAt?: string
+  created_at?: string
+  updated_at?: string
+  deletd_at?: string
 }

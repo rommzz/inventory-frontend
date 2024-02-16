@@ -1,5 +1,5 @@
 import router from '@/router'
-import { authApi } from '@/utils/apis'
+import { authApi, userApi } from '@/utils/apis'
 import type { User } from '@/utils/apis/models/model'
 
 import storage from '@/utils/storage'
@@ -28,6 +28,20 @@ export const useAuthStore = defineStore('auth', () => {
     storage.clearAllTokens()
     window.location.reload()
   }
+  const getUserInformation = async (): Promise<void> => {
+    if (auth.value !== null) {
+      return
+    }
+    try {
+      const res = await userApi.getUserInformation()
+      auth.value = res
+      console.log(auth.value);
+      
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
 
-  return { auth, login, logout }
+  return { auth, login, logout, getUserInformation }
 })
