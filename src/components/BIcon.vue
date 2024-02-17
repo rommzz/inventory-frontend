@@ -28,7 +28,7 @@ const iconSize = computed(() => {
 </script>
 <template>
   <span
-    :class="`material-symbols-outlined tw-text-onSurfaceVariant tw-max-w-fit hover:tw-cursor-pointer ${props.class ?? ''} ${props.color ? 'text-' + props.color : ''}`"
+    :class="`material-symbols-outlined tw-text-onSurfaceVariant tw-max-w-fit ${props.class ?? ''} ${props.color ? 'text-' + props.color : ''}`"
     :style="`font-variation-settings: 'FILL' ${filled ? 1 : 0}; font-size: ${props.size}px;`"
   >
     {{ props.icon }}

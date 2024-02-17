@@ -18,7 +18,7 @@ onMounted(() => {
     <div class="tw-bg-primary tw-h-[300px] tw-w-screen tw-absolute -tw-z-50"></div>
     <BDrawer v-model="drawer" />
     <v-main class="tw-ml-16 tw-mt-10 tw-mr-10">
-      <BHeader/>
+      <BHeader @click:drawer="drawer = !drawer"/>
       <RouterView class="tw-mt-12"/>
     </v-main>
   </v-layout>

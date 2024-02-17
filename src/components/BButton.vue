@@ -56,6 +56,6 @@ const classProps = computed(() => {
     <template v-slot:prepend>
       <BIcon :icon="prependIcon" color="onPrimary"></BIcon>
     </template>
-    <span>{{ label }}</span>
+    <span class="tw-font-semibold">{{ label }}</span>
   </VBtn>
 </template>

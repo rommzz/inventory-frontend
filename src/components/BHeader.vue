@@ -1,22 +1,42 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/modules/auth/stores';
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import BButton from './BButton.vue';
+import { onMounted, ref, watch } from 'vue';
+import { useRouter, type RouteLocationNormalizedLoaded } from 'vue-router';
+import { type Breadcrumbs } from "@/router";
 import BIcon from './BIcon.vue';
-import { ref } from 'vue';
+import type { BIconName } from './types/BIcon';
 
 const router = useRouter()
 
 const authStore = useAuthStore()
 
 const isLoading = ref<boolean>(true)
-const itemRoute: string[] =[
-  'Manajemen Data',
-  'Daftar Pemasok',
+const breadcrumbs = ref<Breadcrumbs[]>([])
+const listMenu: {
+  title: string,
+  icon: BIconName,
+  action: () => void,
+}[] = [
+  {
+    title: 'Pengaturan',
+    icon: 'settings',
+    action: () => {
+      
+    }
+  },
+  {
+    title: 'Logout',
+    icon: 'logout',
+    action: () => {
+      authStore.logout()
+    }
+  }
 ]
 
+const emit = defineEmits(['click:drawer'])
+
 onMounted(() => {
+  settingBreadcrumb(router.currentRoute.value)
   authStore.getUserInformation().catch(e => {
     console.log(e);
   }).finally(() => {
@@ -24,34 +44,44 @@ onMounted(() => {
   })
 })
 
-// watch(() => router.currentRoute.value.matched, (matched) => {
-//   itemRoute.splice(0, itemRoute.length)
-//   matched.forEach((match) => {
-//     console.log(match.meta);
-    
-//     // if (match.meta.title) {
-//     //   itemRoute.push(match.meta.title)
-//     // }
-//   })
-// })
+watch(router.currentRoute, (newV) => {
+  settingBreadcrumb(newV)
+})
+
+const settingBreadcrumb = (newV: RouteLocationNormalizedLoaded) => {
+  breadcrumbs.value = []
+  newV.matched.forEach((item: any) => {
+    if (item.meta) {
+      if (typeof item.meta.breadcrumbs !== 'undefined') {
+        breadcrumbs.value.push(...item.meta.breadcrumbs as Breadcrumbs[])
+      }
+    }
+  })
+}
 
 
 </script>
 <template>
-  <div class="tw-w-full tw-flex tw-justify-between tw-pr-40">
+  <div class="tw-w-full tw-flex tw-justify-between">
     <div class="tw-flex tw-items-center tw-text-white tw-gap-8">
+      <BIcon @click="emit('click:drawer')" icon="menu" color="white"></BIcon>
       <div>
         <div class="tw-flex tw-gap-2 tw-text-sm">
           <BIcon icon="stacks" color="white" filled></BIcon>
-          <template v-for="item in itemRoute" :key="item">
-            <span>/</span><span class="last:tw-font-semibold tw-opacity-50 last:tw-opacity-100">{{item}}</span>
+          <template v-for="item, index in breadcrumbs" :key="item">
+            <span>/</span>
+            <span
+              :class="`${index === 0 ? 'tw-font-normal tw-opacity-50' : 'hover:tw-cursor-pointer'}`"
+              @click="item.path && router.push(item.path)"
+            >
+              {{item.title ?? ''}}
+            </span>
           </template>
         </div>
         <div class="tw-mt-2 tw-font-semibold">
-          {{ itemRoute[itemRoute.length - 1] }}
+          {{ breadcrumbs[breadcrumbs.length - 1]?.title ?? '' }}
         </div>
       </div>
-      <BIcon icon="menu" color="white"></BIcon>
     </div>
     <VProgressCircular class="tw-self-center" color="green" size="20" width="2" v-if="isLoading" indeterminate />
     <VMenu v-else>
@@ -64,8 +94,15 @@ onMounted(() => {
         </div>
       </template>
       <v-list>
-        <v-list-item>
-          <v-list-item-title @click="authStore.logout()">Logout</v-list-item-title>
+        <v-list-item class="!tw-px-0">
+          <v-list-item-title v-for="item, index in listMenu" :key="index" @click="item.action" class="tw-flex tw-items-center tw-gap-3 !tw-py-4 !tw-px-3 tw-border-b tw-border-outlineVariant last:tw-text-warning">
+            <BIcon
+              :icon="item.icon"
+              :color="index == listMenu.length -1 ? 'warning' : 'onSurfaceVariant'"
+              filled
+            />
+            <span>{{ item.title }}</span>
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </VMenu>

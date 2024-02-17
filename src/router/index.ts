@@ -3,13 +3,18 @@ import authRoutes from '@/modules/auth/routes'
 import supplierRoutes from '@/modules/supplier/routes'
 import storage from '@/utils/storage'
 
+export interface Breadcrumbs {
+  title: string,
+  path?: string,
+}
 export interface RouteChildren {
   path: string
   name: string
   component: () => Promise<any>
   meta?: {
     requiredAuth?: boolean, 
-    drawerTitle?: string
+    drawerTitle?: string,
+    breadcrumbs?: Breadcrumbs[],
   }
 }
 
@@ -25,8 +30,8 @@ const router = createRouter({
       children: [
         {
           path: '',
-          name: 'Home',
-          component: () => import('@/views/HomeView.vue'),
+          name: 'Dashboard',
+          component: () => import('@/views/DashboardView.vue'),
           meta: {
             ...isRequiredAuth,
           }
