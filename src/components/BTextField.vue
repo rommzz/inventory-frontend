@@ -31,7 +31,29 @@ const classProps = computed(() => {
 <template>
   <div :class="classProps">
     <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">{{ label }}</div>
+    <VTextarea
+      v-if="type == 'textarea'"
+      variant="outlined"
+      :density="props.density ?? 'comfortable'"
+      color="primary"
+      label=""
+      :required="required"
+      :type="type"
+      :placeholder="placeholder"
+      :clearable="clearable"
+      v-model="model"
+      :rules="rules"
+      :hide-details="hideDetails"
+    >
+      <template v-slot:append-inner v-if="appendInnerIcon">
+        <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
+      </template>
+      <template v-slot:prepend-inner v-if="prependInnerIcon">
+        <BIcon :icon="prependInnerIcon" @click="emit('click:appendInner')"></BIcon>
+      </template>
+    </VTextarea>
     <VTextField
+      v-else
       variant="outlined"
       :density="props.density ?? 'comfortable'"
       color="primary"

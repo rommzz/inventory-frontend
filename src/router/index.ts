@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
 import authRoutes from '@/modules/auth/routes'
 import supplierRoutes from '@/modules/supplier/routes'
 import storage from '@/utils/storage'
@@ -10,6 +10,7 @@ export interface Breadcrumbs {
 export interface RouteChildren {
   path: string
   name: string
+  props?: boolean | Record<string, any> | ((to: RouteLocationNormalized) => Record<string, any>);
   component: () => Promise<any>
   meta?: {
     requiredAuth?: boolean, 

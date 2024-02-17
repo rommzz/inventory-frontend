@@ -18,7 +18,21 @@ export const supplierRoutes: RouteChildren[] = [
         }
       ],
     },
-    component: () => import('../views/UiSupplierAdd.vue'),
+    component: () => import('../views/UiSupplierForm.vue'),
+  },
+  {
+    path: ':id',
+    name: 'supplier-edit',
+    props: true,
+    meta: {
+      breadcrumbs: [
+        {
+          title: 'Edit Pemasok',
+          path: ':id'
+        }
+      ],
+    },
+    component: () => import('../views/UiSupplierForm.vue'),
   }, 
 ]
 
