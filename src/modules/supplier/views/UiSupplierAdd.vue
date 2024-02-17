@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BButton from '@/components/BButton.vue';
-import BIcon from '@/components/BIcon.vue';
+import BInputImage from '@/components/BInputImage.vue';
 import BTextField from '@/components/BTextField.vue';
 
 </script>
@@ -18,12 +18,7 @@ import BTextField from '@/components/BTextField.vue';
       <p>
         Anda dapat mengunggah gambar logo perusahaan pemasok untuk ditampilkan.
       </p>
-      <div class="tw-border-2 tw-border-dotted tw-w-36 tw-h-36 tw-border-outline tw-flex tw-place-items-center tw-rounded-xl">
-        <div class="tw-text-onSurfaceVariant tw-mx-auto tw-flex tw-items-center tw-gap-1">
-          <BIcon icon="upload"></BIcon>
-          <span class="tw-text-xs tw-font-semibold">Unggah Foto</span>
-        </div>
-      </div>
+      <BInputImage/>
     </div>
     <div class="tw-flex tw-justify-end tw-gap-5">
       <BButton label="Batalkan"></BButton>
