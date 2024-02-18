@@ -38,7 +38,7 @@ onMounted(() => {
       email: 'email 1',
       address: 'address',
       phone: 'phone',
-      logo: 'logo',
+      logo: 'https://w7.pngwing.com/pngs/853/105/png-transparent-daihatsu-boon-car-toyota-logo-car-angle-triangle-transport-thumbnail.png',
       created_at: 'created_at',
       deleted_at: 'deleted_at',
       updated_at: 'updated_at',
@@ -50,7 +50,7 @@ onMounted(() => {
       email: 'email 2',
       address: 'address',
       phone: 'phone',
-      logo: 'logo',
+      logo: 'https://w7.pngwing.com/pngs/853/105/png-transparent-daihatsu-boon-car-toyota-logo-car-angle-triangle-transport-thumbnail.png',
       created_at: 'created_at',
       deleted_at: 'deleted_at',
       updated_at: 'updated_at',
@@ -62,7 +62,7 @@ onMounted(() => {
       email: 'email 3',
       address: 'address coy',
       phone: 'phone',
-      logo: 'logo',
+      logo: 'https://w7.pngwing.com/pngs/853/105/png-transparent-daihatsu-boon-car-toyota-logo-car-angle-triangle-transport-thumbnail.png',
       created_at: 'created_at',
       deleted_at: 'deleted_at',
       updated_at: 'updated_at',
@@ -91,8 +91,8 @@ onMounted(() => {
 						</th>
 					</tr>
 					<tr v-for="supplier, index in suppliers" :key="index" class="tw-border-t tw-border-outlineVariant">
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ supplier.company }}
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-flex tw-items-center tw-gap-2">
+							<img :src="supplier.logo" class="tw-w-9 tw-h-9 tw-rounded-xl tw-object-cover" alt=""> <span>{{ supplier.company }}</span>
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ supplier.name }}
@@ -120,11 +120,11 @@ onMounted(() => {
 		v-model="deleteDialog"
 	>
 		<div class="tw-px-5">
-			<p>
-				Proses penghapusan pemasok dengan nama <b>“Andreas Marcella”</b> akan mengakibatkan data tersebut tidak dapat dikembalikan.
+			<p class="tw-text-onSurfaceVariant tw-text-sm">
+				Proses penghapusan pemasok dengan nama <b>“{{deleteDialogData?.name}}”</b> akan mengakibatkan data tersebut tidak dapat dikembalikan.
 			</p>
-			<div class="tw-p-5 tw-text-right">
-				<BButton label="Batalkan" @click="deleteDialog = false"></BButton>
+			<div class="tw-p-5 tw-text-right tw-pt-8">
+				<BButton class="tw-mr-2" label="Batalkan" @click="deleteDialog = false"></BButton>
 				<BButton variant="text" color="danger" label="Lanjutkan" @click="deleteDialog = false"></BButton>
 			</div>
 		</div>
