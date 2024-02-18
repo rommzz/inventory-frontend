@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import BButton from '@/components/BButton.vue';
+import BDialog from '@/components/BDialog.vue';
+import BIcon from '@/components/BIcon.vue';
 import BTable from '@/components/BTable.vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -16,10 +19,18 @@ type Supplier = {
   updated_at: string
 };
 
-const supplier = ref<Supplier[]>([]);
+const suppliers = ref<Supplier[]>([]);
+
+const deleteDialog = ref<boolean>(false)
+const deleteDialogData = ref<Supplier | null>(null)
+
+const onDelete = (supplier: Supplier) => {
+	deleteDialogData.value = supplier;
+	deleteDialog.value = true;
+}
 
 onMounted(() => {
-  supplier.value = [
+  suppliers.value = [
     {
       readid: '1',
       name: 'John Doe 1',
@@ -63,22 +74,59 @@ onMounted(() => {
 <template>
   <div>
     <BTable
-      :items="supplier"
-      :headers="['Perusahaan', 'Nama', 'Email', 'No. Telepon', 'Alamat', 'Aksi']"
-      :showed-item="supplier.map((item) => {
-        return {
-          company: item.company,
-          name: item.name,
-          email: item.email,
-          phone: item.phone,
-          address: item.address,
-        };
-      })"
       :per-page="20"
       :total-items="100"
       label-add-button="Pemasok Baru"
-      @on-click-add="router.push('/data/supplier/add')"
+      @click:action="router.push('/data/supplier/add')"
     >
+			<table class="tw-table-auto tw-w-full tw-text-sm tw-text-onSurface">
+				<thead>
+					<tr class="tw-text-left !tw-p-4">
+						<th
+							v-for="header in ['Perusahaan', 'Nama', 'Email', 'No. Telepon', 'Alamat', 'Aksi']"
+							:key="header"
+							class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-font-semibold"
+						>
+							{{ header }}
+						</th>
+					</tr>
+					<tr v-for="supplier, index in suppliers" :key="index" class="tw-border-t tw-border-outlineVariant">
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+							{{ supplier.company }}
+						</td>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+							{{ supplier.name }}
+						</td>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+							{{ supplier.email }}
+						</td>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+							{{ supplier.phone }}
+						</td>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+							{{ supplier.address }}
+						</td>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
+							<BIcon @click="onDelete(supplier)" icon="delete" color="error" class="tw-mr-8"></BIcon>
+							<BIcon icon="edit_square" color="warning" @click="router.push('/data/supplier/' + supplier.readid)"></BIcon>
+						</td>
+					</tr>
+				</thead>
+			</table>
     </BTable>
   </div>
+	<BDialog
+		title="Apakah anda yakin?"
+		v-model="deleteDialog"
+	>
+		<div class="tw-px-5">
+			<p>
+				Proses penghapusan pemasok dengan nama <b>“Andreas Marcella”</b> akan mengakibatkan data tersebut tidak dapat dikembalikan.
+			</p>
+			<div class="tw-p-5 tw-text-right">
+				<BButton label="Batalkan" @click="deleteDialog = false"></BButton>
+				<BButton variant="text" color="danger" label="Lanjutkan" @click="deleteDialog = false"></BButton>
+			</div>
+		</div>
+	</BDialog>
 </template>

@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import BIcon from './BIcon.vue';
 import type { BIconName } from './types/BIcon';
+import { pallete } from "@/plugin/palette";
 const props = defineProps({
   label: {
     type: String,
@@ -34,7 +35,11 @@ const props = defineProps({
   prependIcon: {
     type: String as () => BIconName,
     default: ''
-  }
+  },
+	color: {
+		type: String as () => keyof typeof pallete.schemes.light,
+		default: 'primary'
+	}
 })
 defineEmits(['click'])
 const classProps = computed(() => {
@@ -50,7 +55,7 @@ const classProps = computed(() => {
     :type="type"
     :disable="disabled"
     :block="fullWidth"
-    color="primary"
+    :color="color"
     rounded="pill"
   >
     <template v-slot:prepend>
