@@ -60,7 +60,7 @@ onMounted(() => {
       name: 'John Doe 3',
       company: 'John Doe Company 3',
       email: 'email 3',
-      address: 'address cokkk',
+      address: 'address coy',
       phone: 'phone',
       logo: 'logo',
       created_at: 'created_at',
