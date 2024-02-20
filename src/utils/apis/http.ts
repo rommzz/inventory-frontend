@@ -6,6 +6,7 @@ import axios, {
   type InternalAxiosRequestConfig
 } from 'axios'
 import storage from '../storage'
+import {useAuthStore} from '@/modules/auth/stores'
 
 export type ResponeseV1<T = any> = {
   code?: number
@@ -28,7 +29,7 @@ class Http {
   private requestInterceptor(config: InternalAxiosRequestConfig) {
     const token = storage.getToken()
     if (token) {
-      config.headers.Authorization = 'bearer' + token
+      config.headers.Authorization = 'bearer ' + token
     }
     return config
   }
@@ -37,7 +38,15 @@ class Http {
     return Promise.reject(error)
   }
 
-  private errorHandler(err: any): AxiosError {
+  private errorHandler(err: any) {
+    if (err.name == 'AxiosError') {
+      const error = err as AxiosError<ResponeseV1>
+      if (error.response?.status === 401) {
+        const store = useAuthStore()
+        store.clearAuth()
+      }
+      return error.response?.data;
+    }
     return err as AxiosError
   }
 

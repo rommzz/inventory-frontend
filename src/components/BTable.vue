@@ -1,20 +1,21 @@
 <script setup lang="ts" generic="T extends {}">
+import { useSlots } from 'vue';
 import BButton from './BButton.vue';
 import BIcon from './BIcon.vue';
 import BTextField from './BTextField.vue';
-import type { BIconName } from './types/BIcon';
 
 defineProps<{
   perPage: 10 | 15 | 20
   totalItems: number
   emptyText?: string
   labelAddButton?: string
-	iconAddButton?: BIconName
 }>()
 
 const emit = defineEmits<{
   (event: "click:action"): void;
 }>()
+
+const slot = useSlots()
 
 </script>
 <template>
@@ -40,7 +41,10 @@ const emit = defineEmits<{
         </VMenu>
         <BTextField label="" density="compact" placeholder="cari pemasok" class="tw-min-w-52" hide-details prepend-inner-icon="search"></BTextField>
       </div>
-      <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
+      <slot name="action:group" v-if="slot['action:group']"/>
+      <template v-else>
+        <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
+      </template>
     </div>
 		<slot/>
     <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm">

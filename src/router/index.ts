@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vu
 import authRoutes from '@/modules/auth/routes'
 import supplierRoutes from '@/modules/supplier/routes'
 import storage from '@/utils/storage'
+import itemRoutes from '@/modules/item/routes'
 
 export interface Breadcrumbs {
   title: string,
@@ -39,6 +40,7 @@ const router = createRouter({
         },
         ...authRoutes,
         ...supplierRoutes,
+        ...itemRoutes,
       ]
     }
   ]

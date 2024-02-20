@@ -7,8 +7,7 @@ import BIcon from './BIcon.vue';
 import type { BIconName } from './types/BIcon';
 
 const router = useRouter()
-
-const authStore = useAuthStore()
+const store = useAuthStore()
 
 const isLoading = ref<boolean>(true)
 const breadcrumbs = ref<Breadcrumbs[]>([])
@@ -27,17 +26,22 @@ const listMenu: {
   {
     title: 'Logout',
     icon: 'logout',
-    action: () => {
-      authStore.logout()
-    }
+    action: () => logout()
   }
 ]
-
+const logout = async () => {
+  isLoading.value = true
+  store.logout().catch(e => {
+    alert(e)
+  }).finally(() => {
+    isLoading.value = false
+  })
+}
 const emit = defineEmits(['click:drawer'])
 
 onMounted(() => {
   settingBreadcrumb(router.currentRoute.value)
-  authStore.getUserInformation().catch(e => {
+  store.getUserInformation().catch(e => {
     console.log(e);
   }).finally(() => {
     isLoading.value = false
@@ -86,16 +90,16 @@ const settingBreadcrumb = (newV: RouteLocationNormalizedLoaded) => {
     <VProgressCircular class="tw-self-center" color="green" size="20" width="2" v-if="isLoading" indeterminate />
     <VMenu v-else>
       <template v-slot:activator="{ props }">
-        <div class="tw-flex tw-items-center tw-gap-2 tw-text-white" v-bind="props">
+        <div class="tw-flex tw-items-center tw-gap-2 tw-text-white hover:tw-cursor-pointer" v-bind="props">
           <BIcon icon="person" color="white" filled></BIcon>
           <span>
-            {{ authStore.auth?.name }}
+            {{ store.auth?.name }}
           </span>
         </div>
       </template>
-      <v-list>
+      <v-list class="!tw-bg-white">
         <v-list-item class="!tw-px-0">
-          <v-list-item-title v-for="item, index in listMenu" :key="index" @click="item.action" class="tw-flex tw-items-center tw-gap-3 !tw-py-4 !tw-px-3 tw-border-b tw-border-outlineVariant last:tw-text-warning">
+          <v-list-item-title v-for="item, index in listMenu" :key="index" @click="item.action" class="tw-flex tw-items-center tw-gap-3 !tw-py-4 !tw-px-3 tw-border-b tw-border-outlineVariant last:tw-text-warning hover:tw-cursor-pointer hover:tw-bg-surfaceBright last:tw-border-0">
             <BIcon
               :icon="item.icon"
               :color="index == listMenu.length -1 ? 'warning' : 'onSurfaceVariant'"

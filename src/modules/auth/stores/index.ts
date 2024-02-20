@@ -9,6 +9,11 @@ import { ref } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
   const auth = ref<User | null>(null)
+  const clearAuth = () => {
+    auth.value = null
+    storage.clearAllTokens()
+    window.location.reload()
+  }
   const login = async (username: string, password: string,) => {
     try {
       const res = await authApi.login(username, password)
@@ -18,15 +23,21 @@ export const useAuthStore = defineStore('auth', () => {
       storage.setToken(res.token)
       storage.setRefreshToken(res.refresh_token)
       router.push('/')
-    } catch (error) {
+    } catch (error) { 
       console.log(error)
       throw error
     }
   }
-  const logout = (): void => {
-    auth.value = null
-    storage.clearAllTokens()
-    window.location.reload()
+  const logout = async () => {
+    try {
+      await authApi.logout()
+      clearAuth()
+      return true
+    } catch (error) {
+      console.log(error);
+      throw error
+    }
+
   }
   const getUserInformation = async (): Promise<void> => {
     if (auth.value !== null) {
@@ -35,7 +46,6 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const res = await userApi.getUserInformation()
       auth.value = res
-      console.log(auth.value);
       
     } catch (error) {
       console.log(error)
@@ -43,5 +53,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { auth, login, logout, getUserInformation }
+  return { auth, login, logout, getUserInformation, clearAuth }
 })

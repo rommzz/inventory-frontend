@@ -39,7 +39,6 @@ export const supplierRoutes: RouteChildren[] = [
 const routes: RouteRecordRaw[] = [
   {
     path: '/data/supplier',
-    // component: () => import('../views/LoginView.vue'),
     meta: {
       requiredAuth: true,
       drawerTitle: 'Daftar Pemasok',

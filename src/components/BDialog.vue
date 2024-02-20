@@ -13,7 +13,7 @@ const props = defineProps<{
 		<div class="tw-pt-6 tw-px-6 tw-text-2xl tw-text-onSurface">
 			{{ props.title ?? 'Title' }}
 		</div>
-		<div class="tw-mt-4">
+		<div class="tw-mt-4 tw-text-onSurfaceVariant tw-text-sm">
 			<slot></slot>
 		</div>
 	</div>

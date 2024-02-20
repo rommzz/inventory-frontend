@@ -20,12 +20,8 @@ const login = async () => {
   const valid = await form.value.validate()
   if (!valid.valid) return
   isLoading.value = true
-  //ganti login be
-  store.login(username.value, password.value).then(() => {
-    
-  }).catch((error) => {
-    console.log(error);
-    isError.value = error as any
+  store.login(username.value, password.value).catch((error) => {
+    isError.value = error.msg ?? error
   }).finally(() => {
     isLoading.value = false
   })

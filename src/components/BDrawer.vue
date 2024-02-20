@@ -33,7 +33,7 @@ const menus: Menu[] = [
     children: [
       {title: 'Jenis Satuan',},
       {title: 'Daftar Pemasok', routeName: 'supplier-list'},
-      {title: 'Kelola Barang',},
+      {title: 'Kelola Barang', routeName: 'item-list'},
       {title: 'Daftar Harga Barang',},
       {title: 'Daftar Pelanggan',},
       {title: 'Promo Member',},
