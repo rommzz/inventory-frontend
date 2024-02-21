@@ -3,14 +3,10 @@ import { computed, ref } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import BDrawer from './components/BDrawer.vue';
 import BHeader from './components/BHeader.vue';
-import { onMounted } from 'vue';
 
 const drawer = ref<boolean>(true)
 const route = useRoute();
 const showLayout = computed<boolean>(() => route.name !== 'Login' && route.name !== undefined) 
-onMounted(() => {
-  console.log(route.name);
-})
 
 </script>
 <template>

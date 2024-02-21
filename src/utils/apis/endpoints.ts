@@ -1,5 +1,7 @@
 const auth: string = '/auth'
+const master: string = '/master'
 const user: string = `${auth}/user`
+const meta: string = `${master}/meta`
 
 export default {
   auth: {
@@ -11,4 +13,10 @@ export default {
       userById: `${user}/user/:id`,
     },
   },
+  master: {
+    meta: {
+      units: `${meta}/units`,
+    },
+    supplier: `${master}/supplier`,
+  }
 }

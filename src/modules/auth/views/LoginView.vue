@@ -16,6 +16,14 @@ const store = useAuthStore()
 const isError = ref<string>()
 const form = ref()
 
+const bypass = () => {
+  if (import.meta.env.DEV) {
+    const {VITE_USERNAME, VITE_USERPASS} = import.meta.env
+    username.value = VITE_USERNAME
+    password.value = VITE_USERPASS
+  }
+}
+
 const login = async () => {
   const valid = await form.value.validate()
   if (!valid.valid) return
@@ -45,7 +53,7 @@ const login = async () => {
     </VOverlay>
     <VForm class="tw-p-8" @submit.prevent ref="form">
       <div class="tw-text-center tw-text-onSurface">
-        <VImg :src="logo" width="85" class="tw-mx-auto tw-mb-4"></VImg>
+        <VImg :src="logo" width="85" class="tw-mx-auto tw-mb-4" @dblclick="bypass()"></VImg>
         <div class="tw-text-2xl tw-mb-1">
           Selamat Datang
         </div>

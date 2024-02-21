@@ -33,3 +33,9 @@ export type InventoryItem = {
   inventory_price?: number;
   initial_quantity?: number;
 } & TimeStamp
+
+export type Unit = {
+  id: string;
+  name: string;
+  description: string;
+} & TimeStamp

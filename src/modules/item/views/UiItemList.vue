@@ -65,8 +65,8 @@ onMounted(() => {
     <BTable
       :per-page="20"
       :total-items="100"
-      label-add-button="Pemasok Baru"
-      @click:action="router.push('/data/supplier/add')"
+      label-add-button="Barang Baru"
+      @click:action="router.push('/data/item/add')"
     >
 			<table class="tw-table-auto tw-w-full tw-text-sm tw-text-onSurface">
 				<thead>
