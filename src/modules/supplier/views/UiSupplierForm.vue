@@ -3,10 +3,15 @@ import BButton from '@/components/BButton.vue';
 import BInputImage from '@/components/BInputImage.vue';
 import BTextField from '@/components/BTextField.vue';
 import { onMounted, reactive, ref } from 'vue';
+import { useSupplierStore } from '../stores';
+import type { AddSupplier } from '@/utils/apis/models/request';
+import router from '@/router';
 
 const props = defineProps<{
   id?: string;
 }>();
+
+const store = useSupplierStore();
 type Form = {
   company?: string;
   name?: string;
@@ -49,7 +54,22 @@ const updateSupplier = () => {
 }
 
 const createSupplier = () => {
-  console.log('create', formField);
+  isLoading.value = true;
+  const supplierForm: AddSupplier = {
+    name: formField.name!,
+    company_name: formField.company!,
+    email: formField.email,
+    phone: formField.phone,
+    address: formField.address,
+  }
+  store.addSupplier(supplierForm).then((res) => {
+    console.log(res);
+    router.push('/data/supplier/' + res.id);
+  }).catch((err) => {
+    console.error(err);
+  }).finally(() => {
+    isLoading.value = false;
+  });
 }
 
 </script>

@@ -8,12 +8,17 @@ import axios, {
 import storage from '../storage'
 import {useAuthStore} from '@/modules/auth/stores'
 
-export type ResponeseV1<T = any> = {
+export type MetaData = {
+  count?: number
+}
+
+export type ResponseV1<T = any> = {
   code?: number
   data?: T
   msg?: string
   reason?: any
   status?: boolean
+  meta?: MetaData
 }
 
 class Http {
@@ -40,7 +45,7 @@ class Http {
 
   private errorHandler(err: any) {
     if (err.name == 'AxiosError') {
-      const error = err as AxiosError<ResponeseV1>
+      const error = err as AxiosError<ResponseV1>
       if (error.response?.status === 401) {
         const store = useAuthStore()
         store.clearAuth()

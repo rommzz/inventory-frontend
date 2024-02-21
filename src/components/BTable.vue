@@ -9,6 +9,7 @@ defineProps<{
   totalItems: number
   emptyText?: string
   labelAddButton?: string
+  displayedTotal?: number
 }>()
 
 const emit = defineEmits<{
@@ -46,7 +47,10 @@ const slot = useSlots()
         <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
       </template>
     </div>
-		<slot/>
+		<div v-if="totalItems == 0" class="tw-text-center tw-pt-4 tw-pb-6 tw-text-onSurfaceVariant">
+      {{ emptyText || 'Tidak ada data' }}
+    </div>
+    <slot v-else/>
     <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm">
       <span>Menampilkan 1 hingga 10 dari {{ totalItems }} entri</span>
       <VPagination variant="elevated" density="compact" color="primary" :length="13" rounded="circle" total-visible="5">
