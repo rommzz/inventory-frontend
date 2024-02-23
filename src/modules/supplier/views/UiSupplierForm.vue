@@ -4,8 +4,9 @@ import BInputImage from '@/components/BInputImage.vue';
 import BTextField from '@/components/BTextField.vue';
 import { onMounted, reactive, ref } from 'vue';
 import { useSupplierStore } from '../stores';
-import type { AddSupplier } from '@/utils/apis/models/request';
+import type { supplierForm } from '@/utils/apis/models/request';
 import router from '@/router';
+import type { Supplier } from '@/utils/apis/models/model';
 
 const props = defineProps<{
   id?: string;
@@ -20,6 +21,7 @@ type Form = {
   address?: string;
   logo?: string;
 }
+let supplier: Supplier = {}
 const formField = reactive<Form>({});
 const form = ref();
 const isLoading = ref<boolean>(false);
@@ -29,33 +31,61 @@ onMounted(() => {
   // isEdit.value = props.id !== undefined;
   if (isEdit) {
     // fetch data from API
-    const data: Form = {
-      company: 'PT. ABC',
-      name: 'John Doe',
-      email: 'email@email.com'
-    }
-    Object.assign(formField, data)
+    getData()
   }
 })
+
+const getData = async () => {
+  store.getSupplier(props.id!).then(r => {
+    supplier = r
+    formField.company = r.company_name
+    formField.name = r.name
+    formField.email = r.email,
+    formField.phone = r.phone
+    formField.address = r.address
+    formField.logo = r.logo
+  }).catch(e => {
+    console.log(e);
+  }).finally(() => {
+    console.log('ok');
+    
+  })
+}
 
 const submit = async () => {
   const valid = await form.value.validate()
   if (valid) {
     isLoading.value = true;
-    setTimeout(() => {
-      isEdit ? updateSupplier() : createSupplier();
-      isLoading.value = false;
-    }, 5000);
+    isEdit ? updateSupplier() : createSupplier();
+    isLoading.value = false;
   }
 }
 
 const updateSupplier = () => {
-  console.log('update', formField);
+  isLoading.value = true;
+  const supplierForm: Supplier = {
+    name: formField.name!,
+    company_name: formField.company!,
+    email: formField.email,
+    phone: formField.phone,
+    address: formField.address,
+  }
+  const data = Object.assign(supplier, supplierForm)
+  console.log(data);
+  
+  store.editSupplier(data).then((res) => {
+    console.log(res);
+    router.go(0)
+  }).catch((err) => {
+    console.error(err);
+  }).finally(() => {
+    isLoading.value = false;
+  });
 }
 
 const createSupplier = () => {
   isLoading.value = true;
-  const supplierForm: AddSupplier = {
+  const supplierForm: supplierForm = {
     name: formField.name!,
     company_name: formField.company!,
     email: formField.email,

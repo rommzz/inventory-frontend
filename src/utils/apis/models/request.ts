@@ -1,4 +1,4 @@
-export type AddSupplier = {
+export type supplierForm = {
   name: string
   company_name: string
   email?: string

@@ -3,14 +3,20 @@ import BButton from '@/components/BButton.vue';
 import BDialog from '@/components/BDialog.vue';
 import BIcon from '@/components/BIcon.vue';
 import BTable from '@/components/BTable.vue';
+import type { BTableQuery } from '@/components/types/BTable';
+import type { MetaData } from '@/utils/apis/http';
 import type { Supplier } from '@/utils/apis/models/model';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSupplierStore } from '../stores';
-import type { MetaData } from '@/utils/apis/http'
+
 const router = useRouter();
 const store = useSupplierStore();
 
+let query = reactive<BTableQuery>({
+	limit: 20,
+	offset: 0,
+})
 const suppliers = ref<Supplier[]>([]);
 const isLoading = ref<boolean>(false);
 const metaData = ref<MetaData>({});
@@ -36,18 +42,27 @@ const getSuppliers = async () => {
 	});
 }
 
+const onChangeQuery = (q: BTableQuery) => {
+	Object.assign(query, q)
+	router.push({path: '/data/supplier', query})	
+}
+
 onMounted(() => {
   getSuppliers();
+	const {limit, offset} = router.currentRoute.value.query
+	Object.assign(query, {limit: limit ?? 20, offset: offset ?? 0})
+	console.log(query);
 })
 </script>
 <template>
   <div>
     <BTable
-      :per-page="20"
-      :total-items="metaData.count ?? 0"
+			:query="query"
+      :total-items="100"
       label-add-button="Pemasok Baru"
 			:displayed-total="suppliers.length"
       @click:action="router.push('/data/supplier/add')"
+			@change:query="v => onChangeQuery(v)"
     >
 			<table class="tw-table-auto tw-w-full tw-text-sm tw-text-onSurface">
 				<thead>
@@ -62,23 +77,23 @@ onMounted(() => {
 					</tr>
 					<tr v-for="supplier, index in suppliers" :key="index" class="tw-border-t tw-border-outlineVariant">
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-flex tw-items-center tw-gap-2">
-							<img :src="supplier.logo" class="tw-w-9 tw-h-9 tw-rounded-xl tw-object-cover" alt=""> <span>{{ supplier.company }}</span>
+							<img :src="supplier.logo" class="tw-w-9 tw-h-9 tw-rounded-xl tw-object-cover" alt=""> <span>{{ supplier.company_name }}</span>
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ supplier.name }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ supplier.email }}
+							{{ supplier.email == '' ? '-' : supplier.email }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ supplier.phone }}
+							{{ supplier.phone == '' ? '-' : supplier.phone }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ supplier.address }}
+							{{ supplier.address == '' ? '-' : supplier.address }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
 							<BIcon @click="onDelete(supplier)" icon="delete" color="error" class="tw-mr-8"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/data/supplier/' + supplier.readid)"></BIcon>
+							<BIcon icon="edit_square" color="warning" @click="router.push('/data/supplier/' + supplier.id)"></BIcon>
 						</td>
 					</tr>
 				</thead>

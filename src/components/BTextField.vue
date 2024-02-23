@@ -16,6 +16,7 @@ const props = defineProps<{
   rules?: string[] | ((value: string) => string | boolean)[],
   density?: "comfortable" | "compact" | "default",
   hideDetails?: boolean,
+  modelValue?: any
 }>()
 
 const emit = defineEmits<{

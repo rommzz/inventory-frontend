@@ -2,7 +2,7 @@
 import { supplierApi } from '@/utils/apis'
 import type { ResponseV1 } from '@/utils/apis/http'
 import type { Supplier } from '@/utils/apis/models/model'
-import type { AddSupplier } from '@/utils/apis/models/request'
+import type { supplierForm } from '@/utils/apis/models/request'
 import { defineStore } from 'pinia'
 
 export const useSupplierStore = defineStore('supplierStore', () => {
@@ -15,9 +15,29 @@ export const useSupplierStore = defineStore('supplierStore', () => {
       throw error
     }
   }
-  const addSupplier = async (supplier: AddSupplier): Promise<Supplier> => {
+  const addSupplier = async (supplier: supplierForm): Promise<Supplier> => {
     try {
       const res = await supplierApi.addSupplier(supplier)
+      return res
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  }
+  const getSupplier = async (supplierId: string): Promise<Supplier> => {
+    try {
+      const res = await supplierApi.getSupplier(supplierId)
+      return res
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  }
+  const editSupplier = async (supplier: Supplier): Promise<Supplier> => {
+    console.log(supplier.id);
+    
+    try {
+      const res = await supplierApi.editSupplier(supplier)
       return res
     } catch (error) {
       console.log('error', error);
@@ -27,5 +47,7 @@ export const useSupplierStore = defineStore('supplierStore', () => {
   return {
     getListSupplier,
     addSupplier,
+    getSupplier,
+    editSupplier,
   }
 })

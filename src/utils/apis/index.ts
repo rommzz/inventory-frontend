@@ -1,7 +1,7 @@
 import endpoints from './endpoints';
 import http, { type ResponseV1 } from './http';
 import type { Supplier, Unit, User } from './models/model';
-import type { AddSupplier } from './models/request';
+import type { supplierForm } from './models/request';
 import type { LoginResponse } from './models/response';
 
 export const authApi = {
@@ -53,7 +53,7 @@ export const metaApi = {
 }
 
 export const supplierApi = {
-  addSupplier: async (supplier: AddSupplier): Promise<Supplier> => {  
+  addSupplier: async (supplier: supplierForm): Promise<Supplier> => {  
     try {
       const res = await http.post<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier, supplier)
       console.log(res);
@@ -72,5 +72,23 @@ export const supplierApi = {
       console.log('error', error);
       throw error
     }
-  }
+  },
+  getSupplier: async (supplierId: string): Promise<Supplier> => {  
+    try {
+      const res = await http.get<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier + '/' + supplierId)
+      return res.data.data!
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
+  editSupplier: async (supplier: Supplier): Promise<Supplier> => {  
+    try {
+      const res = await http.patch<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier + '/' + supplier.id, supplier)
+      return res.data.data!
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
 }

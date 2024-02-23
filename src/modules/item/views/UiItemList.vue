@@ -23,7 +23,7 @@ onMounted(() => {
     {
       readid: '1',
       name: 'John Doe 1',
-      company: 'John Doe Company 1',
+      company_name: 'John Doe Company 1',
       email: 'email 1',
       address: 'address',
       phone: 'phone',
@@ -35,7 +35,7 @@ onMounted(() => {
     {
       readid: '2',
       name: 'John Doe 2',
-      company: 'John Doe Company 2',
+      company_name: 'John Doe Company 2',
       email: 'email 2',
       address: 'address',
       phone: 'phone',
@@ -47,7 +47,7 @@ onMounted(() => {
     {
       readid: '3',
       name: 'John Doe 3',
-      company: 'John Doe Company 3',
+      company_name: 'John Doe Company 3',
       email: 'email 3',
       address: 'address coy',
       phone: 'phone',
@@ -63,7 +63,7 @@ onMounted(() => {
 <template>
   <div>
     <BTable
-      :per-page="20"
+      :offset="20"
       :total-items="100"
       label-add-button="Barang Baru"
       @click:action="router.push('/data/item/add')"

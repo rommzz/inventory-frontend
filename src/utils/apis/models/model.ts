@@ -14,7 +14,7 @@ export type Supplier = {
   id?: string;
   readid?: string;
   name?: string;
-  company?: string;
+  company_name?: string;
   email?: string;
   phone?: string;
   logo?: string;
