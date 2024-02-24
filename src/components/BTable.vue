@@ -103,11 +103,24 @@ const slot = useSlots()
         total-visible="5"
         v-model="page"
       >
-        <!-- <template v-slot:next>
-          <div class="tw-w-8 tw-rounded-full tw-border-surfaceVariant border tw-flex tw-place-items-center tw-h-8">
-            <BIcon icon="chevron_right" color="surfaceVariant" class="tw-mx-auto"></BIcon>
+        <template v-slot:item="{page: itemPage, isActive}">
+          <div
+            @click="itemPage != '...' && (page = parseInt(itemPage))"
+            :class="`hover:tw-cursor-pointer tw-h-8 tw-w-8 tw-flex tw-place-items-center tw-justify-center tw-rounded-full tw-border-outlineVariant ${isActive ? 'tw-text-white tw-bg-primary': 'tw-border tw-text-onSurfaceVariant'} `"
+          >
+            {{ itemPage }}
           </div>
-        </template> -->
+        </template>
+        <template v-slot:next="{onClick}">
+          <div @click="onClick" class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8">
+            <BIcon icon="chevron_right" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
+          </div>
+        </template>
+        <template v-slot:prev="{onClick}">
+          <div @click="onClick" class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8">
+            <BIcon icon="chevron_left" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
+          </div>
+        </template>
       </VPagination>
     </div>
   </div>
