@@ -92,8 +92,8 @@ onMounted(() => {
 							{{ supplier.address == '' ? '-' : supplier.address }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
-							<BIcon @click="onDelete(supplier)" icon="delete" color="error" class="tw-mr-8"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/data/supplier/' + supplier.id)"></BIcon>
+							<BIcon @click="onDelete(supplier)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
+							<BIcon icon="edit_square" color="warning" @click="router.push('/data/supplier/' + supplier.id)" button-color="warningContainer"></BIcon>
 						</td>
 					</tr>
 				</thead>

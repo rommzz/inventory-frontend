@@ -60,7 +60,8 @@
           "success": "#2DCE89",
           "danger": "#F5365C",
           "warning": "#FB6340",
-          "white": "#FFFFFF"
+          "white": "#FFFFFF",
+          "warningContainer": "#FFE9E4"
       },
       "light-medium-contrast": {
           "primary": "#004961",
