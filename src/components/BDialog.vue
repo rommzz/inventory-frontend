@@ -2,12 +2,14 @@
 const model = defineModel<boolean>()
 const props = defineProps<{
 	title?: string
+	persistent?: boolean
 }>()
 </script>
 <template>
 <VDialog
 	v-model="model"
 	width="320"
+	:persistent="persistent"
 >
 	<div class="tw-bg-white tw-rounded-3xl tw-shadow">
 		<div class="tw-pt-6 tw-px-6 tw-text-2xl tw-text-onSurface">

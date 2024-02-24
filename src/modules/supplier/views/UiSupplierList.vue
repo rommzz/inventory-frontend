@@ -19,6 +19,7 @@ let query = reactive<BTableQuery>({
 })
 const suppliers = ref<Supplier[]>([]);
 const isLoading = ref<boolean>(false);
+const isDeleting = ref<boolean>(false);
 const metaData = ref<MetaData>({});
 
 const deleteDialog = ref<boolean>(false)
@@ -42,6 +43,18 @@ const getSuppliers = async () => {
 	});
 }
 
+const deleteSupplier = async (supplierId: string) => {
+	isDeleting.value = true
+	try {
+		await store.deleteSupplier(supplierId)
+	} catch (error) {
+		console.log(error);
+	}
+	isDeleting.value = false
+	deleteDialog.value = false
+	getSuppliers()
+}
+
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
 	router.push({path: '/data/supplier', query})	
@@ -58,7 +71,7 @@ onMounted(() => {
   <div>
     <BTable
 			:query="query"
-      :total-items="100"
+      :total-items="metaData.count ?? 0"
       label-add-button="Pemasok Baru"
 			:displayed-total="suppliers.length"
       @click:action="router.push('/data/supplier/add')"
@@ -103,6 +116,7 @@ onMounted(() => {
 	<BDialog
 		title="Apakah anda yakin?"
 		v-model="deleteDialog"
+		:persistent="isDeleting"
 	>
 		<div class="tw-px-5">
 			<p class="tw-text-onSurfaceVariant tw-text-sm">
@@ -110,7 +124,7 @@ onMounted(() => {
 			</p>
 			<div class="tw-p-5 tw-text-right tw-pt-8">
 				<BButton class="tw-mr-2" label="Batalkan" @click="deleteDialog = false"></BButton>
-				<BButton variant="text" color="danger" label="Lanjutkan" @click="deleteDialog = false"></BButton>
+				<BButton @click="deleteSupplier(deleteDialogData!.id!)" :is-loading="isDeleting"  variant="text" color="danger" label="Lanjutkan"></BButton>
 			</div>
 		</div>
 	</BDialog>

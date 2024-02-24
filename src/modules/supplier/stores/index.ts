@@ -44,10 +44,19 @@ export const useSupplierStore = defineStore('supplierStore', () => {
       throw error
     }
   }
+  const deleteSupplier = async (supplierId: string): Promise<void> => {
+    try {
+      await supplierApi.deleteSupplier(supplierId)
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  }
   return {
     getListSupplier,
     addSupplier,
     getSupplier,
     editSupplier,
+    deleteSupplier,
   }
 })

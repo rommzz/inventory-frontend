@@ -91,4 +91,12 @@ export const supplierApi = {
       throw error
     }
   },
+  deleteSupplier: async (supplierId: string): Promise<void> => {  
+    try {
+      await http.delete<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier + '/' + supplierId)
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
 }
