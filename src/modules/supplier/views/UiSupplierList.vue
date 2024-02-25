@@ -14,7 +14,7 @@ const router = useRouter();
 const store = useSupplierStore();
 
 let query = reactive<BTableQuery>({
-	limit: 20,
+	limit: 10,
 	offset: 0,
 })
 const suppliers = ref<Supplier[]>([]);
@@ -32,7 +32,7 @@ const onDelete = (supplier: Supplier) => {
 
 const getSuppliers = async () => {
 	isLoading.value = true;
-	store.getListSupplier().then((res) => {
+	store.getListSupplier(query).then((res) => {
 		console.log(res);
 		suppliers.value = res.data;
 		metaData.value = res.meta ?? {};
@@ -57,13 +57,14 @@ const deleteSupplier = async (supplierId: string) => {
 
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
-	router.push({path: '/data/supplier', query})	
+	router.push({path: '/data/supplier', query})
+	getSuppliers()
 }
 
 onMounted(() => {
   getSuppliers();
 	const {limit, offset} = router.currentRoute.value.query
-	Object.assign(query, {limit: limit ?? 20, offset: offset ?? 0})
+	Object.assign(query, {limit: limit ?? 10, offset: offset ?? 0})
 	console.log(query);
 })
 </script>

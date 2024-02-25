@@ -64,9 +64,11 @@ export const supplierApi = {
       throw error
     }
   },
-  getSuppliers: async (): Promise<ResponseV1> => {  
+  getSuppliers: async (query?: Record<string, any>): Promise<ResponseV1> => {  
     try {
-      const res = await http.get<ResponseV1<Supplier[]>>('/v1' + endpoints.master.supplier)
+      const res = await http.get<ResponseV1<Supplier[]>>('/v1' + endpoints.master.supplier, {
+        params: query
+      })
       return res.data
     } catch (error) {
       console.log('error', error);

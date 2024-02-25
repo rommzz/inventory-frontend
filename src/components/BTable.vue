@@ -34,10 +34,10 @@ const emit = defineEmits<{
   (event: "change:query", value: BTableQuery): void;
 }>()
 const paginataionLength = (): number => {
-  const length: number = Math.floor(props.totalItems/props.query.limit)
+  const length: number = Math.ceil(props.totalItems/props.query.limit)
   return length < 1 ? 1 : length
 }
-const onSearch = (v: any) => {
+const onSearch = (v?: any) => {
   clearTimeout(debounce.value);
   debounce.value = setTimeout(() => {
     let newQuery = props.query
@@ -111,14 +111,24 @@ const slot = useSlots()
             {{ itemPage }}
           </div>
         </template>
-        <template v-slot:next="{onClick}">
-          <div @click="onClick" class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8">
-            <BIcon icon="chevron_right" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
+        <template v-slot:prev="{onClick, disabled}">
+          <div
+            v-on="!disabled ? { click: onClick } : {}"
+            class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8"
+            :class="{'hover:tw-cursor-default': disabled}"
+          >
+            <BIcon icon="chevron_left" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
           </div>
         </template>
-        <template v-slot:prev="{onClick}">
-          <div @click="onClick" class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8">
-            <BIcon icon="chevron_left" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
+        <template
+          v-slot:next="{onClick, disabled}"
+        >
+          <div
+            v-on="!disabled ? { click: onClick } : {}"
+            class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8"
+            :class="{'hover:tw-cursor-default': disabled}"
+          >
+            <BIcon icon="chevron_right" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
           </div>
         </template>
       </VPagination>
