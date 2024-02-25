@@ -88,9 +88,13 @@ onMounted(() => {
 							{{ header }}
 						</th>
 					</tr>
-					<tr v-for="supplier, index in suppliers" :key="index" class="tw-border-t tw-border-outlineVariant">
+					<tr v-for="supplier, index in suppliers" :key="index" class="tw-border-t tw-border-outlineVariant tw-group">
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-flex tw-items-center tw-gap-2">
-							<img :src="supplier.logo" class="tw-w-9 tw-h-9 tw-rounded-xl tw-object-cover" alt=""> <span>{{ supplier.company_name }}</span>
+							<img v-if="supplier.logo" :src="supplier.logo" class="tw-w-9 tw-h-9 tw-rounded-xl tw-object-cover" alt="">
+							<div v-else class=" tw-rounded-full tw-w-10 tw-h-10 tw-flex tw-place-items-center tw-justify-center group-even:tw-bg-primary group-odd:tw-bg-secondary tw-text-white tw-font-semibold tw-text-sm">
+								{{ supplier.company_name?.toUpperCase().substring(0,1) }}
+							</div>
+							<span>{{ supplier.company_name }}</span>
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ supplier.name }}
