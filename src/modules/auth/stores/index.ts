@@ -1,6 +1,7 @@
 import router from '@/router'
-import { authApi, userApi } from '@/utils/apis'
 import type { User } from '@/utils/apis/models/model'
+import authApi from '@/utils/apis/repo/authApi'
+import userApi from '@/utils/apis/repo/userApi'
 
 import storage from '@/utils/storage'
 import { defineStore } from 'pinia'

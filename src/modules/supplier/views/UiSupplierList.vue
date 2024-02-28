@@ -34,7 +34,7 @@ const getSuppliers = async () => {
 	isLoading.value = true;
 	store.getListSupplier(query).then((res) => {
 		console.log(res);
-		suppliers.value = res.data;
+		suppliers.value = res.data ?? [];
 		metaData.value = res.meta ?? {};
 	}).catch((err) => {
 		console.error(err);

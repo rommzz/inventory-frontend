@@ -18,7 +18,7 @@ const props = defineProps<{
   searchPlaceholder?: string
 }>()
 
-let debounce = ref<number>();
+let debounce = ref();
 
 watch(page, (newPage) => {
   let newQuery = props.query

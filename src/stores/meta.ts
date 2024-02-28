@@ -1,5 +1,6 @@
-import { brandApi, metaApi } from '@/utils/apis'
 import type { Brand, Unit } from '@/utils/apis/models/model'
+import brandApi from '@/utils/apis/repo/brandApi'
+import metaApi from '@/utils/apis/repo/metaApi'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 

@@ -1,8 +1,7 @@
-
-import { supplierApi } from '@/utils/apis'
 import type { ResponseV1 } from '@/utils/apis/http'
 import type { Supplier } from '@/utils/apis/models/model'
 import type { supplierForm } from '@/utils/apis/models/request'
+import supplierApi from '@/utils/apis/repo/supplierApi'
 import { defineStore } from 'pinia'
 
 export const useSupplierStore = defineStore('supplierStore', () => {

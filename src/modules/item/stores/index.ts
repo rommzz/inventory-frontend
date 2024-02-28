@@ -1,8 +1,7 @@
-
-import { inventoryItemApi } from '@/utils/apis'
 import type { ResponseV1 } from '@/utils/apis/http'
 import type { InventoryItem } from '@/utils/apis/models/model'
 import type { InventoryItemForm } from '@/utils/apis/models/request'
+import inventoryItemApi from '@/utils/apis/repo/inventoryItemApi'
 import { defineStore } from 'pinia'
 
 export const useItemStore = defineStore('itemStore', () => {
