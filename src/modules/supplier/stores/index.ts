@@ -6,7 +6,7 @@ import type { supplierForm } from '@/utils/apis/models/request'
 import { defineStore } from 'pinia'
 
 export const useSupplierStore = defineStore('supplierStore', () => {
-  const getListSupplier = async (query?: Record<string, any>): Promise<ResponseV1> => {
+  const getListSupplier = async (query?: Record<string, any>): Promise<ResponseV1<Supplier[]>> => {
     try {
       const res = await supplierApi.getSuppliers(query)
       return res

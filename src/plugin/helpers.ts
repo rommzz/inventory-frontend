@@ -1,9 +1,6 @@
 // format rupiah currency
-export const formatRupiah = (number: number) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  }).format(number);
+export const formatIDR = (amount: number, withSymbol: boolean = true) => {
+  return `${withSymbol ? 'Rp ' : ''}${amount.toLocaleString('id-ID').replace(/,/g, '.')}`
 };
 
 export function debounce<T extends (...args: any[]) => any>(func: T, delay: number) {

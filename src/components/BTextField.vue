@@ -17,6 +17,7 @@ const props = defineProps<{
   density?: "comfortable" | "compact" | "default",
   hideDetails?: boolean,
   modelValue?: any
+  message?: string
 }>()
 
 const emit = defineEmits<{
@@ -45,6 +46,7 @@ const classProps = computed(() => {
       v-model="model"
       :rules="rules"
       :hide-details="hideDetails"
+      :messages="message"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
@@ -67,6 +69,7 @@ const classProps = computed(() => {
       :rules="rules"
       :hide-details="hideDetails"
       @update:model-value="model => $emit('update:modelValue', model)"
+      :messages="message"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>

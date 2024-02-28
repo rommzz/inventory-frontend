@@ -18,5 +18,7 @@ export default {
       units: `${meta}/units`,
     },
     supplier: `${master}/supplier`,
+    inventoryItem: `${master}/inventory-item`,
+    brand: `${master}/inventory-brand`,
   }
 }

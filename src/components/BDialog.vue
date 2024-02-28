@@ -3,12 +3,13 @@ const model = defineModel<boolean>()
 const props = defineProps<{
 	title?: string
 	persistent?: boolean
+	width?: number
 }>()
 </script>
 <template>
 <VDialog
 	v-model="model"
-	width="320"
+	:width="width ?? 320"
 	:persistent="persistent"
 >
 	<div class="tw-bg-white tw-rounded-3xl tw-shadow">

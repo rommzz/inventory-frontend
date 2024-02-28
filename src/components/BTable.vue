@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends {}">
-import { onMounted, ref, useSlots, watch } from 'vue';
+import { ref, useSlots, watch } from 'vue';
 import BButton from './BButton.vue';
 import BIcon from './BIcon.vue';
 import BTextField from './BTextField.vue';
@@ -14,6 +14,8 @@ const props = defineProps<{
   emptyText?: string
   labelAddButton?: string
   displayedTotal?: number
+  filter?: boolean
+  searchPlaceholder?: string
 }>()
 
 let debounce = ref<number>();
@@ -31,6 +33,7 @@ const changeLimit = (limit: BTableLimit) => {
 }
 const emit = defineEmits<{
   (event: "click:action"): void;
+  (event: "click:filter"): void;
   (event: "change:query", value: BTableQuery): void;
 }>()
 const paginataionLength = (): number => {
@@ -45,10 +48,6 @@ const onSearch = (v?: any) => {
     emit('change:query', newQuery)
   }, 500);
 }
-onMounted(() => {
-  console.log(props.query);
-  
-})
 const slot = useSlots()
 
 </script>
@@ -76,14 +75,24 @@ const slot = useSlots()
         <BTextField
           label=""
           density="compact"
-          placeholder="cari pemasok"
+          :placeholder="searchPlaceholder ?? 'cari pemasok'"
           class="tw-min-w-52"
           hide-details prepend-inner-icon="search"
           :model-value="props.query.search"
           @update:model-value="onSearch"
         />
+        <BButton
+          v-if="filter"
+          label="Filter"
+          prepend-icon="filter_list"
+          prepend-icon-color="primary"
+          variant="outlined"
+          @click="emit('click:filter')"
+        />
       </div>
-      <slot name="action:group" v-if="slot['action:group']"/>
+      <div  v-if="slot['action:group']" class="tw-flex tw-gap-2">
+        <slot name="action:group"/>
+      </div>
       <template v-else>
         <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
       </template>
@@ -92,7 +101,7 @@ const slot = useSlots()
       {{ emptyText || 'Tidak ada data' }}
     </div>
     <slot v-else/>
-    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm">
+    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm tw-text-onSurfaceVariant">
       <span>Menampilkan 1 hingga {{ displayedTotal }} dari {{ totalItems }} entri</span>
       <VPagination
         variant="elevated"

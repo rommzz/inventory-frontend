@@ -36,6 +36,10 @@ const props = defineProps({
     type: String as () => BIconName,
     default: ''
   },
+  prependIconColor: {
+    type: String as () => keyof typeof pallete.schemes.light,
+    default: 'onPrimary'
+  },
 	color: {
 		type: String as () => keyof typeof pallete.schemes.light,
 		default: 'primary'
@@ -59,7 +63,7 @@ const classProps = computed(() => {
     rounded="pill"
   >
     <template v-slot:prepend>
-      <BIcon :icon="prependIcon" color="onPrimary"></BIcon>
+      <BIcon :icon="prependIcon" :color="prependIconColor"></BIcon>
     </template>
     <span class="tw-font-semibold">{{ label }}</span>
   </VBtn>

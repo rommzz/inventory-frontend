@@ -21,17 +21,32 @@ export type Supplier = {
   address?: string; // Full address
 } & TimeStamp
 
+export type InventoryItemStock = {
+  inventory_itemid: string;
+  qty: number;
+  price: number;
+  price_before: number;
+  updated_at: Date;
+  created_at: Date;
+}
+
 export type InventoryItem = {
-  id?: string;
-  readid?: string;
-  name?: string;
-  unitid?: string;
-  merkid?: string;
-  supplierid?: string;
-  sku?: string;
-  purchase_price?: number;
-  inventory_price?: number;
-  initial_quantity?: number;
+  id: string
+  name: string
+  brand_id: string
+  supplier_id: string
+  sku: string
+  price: number
+  initial_stock: number
+  stock: InventoryItemStock
+  supplier: Supplier
+  brand: Brand
+  unit: Unit
+} & TimeStamp
+
+export type Brand = {
+  id: string;
+  name: string;
 } & TimeStamp
 
 export type Unit = {
