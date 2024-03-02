@@ -1,11 +1,14 @@
-<script setup lang="ts">
-import { computed, defineModel } from 'vue';
-import BIcon from './BIcon.vue';
+<script setup lang="ts" generic="T">
+import { computed } from 'vue';
+import { defineModel } from 'vue';
 import type { BIconName } from './types/BIcon';
+import BIcon from './BIcon.vue';
 
-const model = defineModel()
+const model = defineModel<T | T[]>()
 const props = defineProps<{
   label: string,
+  items: T[],
+  itemTitle: (item: T) => string,
   type?: "number" | "text" | "date" | "time" | "email" | "password" | "textarea" | "search" | "tel" | "file" | "url" | "datetime-local",
   placeholder?: string,
   class?: string,
@@ -16,15 +19,14 @@ const props = defineProps<{
   rules?: string[] | ((value: string) => string | boolean)[],
   density?: "comfortable" | "compact" | "default",
   hideDetails?: boolean,
-  modelValue?: any
-  message?: string
-  readonly?: boolean
+  loading?: boolean,
+  multiple?: boolean,
 }>()
 
 const emit = defineEmits<{
   (e: 'click:appendInner'): void
   (e: 'click:prependInner'): void
-  (e: 'update:modelValue', value: any): void
+  (e: '@update:model-value', value: T | T[]): void
 }>()
 
 const classProps = computed(() => {
@@ -36,8 +38,7 @@ const classProps = computed(() => {
     <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">
       {{ label }} <span v-if="required" class="tw-text-primary">*</span>
     </div>
-    <VTextarea
-      v-if="type == 'textarea'"
+    <VAutocomplete
       variant="outlined"
       :density="props.density ?? 'comfortable'"
       color="primary"
@@ -49,8 +50,13 @@ const classProps = computed(() => {
       v-model="model"
       :rules="rules"
       :hide-details="hideDetails"
-      :messages="message"
-      :readonly="readonly"
+      :items="items"
+      item-props
+      :item-title="itemTitle"
+      return-object
+      :loading="loading"
+      :multiple="multiple"
+      @update:model-value="v => emit('@update:model-value', v)"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
@@ -58,31 +64,7 @@ const classProps = computed(() => {
       <template v-slot:prepend-inner v-if="prependInnerIcon">
         <BIcon :icon="prependInnerIcon" @click="emit('click:appendInner')"></BIcon>
       </template>
-    </VTextarea>
-    <VTextField
-      v-else
-      variant="outlined"
-      :density="props.density ?? 'comfortable'"
-      color="primary"
-      label=""
-      :required="required"
-      :type="type"
-      :placeholder="placeholder"
-      :clearable="clearable"
-      v-model="model"
-      :rules="rules"
-      :hide-details="hideDetails"
-      @update:model-value="model => $emit('update:modelValue', model)"
-      :messages="message"
-      :readonly="readonly"
-    >
-      <template v-slot:append-inner v-if="appendInnerIcon">
-        <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
-      </template>
-      <template v-slot:prepend-inner v-if="prependInnerIcon">
-        <BIcon :icon="prependInnerIcon" @click="emit('click:appendInner')"></BIcon>
-      </template>
-    </VTextField>
+    </VAutocomplete>
   </div>
 </template>
 <style scoped>

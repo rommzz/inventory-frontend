@@ -4,15 +4,16 @@ import BDialog from '@/components/BDialog.vue';
 import BIcon from '@/components/BIcon.vue';
 import BTable from '@/components/BTable.vue';
 import type { BTableQuery } from '@/components/types/BTable';
-import type { MetaData } from '@/utils/apis/http';
-import type { InventoryItem, Supplier } from '@/utils/apis/models/model';
-import { reactive } from 'vue';
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useItemStore } from '../stores';
-import DFileImport from '../components/dialogs/DFileImport.vue';
 import { formatIDR } from '@/plugin/helpers';
+import type { MetaData } from '@/utils/apis/http';
+import type { InventoryItem } from '@/utils/apis/models/model';
+import type { InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
 import moment from 'moment';
+import { onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import DFileImport from '../components/dialogs/DFileImport.vue';
+import { useItemStore } from '../stores';
+import DFilterItem from '../components/dialog/DFilterItem.vue';
 const router = useRouter();
 const store = useItemStore();
 
@@ -20,12 +21,13 @@ let query = reactive<BTableQuery>({
 	limit: 10,
 	offset: 0,
 })
-
+let filter = reactive<InventoryItemFilter>({})
 const isLoading = ref<boolean>(false)
 const isDeleting = ref<boolean>(false)
 const metaData = ref<MetaData>({});
 const items = ref<InventoryItem[]>([]);
 
+const filterDialog = ref<boolean>(false)
 const importDialog = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const deleteDialogData = ref<InventoryItem | null>(null)
@@ -37,7 +39,7 @@ const onDelete = (item: InventoryItem) => {
 
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
-	router.push({path: '/data/supplier', query})
+	router.push({path: '/data/item', query})
 	getItems()
 }
 
@@ -66,6 +68,12 @@ const deleteItems = () => {
 	});
 }
 
+const onApply = (v: InventoryItemFilter): void => {
+	console.log(v);
+	Object.assign(filter, v)
+	console.log(filter.brand?.values);
+}
+
 onMounted(() => {
   getItems();
 	const {limit, offset} = router.currentRoute.value.query
@@ -81,9 +89,9 @@ onMounted(() => {
 			search-placeholder="cari barang"
 			:displayed-total="items.length"
 			@change:query="v => onChangeQuery(v)"
+			@click:filter="filterDialog = true"
     >
 			<template v-slot:action:group>
-				<BButton label="Impor Barang" prepend-icon="cloud_upload" variant="outlined" prepend-icon-color="primary" @click="importDialog = true"/>
 				<BButton
 					label="Barang Baru"
 					prepend-icon="add" 
@@ -132,8 +140,8 @@ onMounted(() => {
 							{{ moment(item.created_at).format('d MMM yyyy') }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
-							<BIcon @click="onDelete(item)" icon="delete" color="error" class="tw-mr-8"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/data/item/' + item.id)"></BIcon>
+							<BIcon @click="onDelete(item)" icon="delete" color="error" class="tw-mr-8" button-color="errorContainer"></BIcon>
+							<BIcon icon="edit_square" color="warning" @click="router.push('/data/item/' + item.id)" button-color="warningContainer"></BIcon>
 						</td>
 					</tr>
 				</thead>
@@ -148,7 +156,7 @@ onMounted(() => {
 		v-model="deleteDialog"
 		:persistent="isDeleting"
 	>
-		<div class="tw-px-5">
+		<div class="">
 			<p class="tw-text-onSurfaceVariant tw-text-sm">
 				Proses penghapusan barang dengan nama <b>“{{deleteDialogData?.name}}”</b> akan mengakibatkan data tersebut tidak dapat dikembalikan.
 			</p>
@@ -158,4 +166,5 @@ onMounted(() => {
 			</div>
 		</div>
 	</BDialog>
+	<DFilterItem :filter="filter" v-model="filterDialog" @apply="onApply"></DFilterItem>
 </template>

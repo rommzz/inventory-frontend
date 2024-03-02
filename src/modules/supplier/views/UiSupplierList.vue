@@ -9,6 +9,7 @@ import type { Supplier } from '@/utils/apis/models/model';
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSupplierStore } from '../stores';
+import type { InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
 
 const router = useRouter();
 const store = useSupplierStore();
@@ -17,6 +18,8 @@ let query = reactive<BTableQuery>({
 	limit: 10,
 	offset: 0,
 })
+
+let filter = reactive<InventoryItemFilter>({})
 const suppliers = ref<Supplier[]>([]);
 const isLoading = ref<boolean>(false);
 const isDeleting = ref<boolean>(false);

@@ -133,15 +133,17 @@ const createSupplier = async (form: InventoryItemForm) => {
 <template>
   <VForm class="tw-bg-white tw-rounded-xl tw-p-5 tw-shadow" ref="form" @submit.prevent>
     <div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
-      <BTextField v-model="sku" label="SKU" placeholder="SKU Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]"></BTextField>
-      <BTextField v-model="name" label="Nama" placeholder="Nama Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]" ></BTextField>
+      <BTextField required v-model="sku" label="SKU" placeholder="SKU Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]"></BTextField>
+      <BTextField required v-model="name" label="Nama" placeholder="Nama Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]" ></BTextField>
     </div>
     <div class=" tw-grid tw-grid-cols-3 tw-gap-x-5">
-      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Merk" :items="listBrand" v-model="selectedBrand" :item-title="(item) => item.name" placeholder="Merk Barang"/>
-      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Pemasok" :items="listSupplier" v-model="selectedSupplier" :item-title="(item) => item.name ?? ''" placeholder="Pemasok Barang" :loading="supplierLoading"/>
-      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Satuan" :items="listUnit" :loading="unitLoading" v-model="selectedUnit" :item-title="(item) => item.name" placeholder="Satuan Barang"/>
-      <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" v-model.number="purchasePrice" label="Harga Beli" placeholder="Harga Beli Barang" :message="purchasePrice ? formatIDR(purchasePrice) : undefined"/>
-      <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" v-model.number="initalStock" label="Stok" placeholder="Stok awal"></BTextField>
+      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Merk" :items="listBrand" required v-model="selectedBrand" :item-title="(item) => item.name" placeholder="Merk Barang"/>
+      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Pemasok" :items="listSupplier" required v-model="selectedSupplier" :item-title="(item) => item.name ?? ''" placeholder="Pemasok Barang" :loading="supplierLoading"/>
+      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Satuan" :items="listUnit" :loading="unitLoading" required v-model="selectedUnit" :item-title="(item) => item.name" placeholder="Satuan Barang"/>
+    </div>
+    <div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
+      <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" required v-model.number="purchasePrice" label="Harga Beli" placeholder="Harga Beli Barang" :message="purchasePrice ? formatIDR(purchasePrice) : undefined"/>
+      <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" required v-model.number="initalStock" label="Stok" placeholder="Stok awal"></BTextField>
     </div>
     <div class="tw-flex tw-justify-end tw-gap-5">
       <BButton :disabled="true" variant="outlined" label="Batalkan"></BButton>

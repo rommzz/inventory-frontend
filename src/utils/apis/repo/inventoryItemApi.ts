@@ -1,8 +1,15 @@
 import endpoints from "../endpoints";
 import type { ResponseV1 } from "../http";
 import http from "../http";
-import type { InventoryItem } from "../models/model";
+import type { Brand, InventoryItem, Supplier } from "../models/model";
 import type { InventoryItemForm } from "../models/request";
+
+export type InventoryItemFilter = {
+  startDate?: string,
+  endDate?: string,
+  brand?: Brand[],
+  supplier?: Supplier
+}
 
 export default {
   getInventoryItems: async (query?: Record<string, any>): Promise<ResponseV1> => {
