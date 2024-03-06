@@ -8,7 +8,7 @@ export type InventoryItemFilter = {
   startDate?: string,
   endDate?: string,
   brand?: Brand[],
-  supplier?: Supplier
+  supplier?: Supplier[]
 }
 
 export default {

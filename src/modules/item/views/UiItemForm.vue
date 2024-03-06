@@ -133,7 +133,7 @@ const createSupplier = async (form: InventoryItemForm) => {
 <template>
   <VForm class="tw-bg-white tw-rounded-xl tw-p-5 tw-shadow" ref="form" @submit.prevent>
     <div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
-      <BTextField required v-model="sku" label="SKU" placeholder="SKU Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]"></BTextField>
+      <BTextField required v-model="sku" label="SKU" placeholder="SKU Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]" clearable></BTextField>
       <BTextField required v-model="name" label="Nama" placeholder="Nama Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]" ></BTextField>
     </div>
     <div class=" tw-grid tw-grid-cols-3 tw-gap-x-5">

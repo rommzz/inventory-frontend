@@ -31,13 +31,11 @@ const getListSupplier = () => {
 }
 
 const apply = (): void => {
-  console.log(data);
-  
   emit('apply', data);
   dialog.value = false
 }
 const reset = (): void => {
-  Object.assign(data, props.filter);
+  Object.assign(data, props.filter)
   console.log(data, props.filter);
 }
 

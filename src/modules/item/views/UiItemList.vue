@@ -45,7 +45,7 @@ const onChangeQuery = (q: BTableQuery) => {
 
 const getItems = async () => {
 	isLoading.value = true;
-	store.getListItem(query).then((res) => {
+	store.getListItem(query, filter).then((res) => {
 		items.value = res.data;
 		metaData.value = res.meta ?? {};
 	}).catch((err) => {
@@ -69,9 +69,9 @@ const deleteItems = () => {
 }
 
 const onApply = (v: InventoryItemFilter): void => {
-	console.log(v);
 	Object.assign(filter, v)
-	console.log(filter.brand?.values);
+	console.log(filter);
+	getItems()
 }
 
 onMounted(() => {
@@ -137,7 +137,7 @@ onMounted(() => {
 							{{ item.initial_stock }}
 						</td>
 						<td>
-							{{ moment(item.created_at).format('d MMM yyyy') }}
+							{{ moment(item.created_at).format('DD MMM yyyy') }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
 							<BIcon @click="onDelete(item)" icon="delete" color="error" class="tw-mr-8" button-color="errorContainer"></BIcon>
@@ -166,5 +166,9 @@ onMounted(() => {
 			</div>
 		</div>
 	</BDialog>
-	<DFilterItem :filter="filter" v-model="filterDialog" @apply="onApply"></DFilterItem>
+	<DFilterItem
+		:filter="filter"
+		v-model="filterDialog"
+		@apply="onApply"
+	/>
 </template>
