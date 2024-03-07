@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import BButton from '@/components/BButton.vue';
-import BInputImage from '@/components/BInputImage.vue';
 import BTextField from '@/components/BTextField.vue';
-import { onMounted, reactive, ref } from 'vue';
-import { useSupplierStore } from '../stores';
-import type { SupplierForm } from '@/utils/apis/models/request';
 import router from '@/router';
 import type { Supplier } from '@/utils/apis/models/model';
+import type { SupplierForm } from '@/utils/apis/models/request';
+import { onMounted, reactive, ref } from 'vue';
+import { useCustomerStore } from '../stores';
 
 const props = defineProps<{
   id?: string;
 }>();
 
-const store = useSupplierStore();
+const store = useCustomerStore();
 type Form = {
   company?: string;
   name?: string;
@@ -92,9 +91,8 @@ const createSupplier = () => {
     phone: formField.phone,
     address: formField.address,
   }
-  store.addSupplier(supplierForm).then((res) => {
-    console.log(res);
-    router.push('/data/supplier/' + res.id);
+  store.addCustomer(supplierForm).then((res) => {
+    router.push('/data/customer/' + res.id);
   }).catch((err) => {
     console.error(err);
   }).finally(() => {
@@ -106,22 +104,15 @@ const createSupplier = () => {
 <template>
   <VForm class="tw-bg-white tw-rounded-xl tw-p-5 tw-shadow" ref="form">
     <div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
-      <BTextField v-model="formField.company" label="Perusahaan" placeholder="Nama Perusahaan Pemasok" :rules="[ v => !!v || 'Nama perusahaan harus diisi', ]"></BTextField>
-      <BTextField v-model="formField.name" label="Nama" placeholder="Nama Pemasok"></BTextField>
-      <BTextField v-model="formField.email" label="Email" placeholder="Email Pemasok"></BTextField>
-      <BTextField v-model="formField.phone" label="No. Telephone" type="tel" placeholder="No. Telepon Pemasok"></BTextField>
+      <BTextField v-model="formField.name" label="Pelanggan" placeholder="Nama Pelanggan" :rules="[ v => !!v || 'Nama pelanggan wajib diisi', ]" required/>
+      <BTextField v-model="formField.company" label="Perusahaan" placeholder="Nama PerusahaanPelanggan"></BTextField>
+      <BTextField v-model="formField.email" label="Email" placeholder="Email Pelangan"></BTextField>
+      <BTextField v-model="formField.phone" label="No. Telephone" type="tel" placeholder="No. Telepon Pelanggan"></BTextField>
     </div>
-    <BTextField label="Alamat" type="textarea" placeholder="Alamat Pemasok" ></BTextField>
-    <div>
-      <h5 class="tw-text-onSurface tw-mb-1 tw-text-sm tw-font-semibold">logo</h5>
-      <h5 class="tw-text-xs tw-text-onSurfaceVariant tw-mb-3">
-        Anda dapat mengunggah gambar logo perusahaan pemasok untuk ditampilkan.
-      </h5>
-      <BInputImage v-model="formField.logo"/>
-    </div>
+    <BTextField label="Alamat" type="textarea" placeholder="Alamat Pelanggan" ></BTextField>
     <div class="tw-flex tw-justify-end tw-gap-5">
       <BButton :disabled="true" variant="outlined" label="Batalkan"></BButton>
-      <BButton :is-loading="isLoading" :label="`Simpan ${isEdit ? 'Perubahan  ' : 'Pemasok'}`" @click="submit()"></BButton>
+      <BButton :is-loading="isLoading" :label="`Simpan ${isEdit ? 'Perubahan  ' : 'Pelanggan'}`" @click="submit()"></BButton>
     </div>
   </VForm>
 </template>

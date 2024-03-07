@@ -20,5 +20,6 @@ export default {
     supplier: `${master}/supplier`,
     inventoryItem: `${master}/inventory-item`,
     brand: `${master}/inventory-brand`,
+    customer: `${master}/customer`,
   }
 }

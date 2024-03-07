@@ -54,3 +54,12 @@ export type Unit = {
   name: string;
   description: string;
 } & TimeStamp
+
+export type Customer = {
+  id: string;
+  name: string;
+  phone?: string;
+  address?: string;
+  company_name?: string;
+  email?: string
+} & TimeStamp

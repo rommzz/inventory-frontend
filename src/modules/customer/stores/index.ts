@@ -1,22 +1,22 @@
 import type { ResponseV1 } from '@/utils/apis/http'
-import type { Supplier } from '@/utils/apis/models/model'
-import type { SupplierForm } from '@/utils/apis/models/request'
-import supplierApi from '@/utils/apis/repo/supplierApi'
+import type { Customer, Supplier } from '@/utils/apis/models/model'
+import type { CustomerForm } from '@/utils/apis/models/request'
+import customerApi from '@/utils/apis/repo/customerApi'
 import { defineStore } from 'pinia'
 
-export const useSupplierStore = defineStore('supplierStore', () => {
-  const getListSupplier = async (query?: Record<string, any>): Promise<ResponseV1<Supplier[]>> => {
+export const useCustomerStore = defineStore('customerStore', () => {
+  const getListCustomer = async (query?: Record<string, any>): Promise<ResponseV1<Customer[]>> => {
     try {
-      const res = await supplierApi.getSuppliers(query)
+      const res = await customerApi.getCustomers(query)
       return res
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
-  const addSupplier = async (supplier: SupplierForm): Promise<Supplier> => {
+  const addCustomer = async (customer: CustomerForm): Promise<Customer> => {
     try {
-      const res = await supplierApi.addSupplier(supplier)
+      const res = await customerApi.addCustomer(customer)
       return res
     } catch (error) {
       console.log('error', error);
@@ -25,7 +25,7 @@ export const useSupplierStore = defineStore('supplierStore', () => {
   }
   const getSupplier = async (supplierId: string): Promise<Supplier> => {
     try {
-      const res = await supplierApi.getSupplier(supplierId)
+      const res = await customerApi.getSupplier(supplierId)
       return res
     } catch (error) {
       console.log('error', error);
@@ -36,7 +36,7 @@ export const useSupplierStore = defineStore('supplierStore', () => {
     console.log(supplier.id);
     
     try {
-      const res = await supplierApi.editSupplier(supplier)
+      const res = await customerApi.editSupplier(supplier)
       return res
     } catch (error) {
       console.log('error', error);
@@ -45,15 +45,15 @@ export const useSupplierStore = defineStore('supplierStore', () => {
   }
   const deleteSupplier = async (supplierId: string): Promise<void> => {
     try {
-      await supplierApi.deleteSupplier(supplierId)
+      await customerApi.deleteSupplier(supplierId)
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
   return {
-    getListSupplier,
-    addSupplier,
+    getListCustomer,
+    addCustomer,
     getSupplier,
     editSupplier,
     deleteSupplier,

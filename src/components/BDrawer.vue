@@ -35,7 +35,7 @@ const menus: Menu[] = [
       {title: 'Daftar Pemasok', routeName: 'supplier-list'},
       {title: 'Kelola Barang', routeName: 'item-list'},
       {title: 'Daftar Harga Barang',},
-      {title: 'Daftar Pelanggan',},
+      {title: 'Daftar Pelanggan', routeName: 'customer-list'},
       {title: 'Promo Member',},
     ]
   },

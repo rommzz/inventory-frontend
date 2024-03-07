@@ -1,24 +1,22 @@
 import endpoints from "../endpoints";
 import http, { type ResponseV1 } from "../http";
-import type { Supplier } from "../models/model";
-import type { SupplierForm } from "../models/request";
+import type { Customer, Supplier } from "../models/model";
+import type { CustomerForm } from "../models/request";
 
 export default {
-  addSupplier: async (supplier: SupplierForm): Promise<Supplier> => {  
+  addCustomer: async (customer: CustomerForm): Promise<Customer> => {  
     try {
-      const res = await http.post<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier, supplier)
-      console.log(res);
-      
+      const res = await http.post<ResponseV1<Customer>>('/v1' + endpoints.master.customer, customer)
       return res.data.data!
     } catch (error) {
       console.log('error', error);
       throw error
     }
   },
-  getSuppliers: async (query?: Record<string, any>): Promise<ResponseV1> => {  
+  getCustomers: async (query?: Record<string, any>): Promise<ResponseV1> => {  
     try {
-      const res = await http.get<ResponseV1<Supplier[]>>('/v1' + endpoints.master.supplier, {
-        // params: query
+      const res = await http.get<ResponseV1<Customer[]>>('/v1' + endpoints.master.customer, {
+        params: query
       })
       return res.data
     } catch (error) {
