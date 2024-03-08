@@ -1,23 +1,20 @@
-# Use an official Node runtime as the base image
-FROM node:16-alpine
+# stage 1
+FROM node:20-alpine as b
+WORKDIR app
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
-
-# Copy the rest of the application code to the working directory
 COPY . .
+RUN npm run build:dev
 
-# Build the Vue project for production
-RUN npm run build
 
-# Expose the port your app runs on
-EXPOSE 3000
-
-# Define the command to run your app using npm
-CMD [ "npm", "run", "serve" ]
+# stage 2
+FROM node:20-alpine
+WORKDIR app
+RUN mkdir dist
+RUN apk add --no-cache tzdata
+ENV TZ Asia/Jakarta
+COPY --from=b /app/dist dist/
+RUN npm install -g serve
+EXPOSE 8080
+ENTRYPOINT ["serve","-s","dist","-l","8080"]
