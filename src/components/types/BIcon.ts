@@ -2116,6 +2116,7 @@ export type BIconName = "123" |
       "unfold_less_double" |
       "unfold_more" |
       "unfold_more_double" |
+      "universal_currency_alt" |
       "unpublished" |
       "unsubscribe" |
       "upcoming" |

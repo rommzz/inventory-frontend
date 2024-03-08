@@ -22,13 +22,27 @@ export const customerRoutes: RouteChildren[] = [
   },
   {
     path: ':id',
+    name: 'customer-detail',
+    props: true,
+    meta: {
+      breadcrumbs: [
+        {
+          title: 'Detail pelanggan',
+          path: ':id'
+        }
+      ],
+    },
+    component: () => import('../views/UiCustomerDetail.vue'),
+  }, 
+  {
+    path: ':id/edit',
     name: 'customer-edit',
     props: true,
     meta: {
       breadcrumbs: [
         {
           title: 'Edit pelanggan',
-          path: ':id'
+          path: ':id/edit'
         }
       ],
     },

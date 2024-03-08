@@ -1,5 +1,5 @@
 import type { ResponseV1 } from '@/utils/apis/http'
-import type { Customer, Supplier } from '@/utils/apis/models/model'
+import type { Customer } from '@/utils/apis/models/model'
 import type { CustomerForm } from '@/utils/apis/models/request'
 import customerApi from '@/utils/apis/repo/customerApi'
 import { defineStore } from 'pinia'
@@ -23,29 +23,27 @@ export const useCustomerStore = defineStore('customerStore', () => {
       throw error
     }
   }
-  const getSupplier = async (supplierId: string): Promise<Supplier> => {
+  const getCustomer = async (customerId: string): Promise<Customer> => {
     try {
-      const res = await customerApi.getSupplier(supplierId)
+      const res = await customerApi.getCustomer(customerId)
       return res
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
-  const editSupplier = async (supplier: Supplier): Promise<Supplier> => {
-    console.log(supplier.id);
-    
+  const editCustomer = async (customer: Customer): Promise<void> => {
     try {
-      const res = await customerApi.editSupplier(supplier)
+      const res = await customerApi.editCustomer(customer)
       return res
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
-  const deleteSupplier = async (supplierId: string): Promise<void> => {
+  const deleteCustomer = async (customerId: string): Promise<void> => {
     try {
-      await customerApi.deleteSupplier(supplierId)
+      await customerApi.deleteCustomer(customerId)
     } catch (error) {
       console.log('error', error);
       throw error
@@ -54,8 +52,8 @@ export const useCustomerStore = defineStore('customerStore', () => {
   return {
     getListCustomer,
     addCustomer,
-    getSupplier,
-    editSupplier,
-    deleteSupplier,
+    getCustomer,
+    editCustomer,
+    deleteCustomer,
   }
 })

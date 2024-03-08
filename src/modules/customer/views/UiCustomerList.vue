@@ -5,7 +5,7 @@ import BIcon from '@/components/BIcon.vue';
 import BTable from '@/components/BTable.vue';
 import type { BTableQuery } from '@/components/types/BTable';
 import type { MetaData } from '@/utils/apis/http';
-import type { Customer, Supplier } from '@/utils/apis/models/model';
+import type { Customer } from '@/utils/apis/models/model';
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCustomerStore } from '../stores';
@@ -24,14 +24,14 @@ const isDeleting = ref<boolean>(false);
 const metaData = ref<MetaData>({});
 
 const deleteDialog = ref<boolean>(false)
-const deleteDialogData = ref<Supplier | null>(null)
+const deleteDialogData = ref<Customer | null>(null)
 
-const onDelete = (supplier: Supplier) => {
-	deleteDialogData.value = supplier;
+const onDelete = (customer: Customer) => {
+	deleteDialogData.value = customer;
 	deleteDialog.value = true;
 }
 
-const getSuppliers = async () => {
+const getListCustomer = async () => {
 	isLoading.value = true;
 	store.getListCustomer(query).then((res) => {
 		console.log(res);
@@ -44,26 +44,26 @@ const getSuppliers = async () => {
 	});
 }
 
-const deleteSupplier = async (supplierId: string) => {
+const deleteCustomer = async (customerId: string) => {
 	isDeleting.value = true
 	try {
-		await store.deleteSupplier(supplierId)
+		await store.deleteCustomer(customerId)
 	} catch (error) {
 		console.log(error);
 	}
 	isDeleting.value = false
 	deleteDialog.value = false
-	getSuppliers()
+	getListCustomer()
 }
 
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
-	router.push({path: '/data/supplier', query})
-	getSuppliers()
+	router.push({path: '/data/customer', query})
+	getListCustomer()
 }
 
 onMounted(() => {
-  getSuppliers();
+  getListCustomer();
 	const {limit, offset} = router.currentRoute.value.query
 	Object.assign(query, {limit: limit ?? 10, offset: offset ?? 0})
 	console.log(query);
@@ -90,25 +90,30 @@ onMounted(() => {
 							{{ header }}
 						</th>
 					</tr>
-					<tr v-for="customer, index in customers" :key="index" class="tw-border-t tw-border-outlineVariant tw-group">
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-flex tw-items-center tw-gap-2">
+					<tr
+						v-for="customer, index in customers"
+						:key="index"
+						class="tw-border-t tw-border-outlineVariant tw-group hover:tw-bg-surface"
+						@click="router.push(`/data/customer/${customer.id}`)"
+					>
+						<td class="tw-py-4 tw-pl-4 ">
 							{{ customer.name }}
 						</td>
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+						<td class="tw-py-4">
 							{{ customer.email == '' ? '-' : customer.email }}
 						</td>
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+						<td class="tw-py-4">
 							{{ customer.phone == '' ? '-' : customer.phone }}
 						</td>
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+						<td class="tw-py-4">
 							{{ customer.company_name == '' ? '-' : customer.company_name }}
 						</td>
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+						<td class="tw-py-4 tw-w-1/4">
 							{{ customer.address == '' ? '-' : customer.address }}
 						</td>
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
-							<BIcon @click="onDelete(customer)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/data/customer/' + customer.id)" button-color="warningContainer"></BIcon>
+						<td class="tw-py-4 tw-pr-4 [&>*]:hover:tw-cursor-pointer">
+							<BIcon @click.stop="onDelete(customer)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
+							<BIcon icon="edit_square" color="warning" @click="router.push(`/data/customer/${customer.id}/edit`)" button-color="warningContainer"></BIcon>
 						</td>
 					</tr>
 				</thead>
@@ -120,13 +125,13 @@ onMounted(() => {
 		v-model="deleteDialog"
 		:persistent="isDeleting"
 	>
-		<div class="tw-px-5">
+		<div class="">
 			<p class="tw-text-onSurfaceVariant tw-text-sm">
 				Proses penghapusan pemasok dengan nama <b>“{{deleteDialogData?.name}}”</b> akan mengakibatkan data tersebut tidak dapat dikembalikan.
 			</p>
 			<div class="tw-p-5 tw-text-right tw-pt-8">
 				<BButton class="tw-mr-2" label="Batalkan" @click="deleteDialog = false"></BButton>
-				<BButton @click="deleteSupplier(deleteDialogData!.id!)" :is-loading="isDeleting"  variant="text" color="danger" label="Lanjutkan"></BButton>
+				<BButton @click="deleteCustomer(deleteDialogData!.id!)" :is-loading="isDeleting"  variant="text" color="danger" label="Lanjutkan"></BButton>
 			</div>
 		</div>
 	</BDialog>

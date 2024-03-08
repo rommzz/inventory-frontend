@@ -1,6 +1,6 @@
 import endpoints from "../endpoints";
 import http, { type ResponseV1 } from "../http";
-import type { Customer, Supplier } from "../models/model";
+import type { Customer } from "../models/model";
 import type { CustomerForm } from "../models/request";
 
 export default {
@@ -24,27 +24,27 @@ export default {
       throw error
     }
   },
-  getSupplier: async (supplierId: string): Promise<Supplier> => {  
+  getCustomer: async (customerId: string): Promise<Customer> => {  
     try {
-      const res = await http.get<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier + '/' + supplierId)
+      const res = await http.get<ResponseV1<Customer>>('/v1' + endpoints.master.customer + '/' + customerId)
       return res.data.data!
     } catch (error) {
       console.log('error', error);
       throw error
     }
   },
-  editSupplier: async (supplier: Supplier): Promise<Supplier> => {  
+  editCustomer: async (customer: Customer): Promise<void> => {  
     try {
-      const res = await http.patch<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier + '/' + supplier.id, supplier)
+      const res = await http.put<ResponseV1>('/v1' + endpoints.master.customer + '/' + customer.id, customer)
       return res.data.data!
     } catch (error) {
       console.log('error', error);
       throw error
     }
   },
-  deleteSupplier: async (supplierId: string): Promise<void> => {  
+  deleteCustomer: async (customerId: string): Promise<void> => {  
     try {
-      await http.delete<ResponseV1<Supplier>>('/v1' + endpoints.master.supplier + '/' + supplierId)
+      await http.delete<ResponseV1>('/v1' + endpoints.master.customer + '/' + customerId)
     } catch (error) {
       console.log('error', error);
       throw error
