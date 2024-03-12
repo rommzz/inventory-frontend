@@ -12,14 +12,7 @@ const props = defineProps<{
 }>();
 
 const store = useCustomerStore();
-type Form = {
-  company?: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  logo?: string;
-}
+
 let customer = ref<Customer>()
 const isLoading = ref<boolean>(false);
 const isEdit = props.id !== undefined;
@@ -121,7 +114,7 @@ const customerInfo = computed<{
               class="tw-flex tw-items-center tw-gap-4 tw-p-4"
             >
               <BIcon :icon="cust.icon"></BIcon>
-              <span>{{ cust?.data ?? '-' }}</span>
+              <span>{{ cust?.data == '' ? '-' : cust.data }}</span>
             </div>
           </div>
         </CustomerDetailCard>

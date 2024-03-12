@@ -41,7 +41,7 @@ const routes: RouteRecordRaw[] = [
     path: '/data/supplier',
     meta: {
       requiredAuth: true,
-      drawerTitle: 'Daftar Pemasok',
+      drawerTitle: 'Manajemen Data',
       breadcrumbs: [
         {title: 'Daftar pemasok', path: '/data/supplier'}
       ] as Breadcrumbs[],
