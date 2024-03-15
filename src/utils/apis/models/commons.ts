@@ -3,3 +3,5 @@ export type TimeStamp = {
   updated_at?: string
   deleted_at?: string
 }
+
+export type PaymentMethod = 'cash' | 'transfer' | 'ewallet' | 'qris' | 'other'

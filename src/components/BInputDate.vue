@@ -7,7 +7,9 @@ const props = defineProps<{
   label?: string,
   maxDate?: string
   minDate?: string
+  rules?: string[] | ((value: string) => string | boolean)[],
 }>()
+
 onMounted(() => {
   let date = document.querySelector('.date input');
   date?.setAttribute('max', props.maxDate ?? '')
@@ -16,7 +18,13 @@ onMounted(() => {
 })
 </script>
 <template>
-  <BTextField class="date" :label="label ?? ''" v-model="modelValue" type="date"/>
+  <BTextField
+    class="date"
+    :label="label ?? ''"
+    v-model="modelValue"
+    type="date"
+    :rules="rules"
+  />
 </template>
 <style scoped>
 .date :deep(input) {

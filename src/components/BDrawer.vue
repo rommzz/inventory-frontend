@@ -59,6 +59,7 @@ const menus: Menu[] = [
     title: 'Pembelian',
     icon: 'archive',
     iconColor: 'info',
+    route: '/purchase',
   },
   {
     title: 'Penjualan',

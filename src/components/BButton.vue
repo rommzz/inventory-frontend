@@ -57,7 +57,7 @@ const classProps = computed(() => {
     :loading="isLoading"
     @click="$emit('click')"
     :type="type"
-    :disable="disabled"
+    :disabled="props.disabled"
     :block="fullWidth"
     :color="color"
     rounded="pill"
