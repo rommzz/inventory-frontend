@@ -9,6 +9,8 @@ const props = defineProps<{
   color?: keyof typeof pallete.schemes.light,
   class?: string
   filled?: boolean
+  buttonColor?: keyof typeof pallete.schemes.light,
+
 }>()
 
 const iconSize = computed(() => {
@@ -27,10 +29,11 @@ const iconSize = computed(() => {
 
 </script>
 <template>
-  <span
-    :class="`material-symbols-outlined tw-text-onSurfaceVariant tw-max-w-fit ${props.class ?? ''} ${props.color ? 'text-' + props.color : ''}`"
-    :style="`font-variation-settings: 'FILL' ${filled ? 1 : 0}; font-size: ${props.size}px;`"
+  <div
+    v-ripple="buttonColor != undefined"
+    :class="`material-symbols-outlined tw-text-onSurfaceVariant tw-max-w-fit ${props.class ?? ''} ${props.color ? 'text-' + props.color : ''} ${buttonColor ? 'tw-mr-2 tw-rounded-full tw-p-2' : ''}`"
+    :style="`font-variation-settings: 'FILL' ${filled ? 1 : 0}; font-size: ${props.size}px; background: ${props.buttonColor ? pallete.schemes.light[props.buttonColor] : 'unset'}`"
   >
     {{ props.icon }}
-  </span>
+  </div>
 </template>

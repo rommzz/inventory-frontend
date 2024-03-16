@@ -5,11 +5,12 @@
   "type": "module",
   "main": "./out/main/index.js",
   "scripts": {
-    "dev": "vite --port 5555 --mode staging --host",
+    "dev": "vite --port 5000 --mode staging --host",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
+    "build:dev": "vite build --mode development",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/"
@@ -18,6 +19,7 @@
     "@mdi/font": "^7.4.47",
     "axios": "^1.6.5",
     "material-symbols": "^0.14.7",
+    "moment": "^2.30.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.19",
     "vue-router": "^4.2.5",

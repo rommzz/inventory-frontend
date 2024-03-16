@@ -39,11 +39,12 @@ export const supplierRoutes: RouteChildren[] = [
 const routes: RouteRecordRaw[] = [
   {
     path: '/data/supplier',
-    // component: () => import('../views/LoginView.vue'),
     meta: {
       requiredAuth: true,
-      drawerTitle: 'Daftar Pemasok',
-      breadcrumbs: [{title: 'Manajemen Data'}, {title: 'Daftar pemasok', path: '/data/supplier'}] as Breadcrumbs[],
+      drawerTitle: 'Manajemen Data',
+      breadcrumbs: [
+        {title: 'Daftar pemasok', path: '/data/supplier'}
+      ] as Breadcrumbs[],
     },
     children: [
       ...supplierRoutes

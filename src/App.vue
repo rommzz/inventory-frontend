@@ -3,14 +3,10 @@ import { computed, ref } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import BDrawer from './components/BDrawer.vue';
 import BHeader from './components/BHeader.vue';
-import { onMounted } from 'vue';
 
 const drawer = ref<boolean>(true)
 const route = useRoute();
 const showLayout = computed<boolean>(() => route.name !== 'Login' && route.name !== undefined) 
-onMounted(() => {
-  console.log(route.name);
-})
 
 </script>
 <template>
@@ -19,7 +15,9 @@ onMounted(() => {
     <BDrawer v-model="drawer" />
     <v-main class="tw-ml-16 tw-mt-10 tw-mr-10">
       <BHeader @click:drawer="drawer = !drawer"/>
-      <RouterView class="tw-mt-12"/>
+      <div class="tw-mt-12">
+        <RouterView/>
+      </div>
     </v-main>
   </v-layout>
   <RouterView v-else/>

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { defineModel } from 'vue';
-import type { BIconName } from './types/BIcon';
+import { computed, defineModel } from 'vue';
 import BIcon from './BIcon.vue';
+import type { BIconName } from './types/BIcon';
 
-const model = defineModel<string>()
+const model = defineModel()
 const props = defineProps<{
   label: string,
   type?: "number" | "text" | "date" | "time" | "email" | "password" | "textarea" | "search" | "tel" | "file" | "url" | "datetime-local",
@@ -16,12 +15,16 @@ const props = defineProps<{
   prependInnerIcon?: BIconName,
   rules?: string[] | ((value: string) => string | boolean)[],
   density?: "comfortable" | "compact" | "default",
-  hideDetails?: boolean
+  hideDetails?: boolean,
+  modelValue?: any
+  message?: string
+  readonly?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'click:appendInner'): void
   (e: 'click:prependInner'): void
+  (e: 'update:modelValue', value: any): void
 }>()
 
 const classProps = computed(() => {
@@ -30,7 +33,9 @@ const classProps = computed(() => {
 
 <template>
   <div :class="classProps">
-    <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">{{ label }}</div>
+    <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">
+      {{ label }} <span v-if="required" class="tw-text-primary">*</span>
+    </div>
     <VTextarea
       v-if="type == 'textarea'"
       variant="outlined"
@@ -44,6 +49,8 @@ const classProps = computed(() => {
       v-model="model"
       :rules="rules"
       :hide-details="hideDetails"
+      :messages="message"
+      :readonly="readonly"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
@@ -65,6 +72,9 @@ const classProps = computed(() => {
       v-model="model"
       :rules="rules"
       :hide-details="hideDetails"
+      @update:model-value="model => $emit('update:modelValue', model)"
+      :messages="message"
+      :readonly="readonly"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>

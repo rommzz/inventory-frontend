@@ -1,0 +1,20 @@
+# stage 1
+FROM node:20-alpine as b
+WORKDIR app
+
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build:dev
+
+
+# stage 2
+FROM node:20-alpine
+WORKDIR app
+RUN mkdir dist
+RUN apk add --no-cache tzdata
+ENV TZ Asia/Jakarta
+COPY --from=b /app/dist dist/
+RUN npm install -g serve
+EXPOSE 8080
+ENTRYPOINT ["serve","-s","dist","-l","8080"]

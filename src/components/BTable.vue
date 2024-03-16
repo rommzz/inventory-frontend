@@ -1,20 +1,54 @@
 <script setup lang="ts" generic="T extends {}">
+import { ref, useSlots, watch } from 'vue';
 import BButton from './BButton.vue';
 import BIcon from './BIcon.vue';
 import BTextField from './BTextField.vue';
-import type { BIconName } from './types/BIcon';
+import type { BTableLimit, BTableQuery } from './types/BTable';
 
-defineProps<{
-  perPage: 10 | 15 | 20
+const page = ref<number>(1)
+
+const props = defineProps<{
+  query: BTableQuery
+  search?: string
   totalItems: number
   emptyText?: string
   labelAddButton?: string
-	iconAddButton?: BIconName
+  displayedTotal?: number
+  filter?: boolean
+  searchPlaceholder?: string
 }>()
 
+let debounce = ref();
+
+watch(page, (newPage) => {
+  let newQuery = props.query
+  newQuery.offset = props.query.limit * (newPage - 1),
+  emit('change:query', newQuery)
+})
+
+const changeLimit = (limit: BTableLimit) => {
+  let newQuery = props.query
+  newQuery.limit = limit
+  emit('change:query', newQuery)
+}
 const emit = defineEmits<{
   (event: "click:action"): void;
+  (event: "click:filter"): void;
+  (event: "change:query", value: BTableQuery): void;
 }>()
+const paginataionLength = (): number => {
+  const length: number = Math.ceil(props.totalItems/props.query.limit)
+  return length < 1 ? 1 : length
+}
+const onSearch = (v?: any) => {
+  clearTimeout(debounce.value);
+  debounce.value = setTimeout(() => {
+    let newQuery = props.query
+    newQuery.search = v
+    emit('change:query', newQuery)
+  }, 500);
+}
+const slot = useSlots()
 
 </script>
 <template>
@@ -24,7 +58,7 @@ const emit = defineEmits<{
         <VMenu>
           <template v-slot:activator="{ props }">
             <div class="tw-flex tw-items-center tw-gap-1 px-2 tw-border tw-rounded-lg tw-border-outline hover:tw-cursor-pointer" v-bind="props" >
-              <span>{{ perPage }}</span>
+              <span>{{ query.limit }}</span>
               <BIcon icon="expand_more" size="16"></BIcon>
             </div>
           </template>
@@ -32,25 +66,80 @@ const emit = defineEmits<{
           <v-list-item
               v-for="item, in [10, 15, 20]"
               :key="item"
-              :value="perPage"
+              :value="query.limit"
             >
-              <v-list-item-title>{{ item }}</v-list-item-title>
+              <v-list-item-title @click="changeLimit(item as 10 | 15 | 20)">{{ item }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </VMenu>
-        <BTextField label="" density="compact" placeholder="cari pemasok" class="tw-min-w-52" hide-details prepend-inner-icon="search"></BTextField>
+        <BTextField
+          label=""
+          density="compact"
+          :placeholder="searchPlaceholder ?? 'cari pemasok'"
+          class="tw-min-w-52"
+          hide-details prepend-inner-icon="search"
+          :model-value="props.query.search"
+          @update:model-value="onSearch"
+        />
+        <BButton
+          v-if="filter"
+          label="Filter"
+          prepend-icon="filter_list"
+          prepend-icon-color="primary"
+          variant="outlined"
+          @click="emit('click:filter')"
+        />
       </div>
-      <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
+      <div  v-if="slot['action:group']" class="tw-flex tw-gap-2">
+        <slot name="action:group"/>
+      </div>
+      <template v-else>
+        <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
+      </template>
     </div>
-		<slot/>
-    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm">
-      <span>Menampilkan 1 hingga 10 dari {{ totalItems }} entri</span>
-      <VPagination variant="elevated" density="compact" color="primary" :length="13" rounded="circle" total-visible="5">
-        <!-- <template v-slot:next>
-          <div class="tw-w-8 tw-rounded-full tw-border-surfaceVariant border tw-flex tw-place-items-center tw-h-8">
-            <BIcon icon="chevron_right" color="surfaceVariant" class="tw-mx-auto"></BIcon>
+		<div v-if="totalItems == 0" class="tw-text-center tw-pt-4 tw-pb-6 tw-text-onSurfaceVariant">
+      {{ emptyText || 'Tidak ada data' }}
+    </div>
+    <slot v-else/>
+    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm tw-text-onSurfaceVariant">
+      <span>Menampilkan 1 hingga {{ displayedTotal }} dari {{ totalItems }} entri</span>
+      <VPagination
+        variant="elevated"
+        density="compact"
+        color="primary"
+        :length="paginataionLength()"
+        rounded="circle"
+        total-visible="5"
+        v-model="page"
+      >
+        <template v-slot:item="{page: itemPage, isActive}">
+          <div
+            @click="itemPage != '...' && (page = parseInt(itemPage))"
+            :class="`hover:tw-cursor-pointer tw-h-8 tw-w-8 tw-flex tw-place-items-center tw-justify-center tw-rounded-full tw-border-outlineVariant ${isActive ? 'tw-text-white tw-bg-primary': 'tw-border tw-text-onSurfaceVariant'} `"
+          >
+            {{ itemPage }}
           </div>
-        </template> -->
+        </template>
+        <template v-slot:prev="{onClick, disabled}">
+          <div
+            v-on="!disabled ? { click: onClick } : {}"
+            class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8"
+            :class="{'hover:tw-cursor-default': disabled}"
+          >
+            <BIcon icon="chevron_left" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
+          </div>
+        </template>
+        <template
+          v-slot:next="{onClick, disabled}"
+        >
+          <div
+            v-on="!disabled ? { click: onClick } : {}"
+            class="hover:tw-cursor-pointer tw-w-8 tw-rounded-full tw-border-onSurfaceVariant tw-border tw-flex tw-place-items-center tw-h-8"
+            :class="{'hover:tw-cursor-default': disabled}"
+          >
+            <BIcon icon="chevron_right" color="onSurfaceVariant" class="tw-mx-auto"></BIcon>
+          </div>
+        </template>
       </VPagination>
     </div>
   </div>

@@ -14,6 +14,7 @@ const router = useRouter()
 interface Menu {
   title: string,
   icon: BIconName,
+  route?: string,
   children?: {
     title: string,
     routeName?: string,
@@ -24,42 +25,51 @@ const menus: Menu[] = [
   {
     title: 'Dashboard',
     icon: 'home',
-    iconColor: 'primary'
+    iconColor: 'primary',
+    route: '/',
   },
   {
     title: 'Manajemen Data',
     icon: 'folder',
     iconColor: 'warning',
     children: [
-      {title: 'Jenis Satuan',},
-      {title: 'Daftar Pemasok', routeName: 'supplier-list'},
-      {title: 'Kelola Barang',},
-      {title: 'Daftar Harga Barang',},
-      {title: 'Daftar Pelanggan',},
-      {title: 'Promo Member',},
+      {
+        title: 'Jenis Satuan',
+      },
+      {
+        title: 'Daftar Pemasok',
+        routeName: 'supplier-list',
+      },
+      {
+        title: 'Kelola Barang',
+        routeName: 'item-list',
+      },
+      {
+        title: 'Daftar Harga Barang',},
+      {
+        title: 'Daftar Pelanggan',
+        routeName: 'customer-list',
+      },
+      {
+        title: 'Promo Member',
+      },
     ]
   },
   {
     title: 'Pembelian',
     icon: 'archive',
-    children: [
-      {title: 'Barang dari Pemasok',},
-      {title: 'Riwayat Pembelian',},
-      {title: 'Pembayaran Pembelian',},
-    ]
+    iconColor: 'info',
+    route: '/purchase',
   },
   {
     title: 'Penjualan',
     icon: 'unarchive',
-    children: [
-      {title: 'Penjualan ke Pelanggan',},
-      {title: 'Riwayat Penjualan',},
-      {title: 'Pembayaran Penjualan',},
-    ]
+    iconColor: 'success',
   },
   {
     title: 'Laporan',
     icon: 'analytics',
+    iconColor: 'danger',
     children: [
       {title: 'Penjualan per Periode',},
       {title: 'Laba Rugi per Periode',},
@@ -69,17 +79,14 @@ const menus: Menu[] = [
   {
     title: 'Manajemen Karyawan',
     icon: 'people',
+    iconColor: 'seed'
   }
 ]
 const model = defineModel<boolean>()
 
-const routeNavigation = (target: string) => {
-  const to = target.toLowerCase().replace(' ', '-')
-  router.push({ path: to })
-}
 
 const isCurrentRoute = (target: string) => {
-  return target == router.currentRoute.value.name;
+  return router.currentRoute.value.matched.some(r => r.meta.drawerTitle == target) || target == router.currentRoute.value.name
 }
 const isChildRoute = (childRoute: string[]) => {
   return childRoute.includes(router.currentRoute.value.name as string)
@@ -92,8 +99,8 @@ const onClickMenu = (menu: Menu) => {
     } else {
       expandedMenus.value.push(menu.title)
     }
-  } else {
-    routeNavigation(menu.title.toLowerCase() == 'dashboard' ? '/' : menu.title);
+  } else if (menu.route) {
+    router.push(menu.route)
   }
 }
 
@@ -108,7 +115,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <v-navigation-drawer v-model="model" width="320" color="onPrimary" class="!tw-h-5/6 !tw-mx-9 !tw-top-10 !tw-bottom-10 tw-rounded-xl !tw-border-0 ">
+  <v-navigation-drawer v-model="model" width="320" color="onPrimary" class="!tw-h-5/6 !tw-mx-9 !tw-top-10 !tw-bottom-10 tw-rounded-xl !tw-border-0 " id="drawer">
     <div class="tw-flex tw-items-center tw-gap-2 tw-justify-center my-6">
       <img :src="logo" alt="" class="tw-w-10">
       <!-- <VImg :src="logo" class="tw-w-10"></VImg> -->
@@ -122,7 +129,7 @@ onMounted(() => {
         <div
           v-ripple="{class: 'tw-delay-0'}"
           class=" tw-flex tw-items-center tw-gap-3 tw-rounded tw-py-4 px-6 hover:tw-cursor-pointer hover:tw-bg-surfaceBright" @click="onClickMenu(menu)"
-          :class="{'tw-bg-surfaceBright tw-font-semibold tw-text-onSurface': isChildRoute(menu.children?.map(item => item.routeName ?? '') ?? [])}"
+          :class="{'tw-bg-surfaceBright tw-font-semibold tw-text-onSurface': isCurrentRoute(menu.title) || isChildRoute(menu.children?.map(item => item.routeName ?? '') ?? [])}"
         >
           <BIcon :icon="menu.icon" :filled="isCurrentRoute(menu.title) || isChildRoute(menu.children?.map(item => item.routeName ?? '') ?? [])" :color="menu.iconColor" size="18"></BIcon>
           <div class="tw-flex-grow">
@@ -149,3 +156,26 @@ onMounted(() => {
     </VList>
   </v-navigation-drawer>
 </template>
+<style scoped>
+/* width */
+#drawer :deep(.v-navigation-drawer__content)::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+#drawer :deep(.v-navigation-drawer__content)::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 5px grey;  */
+  border-radius: 0px;
+}
+ 
+/* Handle */
+#drawer :deep(.v-navigation-drawer__content)::-webkit-scrollbar-thumb {
+  background: grey; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+#drawer :deep(.v-navigation-drawer__content)::-webkit-scrollbar-thumb:hover {
+  background: #d1d1d1; 
+}
+</style>

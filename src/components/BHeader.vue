@@ -7,8 +7,7 @@ import BIcon from './BIcon.vue';
 import type { BIconName } from './types/BIcon';
 
 const router = useRouter()
-
-const authStore = useAuthStore()
+const store = useAuthStore()
 
 const isLoading = ref<boolean>(true)
 const breadcrumbs = ref<Breadcrumbs[]>([])
@@ -27,17 +26,22 @@ const listMenu: {
   {
     title: 'Logout',
     icon: 'logout',
-    action: () => {
-      authStore.logout()
-    }
+    action: () => logout()
   }
 ]
-
+const logout = async () => {
+  isLoading.value = true
+  store.logout().catch(e => {
+    alert(e)
+  }).finally(() => {
+    isLoading.value = false
+  })
+}
 const emit = defineEmits(['click:drawer'])
 
 onMounted(() => {
   settingBreadcrumb(router.currentRoute.value)
-  authStore.getUserInformation().catch(e => {
+  store.getUserInformation().catch(e => {
     console.log(e);
   }).finally(() => {
     isLoading.value = false
@@ -50,6 +54,10 @@ watch(router.currentRoute, (newV) => {
 
 const settingBreadcrumb = (newV: RouteLocationNormalizedLoaded) => {
   breadcrumbs.value = []
+  breadcrumbs.value.push({
+    title: 'Dashboard',
+    path: '/',
+  })
   newV.matched.forEach((item: any) => {
     if (item.meta) {
       if (typeof item.meta.breadcrumbs !== 'undefined') {
@@ -71,7 +79,7 @@ const settingBreadcrumb = (newV: RouteLocationNormalizedLoaded) => {
           <template v-for="item, index in breadcrumbs" :key="item">
             <span>/</span>
             <span
-              :class="`${index === 0 ? 'tw-font-normal tw-opacity-50' : 'hover:tw-cursor-pointer'}`"
+              :class="`${index == breadcrumbs.length -1 ? 'tw-font-normal tw-opacity-50' : 'hover:tw-cursor-pointer'}`"
               @click="item.path && router.push(item.path)"
             >
               {{item.title ?? ''}}
@@ -84,27 +92,33 @@ const settingBreadcrumb = (newV: RouteLocationNormalizedLoaded) => {
       </div>
     </div>
     <VProgressCircular class="tw-self-center" color="green" size="20" width="2" v-if="isLoading" indeterminate />
-    <VMenu v-else>
-      <template v-slot:activator="{ props }">
-        <div class="tw-flex tw-items-center tw-gap-2 tw-text-white" v-bind="props">
-          <BIcon icon="person" color="white" filled></BIcon>
-          <span>
-            {{ authStore.auth?.name }}
-          </span>
-        </div>
-      </template>
-      <v-list>
-        <v-list-item class="!tw-px-0">
-          <v-list-item-title v-for="item, index in listMenu" :key="index" @click="item.action" class="tw-flex tw-items-center tw-gap-3 !tw-py-4 !tw-px-3 tw-border-b tw-border-outlineVariant last:tw-text-warning">
-            <BIcon
-              :icon="item.icon"
-              :color="index == listMenu.length -1 ? 'warning' : 'onSurfaceVariant'"
-              filled
-            />
-            <span>{{ item.title }}</span>
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </VMenu>
+    <template v-else>
+      <div class="tw-flex tw-items-center tw-gap-2 tw-text-white">
+        <VMenu>
+          <template v-slot:activator="{ props }">
+            <BIcon icon="person" color="white" filled v-bind="props" class="hover:tw-cursor-pointer"/>
+          </template>
+          <v-list class="!tw-bg-white">
+            <v-list-item class="!tw-px-0">
+              <v-list-item-title v-for="item, index in listMenu" :key="index" @click="item.action" class="tw-flex tw-items-center tw-gap-3 !tw-py-4 !tw-px-3 tw-border-b tw-border-outlineVariant last:tw-text-warning hover:tw-cursor-pointer hover:tw-bg-surfaceBright last:tw-border-0">
+                <BIcon
+                  :icon="item.icon"
+                  :color="index == listMenu.length -1 ? 'warning' : 'onSurfaceVariant'"
+                  filled
+                />
+                <span>{{ item.title }}</span>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </VMenu>
+        <span>
+          {{ store.auth?.name }}
+        </span>
+        <span class="tw-ml-2 tw-bg-secondaryContainer tw-lowercase tw-text-onSecondaryContainer tw-py-1 tw-px-4 tw-font-semibold tw-text-sm tw-rounded-lg">
+          {{ store.auth?.role_id }}
+        </span>
+        <BIcon icon="notifications" filled color="onPrimary" class="tw-ml-5"></BIcon>
+      </div>
+    </template>
   </div>
 </template> 
