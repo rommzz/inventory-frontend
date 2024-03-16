@@ -1,7 +1,7 @@
 import type { BTableQuery } from '@/components/types/BTable'
 import type { ResponseV1 } from '@/utils/apis/http'
 import type { InventoryItem } from '@/utils/apis/models/model'
-import type { InventoryItemForm } from '@/utils/apis/models/request'
+import type { InventoryItemForm } from '@/utils/apis/models/request/request'
 import inventoryItemApi, { type InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi'
 import { defineStore } from 'pinia'
 

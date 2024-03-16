@@ -2,7 +2,8 @@ import endpoints from "../endpoints";
 import type { ResponseV1 } from "../http";
 import http from "../http";
 import type { Brand, InventoryItem, Supplier } from "../models/model";
-import type { InventoryItemForm } from "../models/request";
+import type { InventoryItemForm } from "../models/request/request";
+
 
 export type InventoryItemFilter = {
   startDate?: string,

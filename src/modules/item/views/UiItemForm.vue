@@ -8,9 +8,9 @@ import type { Brand, Supplier, Unit } from '@/utils/apis/models/model';
 import { computed } from 'vue';
 import { onMounted, ref } from 'vue';
 import { useItemStore } from '../stores';
-import type { InventoryItemForm } from '@/utils/apis/models/request';
 import router from '@/router';
 import { formatIDR } from '@/plugin/helpers';
+import type { InventoryItemForm } from '@/utils/apis/models/request/request';
 
 const props = defineProps<{
   id?: string;

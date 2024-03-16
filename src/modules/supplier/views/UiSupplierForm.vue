@@ -4,9 +4,10 @@ import BInputImage from '@/components/BInputImage.vue';
 import BTextField from '@/components/BTextField.vue';
 import { onMounted, reactive, ref } from 'vue';
 import { useSupplierStore } from '../stores';
-import type { SupplierForm } from '@/utils/apis/models/request';
+
 import router from '@/router';
 import type { Supplier } from '@/utils/apis/models/model';
+import type { SupplierForm } from '@/utils/apis/models/request/request';
 
 const props = defineProps<{
   id?: string;
