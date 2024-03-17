@@ -45,7 +45,7 @@ export type InventoryItem = {
 } & TimeStamp
 
 export type Brand = {
-  id: string;
+  id?: string;
   name: string;
 } & TimeStamp
 
