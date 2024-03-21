@@ -1,6 +1,6 @@
 import type { ResponseV1 } from '@/utils/apis/http'
 import type { Customer } from '@/utils/apis/models/model'
-import type { CustomerForm } from '@/utils/apis/models/request'
+import type { CustomerForm } from '@/utils/apis/models/request/request'
 import customerApi from '@/utils/apis/repo/customerApi'
 import { defineStore } from 'pinia'
 

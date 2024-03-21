@@ -3,9 +3,9 @@ import BButton from '@/components/BButton.vue';
 import BTextField from '@/components/BTextField.vue';
 import router from '@/router';
 import type { Customer } from '@/utils/apis/models/model';
-import type { CustomerForm } from '@/utils/apis/models/request';
 import { onMounted, reactive, ref } from 'vue';
 import { useCustomerStore } from '../stores';
+import type { CustomerForm } from '@/utils/apis/models/request/request';
 
 const props = defineProps<{
   id?: string;
