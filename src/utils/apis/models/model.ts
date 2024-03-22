@@ -23,7 +23,7 @@ export type Supplier = {
 
 export type InventoryItemStock = {
   inventory_itemid: string;
-  qty: number;
+  stock: number;
   price: number;
   price_before: number;
   updated_at: Date;

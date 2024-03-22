@@ -19,6 +19,7 @@ const props = defineProps<{
   modelValue?: any
   message?: string
   readonly?: boolean
+	loading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -75,6 +76,7 @@ const classProps = computed(() => {
       @update:model-value="model => $emit('update:modelValue', model)"
       :messages="message"
       :readonly="readonly"
+			:loading="props.loading"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
@@ -92,5 +94,17 @@ const classProps = computed(() => {
 
 .v-input :deep(.v-input__details) {
   padding: 0;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.v-input :deep(input::-webkit-outer-spin-button),
+.v-input :deep(input::-webkit-inner-spin-button) {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.v-input :deep(input[type=number]) {
+  -moz-appearance: textfield;
 }
 </style>

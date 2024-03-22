@@ -9,9 +9,9 @@ import DInventoryItemPicker from '@/components/dialogs/DInventoryItemPicker.vue'
 import { useSupplierStore } from '@/modules/supplier/stores';
 import { formatIDR } from '@/plugin/helpers';
 import type { InventoryItem, Supplier } from '@/utils/apis/models/model';
-import type { PurchaseItem } from '@/utils/apis/models/request/purchaseAddRequest';
+import type { PurchaseForm, PurchaseItem } from '@/utils/apis/models/request/purchaseAddRequest';
 import moment from 'moment';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const supplierStore = useSupplierStore()
 const dInventoryItem = ref<boolean>(false)
@@ -19,12 +19,11 @@ const form = ref()
 
 // const listItem = defineModel<PurchaseItem[]>('item', {default: []})
 const listItem = ref<PurchaseItem[]>([])
-const purchaseDate = defineModel<string>('purchaseDate', {default: moment().format('yyyy-MM-DD')})
-const supplier = defineModel<Supplier>('supplier')
+const purchaseDate = ref<string>(moment().format('yyyy-MM-DD'))
+const supplier = ref<Supplier>()
 
 const emit = defineEmits<{
-  (e: 'update:items', value: PurchaseItem[]): void
-  (e: 'next'): void
+  (e: 'next', value: PurchaseForm): void
 }>()
 
 const show = ref<boolean>(true)
@@ -46,7 +45,11 @@ const validate =async () => {
     console.log('barang masih kosong');
   }
   if (valid && listItem.value.length) {
-    emit('next');
+    emit('next', {
+      items: listItem.value,
+      supplier: supplier.value,
+      purchase_date: purchaseDate.value,
+    });
   }
   
 }
@@ -66,15 +69,6 @@ const onSelect = (item: InventoryItem) => {
   dInventoryItem.value = false
 }
 const supplierList = ref<Supplier[]>([]);
-watch(
-  () => listItem.value,
-  () => {
-    console.log(listItem.value);
-    
-    emit('update:items', listItem.value)
-  },
-  { deep: true }
-)
 </script>
 <template>
   <BStepperWindowItem title="Data Pembelian">
@@ -119,7 +113,7 @@ watch(
           >
             <div>
               <div class="tw-text-onSurface tw-mb-1">{{ item.item.name }} - {{ item.item.brand.name }}</div>
-              <div class="tw-text-onSurfaceVariant tw-font-normal tw-text-xs">Sisa Stok: {{ item.item.stock.qty }} {{ item.item.unit.name }}</div>
+              <div class="tw-text-onSurfaceVariant tw-font-normal tw-text-xs">Sisa Stok: {{ item.item.stock.stock }} {{ item.item.unit.name }}</div>
               <div class="tw-text-onSurfaceVariant tw-font-normal tw-text-xs">Harga Barang: {{ formatIDR(item.item.price, true) }}</div>
             </div>
             <VSpacer/>

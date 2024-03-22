@@ -5,3 +5,5 @@ export type TimeStamp = {
 }
 
 export type PaymentMethod = 'cash' | 'transfer' | 'ewallet' | 'qris' | 'other'
+
+export type DiscountType = 'percent' | 'value'

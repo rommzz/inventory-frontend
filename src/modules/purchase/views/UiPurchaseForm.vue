@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import BButton from '@/components/BButton.vue';
-import { reactive, ref } from 'vue';
+import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
+import { ref } from 'vue';
 import PurchaseAddItems from '../components/PurchaseAddItems.vue';
 import { usePurchaseStore } from '../stores';
-import type { PurchaseForm, PurchaseItem } from '@/utils/apis/models/request/purchaseAddRequest';
+import PurchaseReview from '../components/PurchaseReview.vue';
 
 const props = defineProps<{
   id?: string;
@@ -58,10 +58,9 @@ const createSupplier = () => {
   isLoading.value = true;
 }
 
-const ha = (e: PurchaseItem[]) => {
-  console.log(e);
-  formField.value.items = e
-  console.log(formField.value);
+const next = (data: PurchaseForm) => {
+  Object.assign(formField.value, data)
+  currentStep.value++
 }
 
 </script>
@@ -89,15 +88,15 @@ const ha = (e: PurchaseItem[]) => {
     <VStepperWindow>
       <VStepperWindowItem>
         <PurchaseAddItems
-          ref="step1"
-          @update:items="ha"
-          v-model:supplier="formField.supplier"
-          v-model:purchase-date="formField.purchase_date"
-          @next="currentStep++"
+          @next="next"
         />
       </VStepperWindowItem>
       <VStepperWindowItem>
-        cok 2s
+        <PurchaseReview
+          :data="formField"
+          @next="next"
+          @back="currentStep--"
+        />
       </VStepperWindowItem>
       <VStepperWindowItem>
         step 3
