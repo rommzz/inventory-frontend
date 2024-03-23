@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
+import type { PurchaseForm, PurchasePayment as PP } from '@/utils/apis/models/request/purchaseAddRequest';
 import { ref } from 'vue';
 import PurchaseAddItems from '../components/PurchaseAddItems.vue';
 import { usePurchaseStore } from '../stores';
 import PurchaseReview from '../components/PurchaseReview.vue';
+import PurchasePayment from '../components/PurchasePayment.vue';
+import { computed } from 'vue';
+import ConfirmDialog from '../components/dialog/ConfirmDialog.vue';
 
 const props = defineProps<{
   id?: string;
@@ -14,7 +17,15 @@ type Step = {
   caption: string,
 }
 
-const step1 = ref(null)
+const dialog = ref<boolean>(false)
+
+const grandTotal = computed<number>(() => {
+	let gt = 0;
+	formField.value.items?.forEach(item => {
+		gt += (item.price * item.qty)
+	})
+	return gt;
+})
 
 const currentStep = ref<number>(0)
 
@@ -32,30 +43,13 @@ const step: Step[] = [
     caption: 'Pembayaran',
   },
 ]
-const store = usePurchaseStore();
+
 const formField = ref<PurchaseForm>({});
-const form = ref();
-const isLoading = ref<boolean>(false);
-const isEdit = props.id !== undefined;
 
-
-
-const submit = async () => {
-  const valid = await form.value.validate()
-  if (valid) {
-    isLoading.value = true;
-    isEdit ? updateSupplier() : createSupplier();
-    isLoading.value = false;
-  }
-}
-
-const updateSupplier = () => {
-  isLoading.value = true;
-  
-}
-
-const createSupplier = () => {
-  isLoading.value = true;
+const submit = async (payment: PP) => {
+  formField.value.payments = []
+	formField.value.payments.push(payment)
+	dialog.value = true
 }
 
 const next = (data: PurchaseForm) => {
@@ -99,10 +93,18 @@ const next = (data: PurchaseForm) => {
         />
       </VStepperWindowItem>
       <VStepperWindowItem>
-        step 3
+        <PurchasePayment
+					@back="currentStep--"
+					:grand-total="grandTotal"
+					@next="submit"
+				/>
       </VStepperWindowItem>
     </VStepperWindow>
   </VStepper>
+	<ConfirmDialog
+		:data="formField"
+		v-model="dialog"
+	/>
 </template>
 <style scoped>
 #stepper :deep(.v-stepper-item) {

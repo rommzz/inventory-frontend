@@ -51,7 +51,6 @@ const validate =async () => {
       purchase_date: purchaseDate.value,
     });
   }
-  
 }
 const onSelect = (item: InventoryItem) => {
   const listedItem = listItem?.value?.find(e => e.item.id == item.id) 
@@ -74,9 +73,6 @@ const supplierList = ref<Supplier[]>([]);
   <BStepperWindowItem title="Data Pembelian">
     <VForm ref="form">
       <div>
-        <h5>
-          Informasi
-        </h5>
         <div class="tw-grid tw-grid-cols-2 tw-gap-5">
           <BAutoComplete
             label="Pemasok"

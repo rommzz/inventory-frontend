@@ -7,7 +7,7 @@ export type PurchaseItem = {
   price: number
 }
 
-export type Payment = {
+export type PurchasePayment = {
   payment_date?: string;
   payment_method?: PaymentMethod;
   amount?: number;
@@ -21,5 +21,5 @@ export type PurchaseForm = {
   discount?: number;
   supplier?: Supplier;
   items?: PurchaseItem[];
-  payments?: Payment[];
+  payments?: PurchasePayment[];
 }

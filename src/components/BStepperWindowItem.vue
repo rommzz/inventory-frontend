@@ -8,7 +8,7 @@ const slot = useSlots()
 </script>
 <template>
   <div>
-    <h3 class="tw-py-5">
+    <h3 class="tw-py-5 tw-text-xl tw-text-onSurface">
       {{ props.title }}
     </h3>
     <div class="tw-pb-5">
