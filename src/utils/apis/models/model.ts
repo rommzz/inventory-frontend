@@ -63,3 +63,28 @@ export type Customer = {
   company_name?: string;
   email?: string
 } & TimeStamp
+
+export type Payment = {
+  id: string;
+  item_purchase_id: string;
+  payment_date: string;
+  payment_type: string;
+  payment_method: string;
+  amount: number;
+  remaining_payment: number;
+  note: string;
+} & TimeStamp
+
+export type Purchase = {
+  id: string;
+  total: number;
+  tax?: number;
+  discount?: number;
+  grand_total: number;
+  paid?: number;
+  purchase_date: string;
+  supplier_id: string;
+  supplier: Supplier;
+  items: InventoryItem[];
+  payments?: Payment[];
+} & TimeStamp

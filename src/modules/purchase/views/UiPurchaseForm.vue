@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import type { PurchaseForm, PurchasePayment as PP } from '@/utils/apis/models/request/purchaseAddRequest';
-import { ref } from 'vue';
+import type { PurchasePayment as PP, PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
+import { computed, ref } from 'vue';
 import PurchaseAddItems from '../components/PurchaseAddItems.vue';
-import { usePurchaseStore } from '../stores';
-import PurchaseReview from '../components/PurchaseReview.vue';
 import PurchasePayment from '../components/PurchasePayment.vue';
-import { computed } from 'vue';
-import ConfirmDialog from '../components/dialog/ConfirmDialog.vue';
+import PurchaseReview from '../components/PurchaseReview.vue';
+import DConfirmPurchase from '../components/dialog/DConfirmPurchase.vue';
 
-const props = defineProps<{
-  id?: string;
-}>();
 
 type Step = {
   step: number,
@@ -75,7 +70,12 @@ const next = (data: PurchaseForm) => {
           :color="n.step == currentStep ? 'primary' : ''"
           :value="n.step"
         >
-          {{ n.caption }}
+          <template v-slot:icon="{step}">
+						<div>{{ step+1 }}</div>
+					</template>
+					<template v-slot:default>
+						<div>{{ n.caption }}</div>
+					</template>
         </VStepperItem>
       </template>
     </VStepperHeader>
@@ -101,7 +101,7 @@ const next = (data: PurchaseForm) => {
       </VStepperWindowItem>
     </VStepperWindow>
   </VStepper>
-	<ConfirmDialog
+	<DConfirmPurchase
 		:data="formField"
 		v-model="dialog"
 	/>

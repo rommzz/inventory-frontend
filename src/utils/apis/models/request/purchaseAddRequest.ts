@@ -18,7 +18,9 @@ export type PurchaseForm = {
   purchase_date?: string;
   total?: number;
   tax?: number;
-  discount?: number;
+	tax_percent?: number,
+	discount?: number;
+	discount_percent?: number;
   supplier?: Supplier;
   items?: PurchaseItem[];
   payments?: PurchasePayment[];
