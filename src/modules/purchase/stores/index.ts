@@ -1,7 +1,6 @@
 import type { ResponseV1 } from '@/utils/apis/http'
-import type { DiscountType } from '@/utils/apis/models/commons'
 import type { Purchase } from '@/utils/apis/models/model'
-import type { PurchaseForm, PurchaseItem } from '@/utils/apis/models/request/purchaseAddRequest'
+import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest'
 import purchaseApi from '@/utils/apis/repo/purchaseApi'
 import moment from 'moment'
 import { defineStore } from 'pinia'
@@ -25,8 +24,8 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
 					qty: v.qty,
 					price: v.price,
 				})),
-				total: 0,
-				grand_total: 0,
+				...(data.taxType == 'value' ? { tax: data.tax } : {tax_percent: data.tax}),
+				...(data.discountType == 'value' ? { discount: data.discount } : {discount_percent: data.discount}),
 				purchase_date: moment(data.purchase_date! ).utc().format(),
 				supplier_id: data.supplier?.id!,
 				payments: data.payments?.map(v => {

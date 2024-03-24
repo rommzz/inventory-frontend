@@ -1,4 +1,4 @@
-import type { PaymentMethod } from "../commons";
+import type { DiscountType, PaymentMethod } from "../commons";
 import type { InventoryItem, Supplier } from "../model";
 
 export type PurchaseItem = {
@@ -18,9 +18,9 @@ export type PurchaseForm = {
   purchase_date?: string;
   total?: number;
   tax?: number;
-	tax_percent?: number,
+	taxType?: DiscountType,
 	discount?: number;
-	discount_percent?: number;
+	discountType?: DiscountType;
   supplier?: Supplier;
   items?: PurchaseItem[];
   payments?: PurchasePayment[];

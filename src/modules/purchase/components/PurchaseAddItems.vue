@@ -44,7 +44,7 @@ const validate =async () => {
   if (!listItem.value.length) {
     console.log('barang masih kosong');
   }
-  if (valid && listItem.value.length) {
+  if (valid.valid && listItem.value.length) {
     emit('next', {
       items: listItem.value,
       supplier: supplier.value,
@@ -92,7 +92,7 @@ const supplierList = ref<Supplier[]>([]);
         </div>
       </div>
       <div>
-        <h5>Daftar barang</h5>
+        <h5 class="tw-font-semibold">Daftar barang</h5>
         <span
           v-ripple
           class="tw-text-primary tw-flex tw-items-center tw-gap-2 tw-mt-4 tw-max-w-fit tw-p-2 tw-cursor-pointer"
@@ -103,7 +103,7 @@ const supplierList = ref<Supplier[]>([]);
         </span>
         <div>
           <div
-            v-for="item in listItem"
+            v-for="item, index in listItem"
             :key="item.item.id"
             class="tw-rounded-xl tw-border tw-border-outlineVariant tw-flex tw-items-center tw-bg-surface tw-p-3 tw-mt-4 "
           >
@@ -115,7 +115,13 @@ const supplierList = ref<Supplier[]>([]);
             <VSpacer/>
             <BInputNumber label="Jumlah" v-model.number="item.qty" class="tw-mr-4"></BInputNumber>
             <BInputNumber label="Harga" v-model.number="item.price" hide-button class="tw-mr-14"></BInputNumber>
-            <div>{{ formatIDR(item.qty * item.price, true) }}</div>
+            <div class="tw-mr-12 tw-font-semibold tw-text-sm">{{ formatIDR(item.qty * item.price, true) }}</div>
+						<BIcon
+							icon="delete"
+							button-color="errorContainer"
+							@click="listItem.splice(index, 1)"
+							color="error"
+						/>
           </div>
         </div>
       </div>
