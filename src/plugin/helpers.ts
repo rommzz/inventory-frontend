@@ -1,3 +1,5 @@
+import { Mask } from "maska";
+
 // format rupiah currency
 export const formatIDR = (amount: number, withSymbol: boolean = true) => {
   return `${withSymbol ? 'Rp ' : ''}${amount.toLocaleString('id-ID').replace(/,/g, '.')}`
@@ -13,4 +15,8 @@ export function debounce<T extends (...args: any[]) => any>(func: T, delay: numb
       func.apply(this, args);
     }, delay);
   };
+}
+
+export const formatNumber = (number: number): string => {
+  return number.toLocaleString('en-US');
 }

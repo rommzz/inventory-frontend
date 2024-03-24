@@ -25,5 +25,14 @@ export const useMetaStore = defineStore('meta', () => {
       throw error
     }
   }
-  return { units, brand, getListUnits, getListBrand}
+  const addBrand = async (brandName: string) => {
+    try {
+      await brandApi.addBrand(brandName)
+      await getListBrand()
+    } catch (error) { 
+      console.log(error)
+      throw error
+    }
+  }
+  return { units, brand, getListUnits, getListBrand, addBrand}
 })

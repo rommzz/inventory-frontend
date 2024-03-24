@@ -5,11 +5,13 @@ import BIcon from '@/components/BIcon.vue';
 import BTable from '@/components/BTable.vue';
 import type { BTableQuery } from '@/components/types/BTable';
 import type { MetaData } from '@/utils/apis/http';
-import type { Supplier } from '@/utils/apis/models/model';
+import type { Purchase, Supplier } from '@/utils/apis/models/model';
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePurchaseStore } from '../stores';
 import type { InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
+import { formatIDR } from '@/plugin/helpers';
+import moment from 'moment';
 
 const router = useRouter();
 const store = usePurchaseStore();
@@ -20,7 +22,7 @@ let query = reactive<BTableQuery>({
 })
 
 let filter = reactive<InventoryItemFilter>({})
-const purchases = ref<Supplier[]>([]);
+const purchases = ref<Purchase[]>([]);
 const isLoading = ref<boolean>(false);
 const isDeleting = ref<boolean>(false);
 const metaData = ref<MetaData>({});
@@ -46,17 +48,17 @@ const getPurchase = async () => {
 	});
 }
 
-const deletePurchase = async (supplierId: string) => {
-	isDeleting.value = true
-	try {
-		await store.deletePurchase(supplierId)
-	} catch (error) {
-		console.log(error);
-	}
-	isDeleting.value = false
-	deleteDialog.value = false
-	getPurchase()
-}
+// const deletePurchase = async (supplierId: string) => {
+// 	isDeleting.value = true
+// 	try {
+// 		await store.deletePurchase(supplierId)
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// 	isDeleting.value = false
+// 	deleteDialog.value = false
+// 	getPurchase()
+// }
 
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
@@ -87,7 +89,7 @@ onMounted(() => {
 				<thead>
 					<tr class="tw-text-left !tw-p-4">
 						<th
-							v-for="header in ['Perusahaan', 'Nama', 'Email', 'No. Telepon', 'Alamat', 'Aksi']"
+							v-for="header in [ 'ID', 'Nama Barang', 'Grand Total', 'Sisa Bayar', 'Status Lunas', 'Tanggal Pembelian', 'Aksi',]"
 							:key="header"
 							class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-font-semibold"
 						>
@@ -96,27 +98,26 @@ onMounted(() => {
 					</tr>
 					<tr v-for="purchase, index in purchases" :key="index" class="tw-border-t tw-border-outlineVariant tw-group">
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-flex tw-items-center tw-gap-2">
-							<img v-if="purchase.logo" :src="purchase.logo" class="tw-w-9 tw-h-9 tw-rounded-xl tw-object-cover" alt="">
-							<div v-else class=" tw-rounded-full tw-w-10 tw-h-10 tw-flex tw-place-items-center tw-justify-center group-even:tw-bg-primary group-odd:tw-bg-secondary tw-text-white tw-font-semibold tw-text-sm">
-								{{ purchase.company_name?.toUpperCase().substring(0,1) }}
-							</div>
-							<span>{{ purchase.company_name }}</span>
+							{{ purchase.id }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.name }}
+							{{ purchase.items }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.email == '' ? '-' : purchase.email }}
+							{{ formatIDR(purchase.grand_total) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.phone == '' ? '-' : purchase.phone }}
+							{{ formatIDR(purchase.grand_total - (purchase.paid ?? 0)) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.address == '' ? '-' : purchase.address }}
+							{{ purchase.grand_total - (purchase.paid ?? 0) > 0 ? 'Belum Lunas' : 'Lunas' }}
+						</td>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+							{{ moment(purchase.purchase_date).format('DD MMM yyy') }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
 							<BIcon @click="onDelete(purchase)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/purchase/' + purchase.id)" button-color="warningContainer"></BIcon>
+							<BIcon icon="payments" color="success" button-color="successContainer"></BIcon>
 						</td>
 					</tr>
 				</thead>
@@ -134,7 +135,7 @@ onMounted(() => {
 			</p>
 			<div class="tw-p-5 tw-text-right tw-pt-8">
 				<BButton class="tw-mr-2" label="Batalkan" @click="deleteDialog = false"></BButton>
-				<BButton @click="deletePurchase(deleteDialogData!.id!)" :is-loading="isDeleting"  variant="text" color="danger" label="Lanjutkan"></BButton>
+				<BButton  :is-loading="isDeleting"  variant="text" color="danger" label="Lanjutkan"></BButton>
 			</div>
 		</div>
 	</BDialog>

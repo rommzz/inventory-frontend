@@ -11,5 +11,15 @@ export default {
       console.log('error', error);
       throw error
     }
+  },
+  addBrand: async (brandName: string): Promise<void> => {  
+    try {
+      await http.post<ResponseV1>('/v1' + endpoints.master.brand, {
+        name: brandName
+      })
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
   }
 }

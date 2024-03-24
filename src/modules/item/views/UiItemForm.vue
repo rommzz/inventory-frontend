@@ -10,6 +10,7 @@ import { onMounted, ref } from 'vue';
 import { useItemStore } from '../stores';
 import router from '@/router';
 import { formatIDR } from '@/plugin/helpers';
+import BAutoComplete from '@/components/BAutoComplete.vue';
 import type { InventoryItemForm } from '@/utils/apis/models/request/request';
 
 const props = defineProps<{
@@ -22,7 +23,12 @@ const supplierStore = useSupplierStore();
 
 const listSupplier = ref<Supplier[]>([]);
 const listUnit = computed(() => metaStore.units);
-const listBrand = computed(() => metaStore.brand);
+const listBrand = computed<Brand[]>(() => [
+  ...metaStore.brand,
+  ...additionalListBrand.value,
+]);
+
+const additionalListBrand = ref<Brand[]>([])
 
 const form = ref();
 const sku = ref<string>('');
@@ -39,6 +45,10 @@ const brandLoading = ref<boolean>(false);
 
 const isLoading = ref<boolean>(false);
 const isEdit = props.id !== undefined;
+
+const addBrand = async (brandName: string) => {
+  await metaStore.addBrand(brandName)
+}
 
 const getUnit = async () => {
   if (metaStore.units.length == 0) {
@@ -97,7 +107,7 @@ const submit = async () => {
     const form: InventoryItemForm = {
       name: name.value,
       initial_stock: initalStock.value,
-      brand_id: selectedBrand.value!.id,
+      brand_id: selectedBrand.value!.id!,
       sku: sku.value,
       supplier_id: selectedSupplier.value!.id!,
       unit_id: selectedUnit.value!.id,
@@ -137,7 +147,21 @@ const createSupplier = async (form: InventoryItemForm) => {
       <BTextField required v-model="name" label="Nama" placeholder="Nama Barang" :rules="[ v => !!v || 'Kolom Wajib diisi', ]" ></BTextField>
     </div>
     <div class=" tw-grid tw-grid-cols-3 tw-gap-x-5">
-      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Merk" :items="listBrand" required v-model="selectedBrand" :item-title="(item) => item.name" placeholder="Merk Barang"/>
+      <BAutoComplete
+        :rules="[ v => !!v || 'Kolom Wajib diisi', ]"
+        label="Merk"
+        :items="listBrand"
+        required
+        v-model="selectedBrand"
+        :item-title="(item) => item.name"
+        placeholder="Merk Barang"
+      >
+        <template v-slot:no-data="{search}">
+          <div @click="addBrand(search)" class="tw-cursor-pointer tw-p-4" >
+            tambahkan '{{search}}'
+          </div>
+        </template>
+      </BAutoComplete>
       <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Pemasok" :items="listSupplier" required v-model="selectedSupplier" :item-title="(item) => item.name ?? ''" placeholder="Pemasok Barang" :loading="supplierLoading"/>
       <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Satuan" :items="listUnit" :loading="unitLoading" required v-model="selectedUnit" :item-title="(item) => item.name" placeholder="Satuan Barang"/>
     </div>

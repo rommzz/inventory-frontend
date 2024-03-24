@@ -20,7 +20,7 @@ export const useItemStore = defineStore('itemStore', () => {
         limit: query?.limit,
         offset: query?.offset,
         search: query?.search,
-        brand_id: filter?.brand?.map(el => el.id),
+        // brand_id: filter?.brand?.map(el => el.id),
         supplier_id: filter?.supplier?.map(el => el.id!),
         start_date: filter?.startDate && `${filter?.startDate}T00:00:00Z`,
         end_date: filter?.endDate && `${filter?.endDate}T23:59:59Z`,

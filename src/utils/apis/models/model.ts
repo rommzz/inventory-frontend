@@ -23,7 +23,7 @@ export type Supplier = {
 
 export type InventoryItemStock = {
   inventory_itemid: string;
-  qty: number;
+  stock: number;
   price: number;
   price_before: number;
   updated_at: Date;
@@ -45,7 +45,7 @@ export type InventoryItem = {
 } & TimeStamp
 
 export type Brand = {
-  id: string;
+  id?: string;
   name: string;
 } & TimeStamp
 
@@ -62,4 +62,29 @@ export type Customer = {
   address?: string;
   company_name?: string;
   email?: string
+} & TimeStamp
+
+export type Payment = {
+  id: string;
+  item_purchase_id: string;
+  payment_date: string;
+  payment_type: string;
+  payment_method: string;
+  amount: number;
+  remaining_payment: number;
+  note: string;
+} & TimeStamp
+
+export type Purchase = {
+  id: string;
+  total: number;
+  tax?: number;
+  discount?: number;
+  grand_total: number;
+  paid?: number;
+  purchase_date: string;
+  supplier_id: string;
+  supplier: Supplier;
+  items: InventoryItem[];
+  payments?: Payment[];
 } & TimeStamp

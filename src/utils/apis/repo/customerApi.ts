@@ -3,7 +3,6 @@ import http, { type ResponseV1 } from "../http";
 import type { Customer } from "../models/model";
 import type { CustomerForm } from "../models/request/request";
 
-
 export default {
   addCustomer: async (customer: CustomerForm): Promise<Customer> => {  
     try {

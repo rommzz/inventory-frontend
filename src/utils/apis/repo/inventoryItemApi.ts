@@ -4,7 +4,6 @@ import http from "../http";
 import type { Brand, InventoryItem, Supplier } from "../models/model";
 import type { InventoryItemForm } from "../models/request/request";
 
-
 export type InventoryItemFilter = {
   startDate?: string,
   endDate?: string,

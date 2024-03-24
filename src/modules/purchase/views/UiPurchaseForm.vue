@@ -1,20 +1,26 @@
 <script setup lang="ts">
-import BButton from '@/components/BButton.vue';
-import { reactive, ref } from 'vue';
+import type { PurchasePayment as PP, PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
+import { computed, ref } from 'vue';
 import PurchaseAddItems from '../components/PurchaseAddItems.vue';
-import { usePurchaseStore } from '../stores';
-import type { PurchaseForm, PurchaseItem } from '@/utils/apis/models/request/purchaseAddRequest';
+import PurchasePayment from '../components/PurchasePayment.vue';
+import PurchaseReview from '../components/PurchaseReview.vue';
+import DConfirmPurchase from '../components/dialog/DConfirmPurchase.vue';
 
-const props = defineProps<{
-  id?: string;
-}>();
 
 type Step = {
   step: number,
   caption: string,
 }
 
-const step1 = ref(null)
+const dialog = ref<boolean>(false)
+
+const grandTotal = computed<number>(() => {
+	let gt = 0;
+	formField.value.items?.forEach(item => {
+		gt += (item.price * item.qty)
+	})
+	return gt;
+})
 
 const currentStep = ref<number>(0)
 
@@ -32,36 +38,18 @@ const step: Step[] = [
     caption: 'Pembayaran',
   },
 ]
-const store = usePurchaseStore();
+
 const formField = ref<PurchaseForm>({});
-const form = ref();
-const isLoading = ref<boolean>(false);
-const isEdit = props.id !== undefined;
 
-
-
-const submit = async () => {
-  const valid = await form.value.validate()
-  if (valid) {
-    isLoading.value = true;
-    isEdit ? updateSupplier() : createSupplier();
-    isLoading.value = false;
-  }
+const submit = async (payment: PP) => {
+  formField.value.payments = []
+	formField.value.payments.push(payment)
+	dialog.value = true
 }
 
-const updateSupplier = () => {
-  isLoading.value = true;
-  
-}
-
-const createSupplier = () => {
-  isLoading.value = true;
-}
-
-const ha = (e: PurchaseItem[]) => {
-  console.log(e);
-  formField.value.items = e
-  console.log(formField.value);
+const next = (data: PurchaseForm) => {
+  Object.assign(formField.value, data)
+  currentStep.value++
 }
 
 </script>
@@ -82,28 +70,41 @@ const ha = (e: PurchaseItem[]) => {
           :color="n.step == currentStep ? 'primary' : ''"
           :value="n.step"
         >
-          {{ n.caption }}
+          <template v-slot:icon="{step}">
+						<div>{{ step+1 }}</div>
+					</template>
+					<template v-slot:default>
+						<div>{{ n.caption }}</div>
+					</template>
         </VStepperItem>
       </template>
     </VStepperHeader>
     <VStepperWindow>
       <VStepperWindowItem>
         <PurchaseAddItems
-          ref="step1"
-          @update:items="ha"
-          v-model:supplier="formField.supplier"
-          v-model:purchase-date="formField.purchase_date"
-          @next="currentStep++"
+          @next="next"
         />
       </VStepperWindowItem>
       <VStepperWindowItem>
-        cok 2s
+        <PurchaseReview
+          :data="formField"
+          @next="next"
+          @back="currentStep--"
+        />
       </VStepperWindowItem>
       <VStepperWindowItem>
-        step 3
+        <PurchasePayment
+					@back="currentStep--"
+					:grand-total="grandTotal"
+					@next="submit"
+				/>
       </VStepperWindowItem>
     </VStepperWindow>
   </VStepper>
+	<DConfirmPurchase
+		:data="formField"
+		v-model="dialog"
+	/>
 </template>
 <style scoped>
 #stepper :deep(.v-stepper-item) {

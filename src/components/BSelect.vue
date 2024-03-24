@@ -26,7 +26,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'click:appendInner'): void
   (e: 'click:prependInner'): void
-  (e: '@update:model-value', value: T | T[]): void
+  (e: 'update:model-value', value: T | T[]): void
 }>()
 
 const classProps = computed(() => {
@@ -56,7 +56,7 @@ const classProps = computed(() => {
       return-object
       :loading="loading"
       :multiple="multiple"
-      @update:model-value="v => emit('@update:model-value', v)"
+      @update:model-value="v => emit('update:model-value', v)"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>

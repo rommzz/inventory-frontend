@@ -8,10 +8,10 @@ const slot = useSlots()
 </script>
 <template>
   <div>
-    <h3 class="tw-p-5">
+    <h3 class="tw-py-5 tw-text-xl tw-text-onSurface">
       {{ props.title }}
     </h3>
-    <div class="tw-px-5 tw-pb-5">
+    <div class="tw-pb-5">
       <slot></slot>
     </div>
     <div class="tw-flex tw-content-between tw-p-5" v-if="slot['action']">

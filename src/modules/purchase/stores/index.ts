@@ -1,62 +1,51 @@
 import type { ResponseV1 } from '@/utils/apis/http'
-import type { Supplier } from '@/utils/apis/models/model'
-import type { SupplierForm } from '@/utils/apis/models/request/request'
-
-import supplierApi from '@/utils/apis/repo/supplierApi'
+import type { DiscountType } from '@/utils/apis/models/commons'
+import type { Purchase } from '@/utils/apis/models/model'
+import type { PurchaseForm, PurchaseItem } from '@/utils/apis/models/request/purchaseAddRequest'
+import purchaseApi from '@/utils/apis/repo/purchaseApi'
+import moment from 'moment'
 import { defineStore } from 'pinia'
 
 export const usePurchaseStore = defineStore('purchaseStore', () => {
-  const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Supplier[]>> => {
+  const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {
     try {
-      const res = await supplierApi.getSuppliers(query)
+      const res = await purchaseApi.getPurchases(query)
       return res
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
-  const addPurchase = async (supplier: SupplierForm): Promise<Supplier> => {
+	
+	const cratePurchase = async (data: PurchaseForm): Promise<void> => {	
     try {
-      const res = await supplierApi.addSupplier(supplier)
-      return res
+      await purchaseApi.createPurchase({
+				items: data.items!.map(v => ({
+					inventory_item_id: v.item.id,
+					qty: v.qty,
+					price: v.price,
+				})),
+				total: 0,
+				grand_total: 0,
+				purchase_date: moment(data.purchase_date! ).utc().format(),
+				supplier_id: data.supplier?.id!,
+				payments: data.payments?.map(v => {
+					return {
+						payment_date: moment(v.payment_date!).utc().format(),
+						payment_method: v.payment_method!,
+						amount: v.amount!,
+						note: v.note,
+					}
+				})
+			})
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
-  const getPurchase = async (supplierId: string): Promise<Supplier> => {
-    try {
-      const res = await supplierApi.getSupplier(supplierId)
-      return res
-    } catch (error) {
-      console.log('error', error);
-      throw error
-    }
-  }
-  const editPurchase = async (supplier: Supplier): Promise<Supplier> => {
-    console.log(supplier.id);
-    
-    try {
-      const res = await supplierApi.editSupplier(supplier)
-      return res
-    } catch (error) {
-      console.log('error', error);
-      throw error
-    }
-  }
-  const deletePurchase = async (supplierId: string): Promise<void> => {
-    try {
-      await supplierApi.deleteSupplier(supplierId)
-    } catch (error) {
-      console.log('error', error);
-      throw error
-    }
-  }
+  
   return {
     getListPurchase,
-    addPurchase,
-    getPurchase,
-    editPurchase,
-    deletePurchase,
+		cratePurchase,
   }
 })
