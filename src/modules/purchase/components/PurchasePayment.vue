@@ -21,9 +21,15 @@ const paymentMethod = ref<PaymentMethodlist>(paymentMethodlist[0])
 const paymentDate = ref<string>(moment().format('yyyy-MM-DD'))
 const amount = ref<number>()
 
-const submit =async () => {
-  const valid = await form.value.validate()
-  if (valid) {
+const submit = async (withoutPayment: boolean = false) => {
+	if (withoutPayment) {
+		emit('next')
+		return;
+	}
+	const valid = await form.value.validate()
+  if (valid.valid) {
+		console.log('valid');
+		
     emit('next', {
       amount: amount.value,
 			payment_date: paymentDate.value,
@@ -34,7 +40,7 @@ const submit =async () => {
 
 const emit = defineEmits<{
 	(e: 'back'): void
-	(e: 'next', value: PurchasePayment): void
+	(e: 'next', value?: PurchasePayment): void
 }>()
 </script>
 <template>
@@ -47,7 +53,6 @@ const emit = defineEmits<{
 						:items="paymentMethodlist"
 						:item-title="v => v.title"
 						v-model="paymentMethod"
-						required
 					/>
 					<BInputDate
 						label="Tanggal Pembayaran"
@@ -64,7 +69,20 @@ const emit = defineEmits<{
 					@update:model-value="v => {
 						amount = v > grandTotal ? grandTotal : v
 					}"
-				/>
+					:rules="[ v => !!v || 'Nominal Pembayaran Wajib Diisi', ]"
+				>
+					<template v-slot:altMessage>
+						<div>
+							<span
+								class="tw-p-2 tw-text-primary tw-cursor-pointer tw-font-semibold tw-text-sm"
+								v-ripple
+								@click="() =>{amount = grandTotal}"
+							>
+								Bayar Sesuai Tagihan
+							</span>
+						</div>
+					</template>
+				</BTextField>
 			</VForm>
 			<div class="tw-text-onSurface">
 				Total Tagihan <span class="tw-font-semibold">{{ formatIDR(props.grandTotal) }}</span>
@@ -76,10 +94,18 @@ const emit = defineEmits<{
 				label="Sebelumnya"
 				@click="emit('back')"
 			/>
-			<BButton
-				label="Selesaikan"
-				@click="submit"
-			/>
+			<div>
+				<BButton
+					variant="outlined"
+					label="Selesaikan Tanpa Pembayaran"
+					@click="submit(true)"
+					class="tw-mr-5"
+				/>
+				<BButton
+					label="Selesaikan"
+					@click="submit"
+				/>
+			</div>
 		</div>
 	</div>
 </template>

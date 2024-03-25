@@ -2,6 +2,7 @@
 import { computed, defineModel } from 'vue';
 import BIcon from './BIcon.vue';
 import type { BIconName } from './types/BIcon';
+import { useSlots } from 'vue';
 
 const model = defineModel()
 const props = defineProps<{
@@ -28,12 +29,14 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: any): void
 }>()
 
+const slot = useSlots()
+
 const classProps = computed(() => {
   return props.class})
 </script>
 
 <template>
-  <div :class="classProps">
+  <div :class="`${classProps ?? ''} ${slot['altMessage'] ? 'tw-relative' : ''}`">
     <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">
       {{ label }} <span v-if="required" class="tw-text-primary">*</span>
     </div>
@@ -85,6 +88,9 @@ const classProps = computed(() => {
         <BIcon :icon="prependInnerIcon" @click="emit('click:appendInner')"></BIcon>
       </template>
     </VTextField>
+		<div class="tw-absolute tw-right-0 tw-top-[76px]"  v-if="slot['altMessage']">
+			<slot name="altMessage"></slot>
+		</div>
   </div>
 </template>
 <style scoped>

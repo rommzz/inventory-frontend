@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import type { PurchasePayment as PP, PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import PurchaseAddItems from '../components/PurchaseAddItems.vue';
 import PurchasePayment from '../components/PurchasePayment.vue';
 import PurchaseReview from '../components/PurchaseReview.vue';
 import DConfirmPurchase from '../components/dialog/DConfirmPurchase.vue';
-import { usePurchaseStore } from '../stores';
 
 
 type Step = {
   step: number,
   caption: string,
 }
-const store = usePurchaseStore();
 const dialog = ref<boolean>(false)
 const currentStep = ref<number>(0)
 let grandTotal: number = 0
@@ -33,10 +31,11 @@ const step: Step[] = [
 
 const formField = ref<PurchaseForm>({});
 
-const submit = async (payment: PP) => {
-	
-	formField.value.payments = []
-	formField.value.payments.push(payment)
+const submit = async (payment?: PP) => {
+	if (payment) {
+		formField.value.payments = []
+		formField.value.payments.push(payment)
+	}
 	console.log(formField.value);
 	dialog.value = true
 }
