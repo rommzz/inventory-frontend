@@ -32,7 +32,7 @@ export const purchaseRoutes: RouteChildren[] = [
         }
       ],
     },
-    component: () => import('../views/UiPurchaseForm.vue'),
+    component: () => import('../views/UiPurchaseDetail.vue'),
   }, 
 ]
 
