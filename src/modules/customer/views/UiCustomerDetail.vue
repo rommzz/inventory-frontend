@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import BButton from '@/components/BButton.vue';
+import BDetailCard from '@/components/BDetailCard.vue';
 import BIcon from '@/components/BIcon.vue';
+import BListItem from '@/components/BListItem.vue';
+import type { BIconName } from '@/components/types/BIcon';
 import type { Customer } from '@/utils/apis/models/model';
 import { computed, onMounted, ref } from 'vue';
-import CustomerDetailCard from '../components/CustomerDetailCard.vue';
 import { useCustomerStore } from '../stores';
-import type { BIconName } from '@/components/types/BIcon';
 
 const props = defineProps<{
   id?: string;
@@ -32,7 +33,6 @@ const getData = async () => {
     console.log(e);
   }).finally(() => {
     console.log('ok');
-    
   })
 }
 
@@ -100,7 +100,7 @@ const customerInfo = computed<{
   <div>
     <VRow class="tw-gap-8">
       <VCol>
-        <CustomerDetailCard title="Data Pelanggan">
+        <BDetailCard title="Data Pelanggan">
           <template v-slot:action>
             <div class="tw-flex tw-gap-2">
               <BButton label="Hapus" color="error"></BButton>
@@ -117,24 +117,18 @@ const customerInfo = computed<{
               <span>{{ cust?.data == '' ? '-' : cust.data }}</span>
             </div>
           </div>
-        </CustomerDetailCard>
+        </BDetailCard>
       </VCol>
       <VCol>
-        <CustomerDetailCard title="Informasi Pelanggan">
-          <div class="tw-text-onSurface ">
-            <div
-              v-for="info, index in customerInfo"
-              :key="index"
-              class="tw-flex tw-items-center tw-gap-4 tw-p-4"
-            >
-              <BIcon :icon="info.icon"></BIcon>
-              <div>
-                <div class="tw-text-onSurfaceVariant tw-font-semibold tw-text-xs">{{ info.title }}</div>
-                <span>{{ info?.data ?? '-' }}</span>
-              </div>
-            </div>
-          </div>
-        </CustomerDetailCard>
+        <BDetailCard title="Informasi Pelanggan">
+					<BListItem
+						v-for="info, index in customerInfo"
+						:key="index"
+						:icon="info.icon"
+						:title="info.title"
+						:data="info.data"
+					/>
+        </BDetailCard>
       </VCol>
     </VRow>
   </div>
