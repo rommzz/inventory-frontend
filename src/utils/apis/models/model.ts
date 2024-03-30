@@ -75,16 +75,32 @@ export type Payment = {
   note: string;
 } & TimeStamp
 
+export type InventoryPurchaseItem = {
+  id: string
+  created_at: string
+  updated_at: string
+  deleted_at: any
+  item_purchase_id: string
+  inventory_item_id: string
+  qty: number
+  price_before: number
+  price: number
+  total: number
+  inventory_item: any
+}
+
 export type Purchase = {
   id: string;
   total: number;
   tax?: number;
+	tax_percent?: number;
   discount?: number;
+	discount_percent?: number;
   grand_total: number;
   paid?: number;
   purchase_date: string;
   supplier_id: string;
   supplier: Supplier;
-  items: InventoryItem[];
+  items: InventoryPurchaseItem[];
   payments?: Payment[];
 } & TimeStamp

@@ -1,11 +1,23 @@
 import type { ResponseV1 } from '@/utils/apis/http'
-import type { Purchase } from '@/utils/apis/models/model'
+import type { Payment, Purchase } from '@/utils/apis/models/model'
 import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest'
 import purchaseApi from '@/utils/apis/repo/purchaseApi'
 import moment from 'moment'
 import { defineStore } from 'pinia'
 
+export type PaymentStatus = 'Lunas' | 'Belum Lunas' | 'Belum Dibayar'
+
 export const usePurchaseStore = defineStore('purchaseStore', () => {
+	const paymentStatus = (payment: Payment[]): PaymentStatus  => {
+		if (payment.length == 0) {
+			return 'Belum Dibayar'
+		} 
+		if (payment[payment.length - 1].remaining_payment === 0) {
+			return 'Lunas'
+		} else {
+			return 'Belum Lunas'
+		}
+	}
   const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {
     try {
       const res = await purchaseApi.getPurchases(query)
@@ -44,6 +56,7 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
   }
   
   return {
+		paymentStatus,
     getListPurchase,
 		cratePurchase,
   }

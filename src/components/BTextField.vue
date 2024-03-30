@@ -21,6 +21,7 @@ const props = defineProps<{
   message?: string
   readonly?: boolean
 	loading?: boolean
+	disabled?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -55,6 +56,7 @@ const classProps = computed(() => {
       :hide-details="hideDetails"
       :messages="message"
       :readonly="readonly"
+			:disabled="disabled"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
@@ -80,6 +82,7 @@ const classProps = computed(() => {
       :messages="message"
       :readonly="readonly"
 			:loading="props.loading"
+			:disabled="disabled"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
