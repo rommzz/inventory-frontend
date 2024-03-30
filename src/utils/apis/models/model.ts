@@ -104,3 +104,22 @@ export type Purchase = {
   items: InventoryPurchaseItem[];
   payments?: Payment[];
 } & TimeStamp
+
+export type CarCode = {
+  id: string
+  code: string
+  car_type_id: string
+  car_type: CarType
+} & TimeStamp
+
+export type CarType = {
+  id: string
+  name: string
+  car_group_type_id: string
+  car_group_type: CarGroupType
+} & TimeStamp
+
+export type CarGroupType = {
+  id: string
+  name: string
+} & TimeStamp
