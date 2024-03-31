@@ -114,6 +114,7 @@ onMounted(() => {
 						v-for="item, index in items"
 						:key="index"
 						class="tw-border-t tw-border-outlineVariant tw-py-4 tw-group"
+						@click.stop="router.push('/data/item/' + item.id)"
 					>
 						<td class="tw-pl-4">
 							{{ item.sku }}

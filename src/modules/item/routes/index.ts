@@ -21,18 +21,32 @@ export const itemRoutes: RouteChildren[] = [
     component: () => import('../views/UiItemForm.vue'),
   },
   {
-    path: ':id',
+    path: ':id/edit',
     name: 'item-edit',
     props: true,
     meta: {
       breadcrumbs: [
         {
           title: 'Edit Barang',
-          path: ':id'
+          path: ':id/edit'
         }
       ],
     },
     component: () => import('../views/UiItemForm.vue'),
+  },
+	{
+    path: ':id',
+    name: 'item-detail',
+    props: true,
+    meta: {
+      breadcrumbs: [
+        {
+          title: 'Detail Barang',
+          path: ':id'
+        }
+      ],
+    },
+    component: () => import('../views/UiItemDetail.vue'),
   }, 
 ]
 

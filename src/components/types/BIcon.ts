@@ -1403,6 +1403,8 @@ export type BIconName = "123" |
       "outlet" |
       "outlined_flag" |
       "output" |
+			"package" |
+			"package_2" |
       "padding" |
       "pages" |
       "pageview" |
