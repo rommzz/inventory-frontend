@@ -138,11 +138,17 @@ onMounted(() => {
     itemStore.getItem(props.id).then(r => {
       name.value =  r.name
       initalStock.value =  r.initial_stock
-      // selectedItemType.value =  r.brand
+      selectedItemType.value = itemTypeList.find(v => v.value == r.type)
       sku.value =  r.sku
       selectedSupplier.value =  r.supplier
       selectedUnit.value =  r.unit
       purchasePrice.value =  r.price
+			carGroupType.value = r.car_code.car_type.car_group_type
+			carType.value = r.car_code.car_type
+			carCode.value = r.car_code
+			taxRecomendation.value = r.tax_recommendation
+			mGroup.value = r.m_group
+			productHierarchy.value = r.product_hierarchy
     })
   }
 })
@@ -166,11 +172,11 @@ const submit = async () => {
     }
     
     isLoading.value = true;
-    isEdit ? updateSupplier(form) : createSupplier(form);
+    isEdit ? updateItem(form) : createItem(form);
   }
 }
 
-const updateSupplier = async (form: InventoryItemForm) => {
+const updateItem = async (form: InventoryItemForm) => {
   itemStore.editItem(form, props.id!).then(() => {
     router.replace({path: '/data/item'})
   }).catch(e => {
@@ -180,7 +186,7 @@ const updateSupplier = async (form: InventoryItemForm) => {
   })
 }
 
-const createSupplier = async (form: InventoryItemForm) => {
+const createItem = async (form: InventoryItemForm) => {
   itemStore.addItem(form).then(() => {
     router.replace({path: '/data/item'})
   }).catch(e => {
@@ -281,11 +287,12 @@ const createSupplier = async (form: InventoryItemForm) => {
       <BTextField
 				label="Rekomendasi Pajak"
 				type="number"
-				placeholder="Pajak Barang"
+				placeholder="ex: 11"
 				v-model.number="taxRecomendation" 
 				@update:model-value="v => {
 					taxRecomendation = v > 100 ? 100 : v
 				}"
+				append-inner-icon="percent"
 			/>
     </div>
 		<div class="tw-grid tw-grid-cols-2 tw-gap-x-5">

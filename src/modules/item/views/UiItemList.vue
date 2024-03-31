@@ -114,7 +114,7 @@ onMounted(() => {
 						v-for="item, index in items"
 						:key="index"
 						class="tw-border-t tw-border-outlineVariant tw-py-4 tw-group"
-						@click.stop="router.push('/data/item/' + item.id)"
+						@click="router.push('/data/item/' + item.id)"
 					>
 						<td class="tw-pl-4">
 							{{ item.sku }}
@@ -146,8 +146,8 @@ onMounted(() => {
 							{{ moment(item.created_at).format('DD MMM yyyy') }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
-							<BIcon @click="onDelete(item)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/data/item/' + item.id)" button-color="warningContainer"></BIcon>
+							<BIcon @click.stop="onDelete(item)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
+							<BIcon icon="edit_square" color="warning" @click.stop="router.push('/data/item/' + item.id + '/edit')" button-color="warningContainer"></BIcon>
 						</td>
 					</tr>
 				</thead>
