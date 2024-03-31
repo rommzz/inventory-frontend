@@ -21,7 +21,9 @@ export default {
     },
 		brand: `${master}/inventory-brand`,
 		car: {
-			code: `${car}/code`
+			code: `${car}/code`,
+			groupType: `${car}/group-type`,
+			type: `${car}/type`,
 		},
     customer: `${master}/customer`,
     inventoryItem: `${master}/inventory-item`,

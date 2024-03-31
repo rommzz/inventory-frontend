@@ -8,11 +8,14 @@ import { itemTypeList, type ItemTypeList } from '@/plugin/globalVar';
 import { formatIDR } from '@/plugin/helpers';
 import router from '@/router';
 import { useMetaStore } from "@/stores/meta";
-import type { CarCode, Supplier, Unit } from '@/utils/apis/models/model';
+import type { CarCode, CarGroupType, CarType, Supplier, Unit } from '@/utils/apis/models/model';
 import type { InventoryItemForm } from '@/utils/apis/models/request/request';
 import { computed, onMounted, ref } from 'vue';
 import { useItemStore } from '../stores';
 import { useCarStore } from '@/modules/car/stores';
+import BInputDate from '@/components/BInputDate.vue';
+import moment from 'moment';
+import { reactive } from 'vue';
 
 const props = defineProps<{
   id?: string;
@@ -34,10 +37,26 @@ const initalStock = ref<number>(0);
 const selectedItemType = ref<ItemTypeList>();
 const selectedSupplier = ref<Supplier>();
 const selectedUnit = ref<Unit>();
-const carCode = ref<CarCode>()
+const validFrom = ref<string>(moment().format('yyyy-MM-DD'))
 
 const unitLoading = ref<boolean>(false);
 const supplierLoading = ref<boolean>(false);
+const carGroupTypeLoading = ref<boolean>(false);
+	const carTypeLoading = ref<boolean>(false);
+
+const carGroupType = ref<CarGroupType>()
+const carType = ref<CarType>()
+const carCode = ref<CarCode>()
+
+let debounce = reactive<{
+	carGroup: any,
+	carType: any,
+	carCode: any,
+}>({
+	carGroup: undefined,
+	carType: undefined,
+	carCode: undefined,
+});
 
 const isLoading = ref<boolean>(false);
 const isEdit = props.id !== undefined;
@@ -69,10 +88,36 @@ const getSupplier = async () => {
   });
 }
 
+const getCarTypeGroupList = (search?: string) => {
+	clearTimeout(debounce.carGroup);
+  debounce.carGroup = setTimeout(() => {
+    carGroupTypeLoading.value = true
+		carStore.getCarTypeGroupList(search).then(() => {
+			
+		})
+		.catch(e => {
+			console.log(e);
+		}).finally(() => {
+			carGroupTypeLoading.value = false
+		})
+  }, 500);
+}
+
+const getCarTypeList = (groupId?: string) => {
+	clearTimeout(debounce.carType);
+  debounce.carType = setTimeout(() => {
+    carTypeLoading.value = true
+		carStore.getCarTypeList(groupId).catch(e => {
+			console.log(e);
+		}).finally(() => {
+			carTypeLoading.value = false
+		})
+  }, 500);
+}
+
 onMounted(() => {
   getSupplier();
   getUnit();
-	carStore.getCarCodeList();
   if (isEdit) {
     itemStore.getItem(props.id).then(r => {
       name.value =  r.name
@@ -90,18 +135,17 @@ const submit = async () => {
   const valid = await form.value.validate()
 
   if (valid.valid) {
-    const form: InventoryItemForm = {
-      name: name.value,
-      initial_stock: initalStock.value,
-      brand_id: 'selectedItemType.value!.id!',
-      sku: sku.value,
-      supplier_id: selectedSupplier.value!.id!,
-      unit_id: selectedUnit.value!.id,
-      price: purchasePrice.value
-    }
+    // const form: InventoryItemForm = {
+    //   name: name.value,
+    //   initial_stock: initalStock.value,
+    //   sku: sku.value,
+    //   supplier_id: selectedSupplier.value!.id!,
+    //   unit_id: selectedUnit.value!.id,
+    //   price: purchasePrice.value
+    // }
     
-    isLoading.value = true;
-    isEdit ? updateSupplier(form) : createSupplier(form);
+    // isLoading.value = true;
+    // isEdit ? updateSupplier(form) : createSupplier(form);
   }
 }
 
@@ -153,6 +197,36 @@ const createSupplier = async (form: InventoryItemForm) => {
     </div>
 		<div class=" tw-grid tw-grid-cols-3 tw-gap-x-5">
 			<BAutoComplete
+				v-model="carGroupType"
+				@update:search="getCarTypeGroupList"
+				:rules="[ v => !!v || 'Kolom Wajib diisi', ]"
+				label="Grup Tipe Mobil"
+				:items="carStore.carTypeGroupList"
+				required
+				:item-title="(item) => item.name"
+				placeholder="Pilih Grup Tipe Mobil"
+				:loading="carGroupTypeLoading"
+				@update:model-value="(v) => {
+					carStore.carTypeList = []
+					carStore.carCodeList = []
+					carType = undefined
+					carCode = undefined
+					console.log(carGroupType?.id);
+					
+					getCarTypeList(carGroupType?.id)
+				}"
+			/>
+			<BAutoComplete
+				@update:search="getCarTypeList"
+				:rules="[ v => !!v || 'Kolom Wajib diisi', ]"
+				label="Tipe Mobil"
+				:items="carStore.carTypeList"
+				required
+				v-model="carType"
+				:item-title="(item) => item.name"
+				placeholder="Pilih Tipe Mobil"
+			/>
+      <BAutoComplete
 				:rules="[ v => !!v || 'Kolom Wajib diisi', ]"
 				label="Kode Mobil"
 				:items="carStore.carCodeList"
@@ -160,32 +234,25 @@ const createSupplier = async (form: InventoryItemForm) => {
 				v-model="carCode"
 				:item-title="(item) => item.code"
 				placeholder="Pilih Kode Mobil"
-			>
-				<template v-slot:no-data="{search}">
-					<div @click="addBrand(search)" class="tw-cursor-pointer tw-p-4" >
-						tambahkan '{{search}}'
-					</div>
-				</template>
-			</BAutoComplete>
-			<BAutoComplete
-				:rules="[ v => !!v || 'Kolom Wajib diisi', ]"
-				label="Tipe"
-				:items="itemTypeList"
-				required
-				v-model="selectedItemType"
-				:item-title="(item) => item.title"
-				placeholder="Pilih Tipe Barang"
-			>
-				<template v-slot:no-data="{search}">
-					<div @click="addBrand(search)" class="tw-cursor-pointer tw-p-4" >
-						tambahkan '{{search}}'
-					</div>
-				</template>
-			</BAutoComplete>
-      <BSelect :rules="[ v => !!v || 'Kolom Wajib diisi', ]" label="Satuan" :items="listUnit" :loading="unitLoading" required v-model="selectedUnit" :item-title="(item) => item.name" placeholder="Satuan Barang"/>
+			/>
     </div>
     <div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
-      <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" required v-model.number="purchasePrice" label="Harga Beli" placeholder="Harga Beli Barang" :message="purchasePrice ? formatIDR(purchasePrice) : undefined"/>
+      <BInputDate
+				label="Berlaku Dari"
+				v-model="validFrom"
+			/>
+      <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" required v-model.number="initalStock" label="Stok" placeholder="Stok awal"></BTextField>
+    </div>
+		<div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
+      <BTextField
+				:rules="[ v => !!v || 'Kolom Wajib diisi', ]"
+				type="number"
+				required
+				v-model.number="purchasePrice"
+				label="Harga"
+				placeholder="Harga Barang"
+				:message="purchasePrice ? formatIDR(purchasePrice) : undefined"
+			/>
       <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" required v-model.number="initalStock" label="Stok" placeholder="Stok awal"></BTextField>
     </div>
     <div class="tw-flex tw-justify-end tw-gap-5">
