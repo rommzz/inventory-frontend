@@ -38,11 +38,15 @@ const selectedItemType = ref<ItemTypeList>();
 const selectedSupplier = ref<Supplier>();
 const selectedUnit = ref<Unit>();
 const validFrom = ref<string>(moment().format('yyyy-MM-DD'))
+const taxRecomendation = ref<number>()
+const mGroup = ref<string>()
+const productHierarchy = ref<string>()
 
 const unitLoading = ref<boolean>(false);
 const supplierLoading = ref<boolean>(false);
 const carGroupTypeLoading = ref<boolean>(false);
-	const carTypeLoading = ref<boolean>(false);
+const carTypeLoading = ref<boolean>(false);
+const carCodeLoading = ref<boolean>(false);
 
 const carGroupType = ref<CarGroupType>()
 const carType = ref<CarType>()
@@ -115,6 +119,18 @@ const getCarTypeList = (groupId?: string) => {
   }, 500);
 }
 
+const getCarCodeList = (carType?: string) => {
+	clearTimeout(debounce.carCode);
+  debounce.carCode = setTimeout(() => {
+    carCodeLoading.value = true
+		carStore.getCarCodeList(carType).catch(e => {
+			console.log(e);
+		}).finally(() => {
+			carCodeLoading.value = false
+		})
+  }, 500);
+}
+
 onMounted(() => {
   getSupplier();
   getUnit();
@@ -133,19 +149,24 @@ onMounted(() => {
 
 const submit = async () => {
   const valid = await form.value.validate()
-
   if (valid.valid) {
-    // const form: InventoryItemForm = {
-    //   name: name.value,
-    //   initial_stock: initalStock.value,
-    //   sku: sku.value,
-    //   supplier_id: selectedSupplier.value!.id!,
-    //   unit_id: selectedUnit.value!.id,
-    //   price: purchasePrice.value
-    // }
+    const form: InventoryItemForm = {
+      name: name.value,
+      initial_stock: initalStock.value,
+      sku: sku.value,
+      supplier_id: selectedSupplier.value!.id!,
+      unit_id: selectedUnit.value!.id,
+      price: purchasePrice.value,
+			car_code_id: carCode.value?.id!,
+			type: selectedItemType.value?.value!,
+			valid_from: moment(validFrom.value + ' ' + moment().utc().format('HH:mm:ss')).utc().format(),
+			m_group: mGroup.value,
+			tax_recommendation: taxRecomendation.value,
+			product_hierarchy: productHierarchy.value,
+    }
     
-    // isLoading.value = true;
-    // isEdit ? updateSupplier(form) : createSupplier(form);
+    isLoading.value = true;
+    isEdit ? updateSupplier(form) : createSupplier(form);
   }
 }
 
@@ -211,8 +232,6 @@ const createSupplier = async (form: InventoryItemForm) => {
 					carStore.carCodeList = []
 					carType = undefined
 					carCode = undefined
-					console.log(carGroupType?.id);
-					
 					getCarTypeList(carGroupType?.id)
 				}"
 			/>
@@ -222,7 +241,13 @@ const createSupplier = async (form: InventoryItemForm) => {
 				label="Tipe Mobil"
 				:items="carStore.carTypeList"
 				required
+				:loading="carTypeLoading"
 				v-model="carType"
+				@update:model-value="v => {
+					carStore.carCodeList = []
+					carCode = undefined
+					getCarCodeList(carType?.id)
+				}"
 				:item-title="(item) => item.name"
 				placeholder="Pilih Tipe Mobil"
 			/>
@@ -253,11 +278,31 @@ const createSupplier = async (form: InventoryItemForm) => {
 				placeholder="Harga Barang"
 				:message="purchasePrice ? formatIDR(purchasePrice) : undefined"
 			/>
-      <BTextField :rules="[ v => !!v || 'Kolom Wajib diisi', ]" type="number" required v-model.number="initalStock" label="Stok" placeholder="Stok awal"></BTextField>
+      <BTextField
+				label="Rekomendasi Pajak"
+				type="number"
+				placeholder="Pajak Barang"
+				v-model.number="taxRecomendation" 
+				@update:model-value="v => {
+					taxRecomendation = v > 100 ? 100 : v
+				}"
+			/>
+    </div>
+		<div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
+      <BTextField
+				v-model="mGroup"
+				label="M Group"
+				placeholder="M Group Barang"
+			/>
+      <BTextField
+				v-model="productHierarchy"
+				label="Product Hierarchy"
+				placeholder="Product Hierarchy Barang"
+			/>
     </div>
     <div class="tw-flex tw-justify-end tw-gap-5">
       <BButton :disabled="true" variant="outlined" label="Batalkan"></BButton>
-      <BButton type="submit" :is-loading="isLoading" :label="`Simpan ${isEdit ? 'Perubahan  ' : 'Pemasok'}`" @click="submit()"></BButton>
+      <BButton type="submit" :is-loading="isLoading" :label="`Simpan ${isEdit ? 'Perubahan  ' : 'Barang'}`" @click="submit()"></BButton>
     </div>
   </VForm>
 </template>

@@ -8,9 +8,9 @@ export const useCarStore = defineStore('carStore', () => {
 	const carTypeGroupList = ref<CarGroupType[]>([])
 	const carTypeList = ref<CarType[]>([])
 
-  const getCarCodeList = async (): Promise<CarCode[]> => {
+  const getCarCodeList = async (carType?: string): Promise<CarCode[]> => {
     try {
-      const res = await carApi.getCarCodeList()
+      const res = await carApi.getCarCodeList(carType)
 			carCodeList.value = res
       return res
     } catch (error) {

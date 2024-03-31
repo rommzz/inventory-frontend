@@ -31,17 +31,23 @@ export type InventoryItemStock = {
 }
 
 export type InventoryItem = {
-  id: string
-  name: string
-  brand_id: string
-  supplier_id: string
-  sku: string
-  price: number
-  initial_stock: number
-  stock: InventoryItemStock
-  supplier: Supplier
-  brand: Brand
-  unit: Unit
+  id: string;
+  name: string;
+  supplier_id: string;
+  unit_id: string;
+  sku: string;
+  price: number;
+  initial_stock: number;
+  car_code_id: string;
+  supplier: Supplier;
+  stock: InventoryItemStock;
+  unit: Unit;
+  car_code: CarCode;
+  m_group?: string;
+  product_hierarchy?: string;
+  type: string;
+  valid_from: string;
+  tax_recommendation?: number;
 } & TimeStamp
 
 export type Brand = {
@@ -123,3 +129,4 @@ export type CarGroupType = {
   id: string
   name: string
 } & TimeStamp
+

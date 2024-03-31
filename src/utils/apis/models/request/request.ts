@@ -23,8 +23,6 @@ export type InventoryItemForm = {
   type: ItemType
   unit_id: string
   car_code_id: string
-	//type_mobil
-	//group_type mobil
   valid_from: string
   initial_stock: number
   price: number

@@ -35,9 +35,13 @@ const carType = {
 }
 
 const carCode = {
-	getCarCodeList: async (): Promise<CarCode[]> => {  
+	getCarCodeList: async (carType?: string): Promise<CarCode[]> => {  
     try {
-      const res = await http.get<ResponseV1<CarCode[]>>('/v1' + endpoints.master.car.code)
+      const res = await http.get<ResponseV1<CarCode[]>>('/v1' + endpoints.master.car.code, {
+				params: {
+					car_type: carType,
+				}
+			})
       return res.data.data ?? []
     } catch (error) {
       console.log('error', error);
