@@ -16,6 +16,7 @@ export type PurchasePayment = {
 
 export type PurchaseForm = {
   purchase_date?: string;
+	grand_total?: number;
   total?: number;
   tax?: number;
 	taxType?: DiscountType,

@@ -139,7 +139,7 @@ const taxSummary = computed(() => {
 	if (taxType.value.value == 'value') {
 		return formatIDR(tax.value)
 	} else {
-		return `${tax.value}% (-${formatIDR((subtotal.value - discountValue.value) * (tax.value / 100))})`
+		return `${tax.value}% (${formatIDR((subtotal.value - discountValue.value) * (tax.value / 100))})`
 	}
 })
 
@@ -168,7 +168,7 @@ const grandTotalSummary = computed<string>(() => {
         <div class="tw-grid tw-grid-cols-2 tw-gap-3 ">
           <div v-for="item in data.items" :key="item.item.id" class="tw-p-3 tw-rounded-xl tw-border tw-border-outlineVariant tw-bg-surface">
             <div class="tw-text-sm tw-font-semibold tw-text-onSurface tw-mb-2">
-              {{ item.item.name }} - {{ item.item.brand.name }}
+              {{ item.item.name }}
             </div>
             <div class="tw-grid tw-grid-cols-2 tw-text-xs tw-text-onSurfaceVariant">
               <div>

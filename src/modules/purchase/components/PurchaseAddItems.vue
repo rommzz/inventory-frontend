@@ -108,7 +108,7 @@ const supplierList = ref<Supplier[]>([]);
             class="tw-rounded-xl tw-border tw-border-outlineVariant tw-flex tw-items-center tw-bg-surface tw-p-3 tw-mt-4 "
           >
             <div>
-              <div class="tw-text-onSurface tw-mb-1">{{ item.item.name }} - {{ item.item.brand.name }}</div>
+              <div class="tw-text-onSurface tw-mb-1">{{ item.item.name }}</div>
               <div class="tw-text-onSurfaceVariant tw-font-normal tw-text-xs">Sisa Stok: {{ item.item.stock.stock }} {{ item.item.unit.name }}</div>
               <div class="tw-text-onSurfaceVariant tw-font-normal tw-text-xs">Harga Barang: {{ formatIDR(item.item.price, true) }}</div>
             </div>

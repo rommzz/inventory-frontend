@@ -31,6 +31,7 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
 	const cratePurchase = async (data: PurchaseForm): Promise<void> => {	
     try {
       await purchaseApi.createPurchase({
+				grand_total: data.grand_total,
 				items: data.items!.map(v => ({
 					inventory_item_id: v.item.id,
 					qty: v.qty,

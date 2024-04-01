@@ -66,11 +66,11 @@ const onSearch = (v?: any) => {
         <div
           v-for="item in listInventoryitem"
           :key="item.id"
-          class="tw-rounded-xl tw-border tw-border-outlineVariant tw-flex tw-justify-between tw-items-center tw-bg-surface tw-p-3 tw-mt-4 tw-font-semibold tw-text-sm tw-cursor-pointer"
+          class="tw-rounded-xl tw-border tw-border-outlineVariant tw-flex tw-justify-between tw-items-center tw-bg-surface tw-p-3 tw-mt-4 first:tw-mt-0 tw-font-semibold tw-text-sm tw-cursor-pointer"
           @click="emit('select', item)"
         >
           <div>
-            <div class="tw-text-onSurface tw-mb-1">{{ item.name }} - {{ item.brand.name }}</div>
+            <div class="tw-text-onSurface tw-mb-1">{{ item.name }}</div>
             <div class="tw-text-onSurfaceVariant tw-font-normal tw-text-xs">Sisa Stok: {{ item.stock.stock }} {{ item.unit.name }}</div>
           </div>
           <div>{{ formatIDR(item.price, true) }}</div>

@@ -32,6 +32,7 @@ const step: Step[] = [
 const formField = ref<PurchaseForm>({});
 
 const submit = async (payment?: PP) => {
+	formField.value.grand_total = grandTotal
 	if (payment) {
 		formField.value.payments = []
 		formField.value.payments.push(payment)
