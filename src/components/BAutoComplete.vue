@@ -63,7 +63,10 @@ const slot = useSlots()
       :multiple="multiple"
       @update:search="v => {
 				search = v
-				emit('update:search', v)
+				let s: string = v
+				if (s.length == 0 || s.length > 2) {
+					emit('update:search', v)
+				}
 			}"
       @update:model-value="v => emit('update:model-value', v)"
     >

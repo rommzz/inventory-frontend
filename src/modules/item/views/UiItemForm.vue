@@ -111,7 +111,7 @@ const getCarTypeList = (groupId?: string) => {
 	clearTimeout(debounce.carType);
   debounce.carType = setTimeout(() => {
     carTypeLoading.value = true
-		carStore.getCarTypeList(groupId).catch(e => {
+		carStore.getCarTypeList({car_group_type_id: groupId}).catch(e => {
 			console.log(e);
 		}).finally(() => {
 			carTypeLoading.value = false

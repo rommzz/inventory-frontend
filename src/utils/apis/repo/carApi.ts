@@ -2,6 +2,13 @@ import endpoints from "../endpoints";
 import http, { type ResponseV1 } from "../http";
 import type { CarCode, CarGroupType, CarType } from "../models/model";
 
+export type CarTypeParam = {
+	limit?: number
+	offset?: number
+	car_group_type_id?: string
+	search?: string
+}
+
 const carTypeGroup = {
 	getCarTypeGroupList: async (search?: string): Promise<CarGroupType[]> => {  
     try {
@@ -19,12 +26,10 @@ const carTypeGroup = {
 }
 
 const carType = {
-	getCarTypeList: async (groupTypeId?: string): Promise<CarType[]> => {  
+	getCarTypeList: async (param?: CarTypeParam): Promise<CarType[]> => {  
     try {
       const res = await http.get<ResponseV1<CarType[]>>('/v1' + endpoints.master.car.type, {
-				params: {
-					car_group_type_id: groupTypeId
-				}
+				params: param
 			})
       return res.data.data ?? []
     } catch (error) {

@@ -5,13 +5,14 @@ import BIcon from '@/components/BIcon.vue';
 import BTable from '@/components/BTable.vue';
 import type { BTableQuery } from '@/components/types/BTable';
 import type { MetaData } from '@/utils/apis/http';
-import type { Purchase, Supplier } from '@/utils/apis/models/model';
+import type { Payment, Purchase, Supplier } from '@/utils/apis/models/model';
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePurchaseStore } from '../stores';
 import type { InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
 import { formatIDR } from '@/plugin/helpers';
 import moment from 'moment';
+import { computed } from 'vue';
 
 const router = useRouter();
 const store = usePurchaseStore();
@@ -60,6 +61,14 @@ const getPurchase = async () => {
 // 	getPurchase()
 // }
 
+const remeaningPayment = (payment: Payment[], grandTotal: number): number => {
+	if (!payment.length) {
+		return grandTotal
+	} else {
+		return payment[payment.length - 1].remaining_payment
+	}
+} 
+
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
 	router.push({path: '/purchase', query})
@@ -97,27 +106,28 @@ onMounted(() => {
 						</th>
 					</tr>
 					<tr v-for="purchase, index in purchases" :key="index" class="tw-border-t tw-border-outlineVariant tw-group">
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-flex tw-items-center tw-gap-2">
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-gap-2">
 							{{ purchase.id }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.items }}
+							<!-- {{ purchase.items[0] }} -->
+							nama item
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ formatIDR(purchase.grand_total) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ formatIDR(purchase.grand_total - (purchase.paid ?? 0)) }}
+							{{ formatIDR(remeaningPayment(purchase.payments ?? [], purchase.grand_total)) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.grand_total - (purchase.paid ?? 0) > 0 ? 'Belum Lunas' : 'Lunas' }}
+							{{ purchase.paid ? 'Lunas' : 'Belum Lunas' }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ moment(purchase.purchase_date).format('DD MMM yyy') }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
 							<BIcon @click="onDelete(purchase)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
-							<BIcon icon="payments" color="success" button-color="successContainer"></BIcon>
+							<BIcon icon="payments" :color="purchase.paid ? 'outline' : 'success'" :button-color="purchase.paid ? 'bgSecondary' : 'successContainer'"></BIcon>
 						</td>
 					</tr>
 				</thead>

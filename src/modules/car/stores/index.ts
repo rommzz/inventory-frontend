@@ -1,9 +1,20 @@
 import type { CarCode, CarGroupType, CarType } from '@/utils/apis/models/model'
-import carApi from '@/utils/apis/repo/carApi'
+import carApi, { type CarTypeParam } from '@/utils/apis/repo/carApi'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 export const useCarStore = defineStore('carStore', () => {
+	const loading = reactive<{
+		carCodeList: boolean
+		carTypeGroupList: boolean
+		carTypeList: boolean
+	}>({
+		carCodeList: false,
+		carTypeGroupList: false,
+		carTypeList: false,
+	})
+
+
 	const carCodeList = ref<CarCode[]>([])
 	const carTypeGroupList = ref<CarGroupType[]>([])
 	const carTypeList = ref<CarType[]>([])
@@ -30,18 +41,22 @@ export const useCarStore = defineStore('carStore', () => {
     }
   }
 
-	const getCarTypeList = async (groupTypeId?: string): Promise<CarType[]> => {
+	const getCarTypeList = async (param?: CarTypeParam): Promise<CarType[]> => {
+		loading.carTypeList = true
     try {
-      const res = await carApi.getCarTypeList(groupTypeId)
+      const res = await carApi.getCarTypeList(param)
 			carTypeList.value = res
+			loading.carTypeList = false
       return res
     } catch (error) {
       console.log('error', error);
+			loading.carTypeList = false
       throw error
     }
   }
   
   return {
+		loading,
 		carCodeList,
 		carTypeGroupList,
 		carTypeList,
