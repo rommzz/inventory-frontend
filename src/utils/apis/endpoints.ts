@@ -2,6 +2,8 @@ const auth: string = '/auth'
 const master: string = '/master'
 const user: string = `${auth}/user`
 const meta: string = `${master}/meta`
+const purchase: string = '/inventory/item-purchase/'
+const car: string = `${master}/car`
 
 export default {
   auth: {
@@ -17,9 +19,18 @@ export default {
     meta: {
       units: `${meta}/units`,
     },
-    supplier: `${master}/supplier`,
-    inventoryItem: `${master}/inventory-item`,
-    brand: `${master}/inventory-brand`,
+		brand: `${master}/inventory-brand`,
+		car: {
+			code: `${car}/code`,
+			groupType: `${car}/group-type`,
+			type: `${car}/type`,
+		},
     customer: `${master}/customer`,
-  }
+    inventoryItem: `${master}/inventory-item`,
+    supplier: `${master}/supplier`,
+  },
+	purchase: {
+		purchase: `${purchase}`,
+		payment: (purchaseId: string) => `${purchase}/${purchaseId}/payment`
+	}
 }

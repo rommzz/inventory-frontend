@@ -1,61 +1,64 @@
 import type { ResponseV1 } from '@/utils/apis/http'
-import type { Supplier } from '@/utils/apis/models/model'
-import type { SupplierForm } from '@/utils/apis/models/request/request'
-import supplierApi from '@/utils/apis/repo/supplierApi'
+import type { Payment, Purchase } from '@/utils/apis/models/model'
+import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest'
+import purchaseApi from '@/utils/apis/repo/purchaseApi'
+import moment from 'moment'
 import { defineStore } from 'pinia'
 
+export type PaymentStatus = 'Lunas' | 'Belum Lunas' | 'Belum Dibayar'
+
 export const usePurchaseStore = defineStore('purchaseStore', () => {
-  const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Supplier[]>> => {
+	const paymentStatus = (payment: Payment[]): PaymentStatus  => {
+		if (payment.length == 0) {
+			return 'Belum Dibayar'
+		} 
+		if (payment[payment.length - 1].remaining_payment === 0) {
+			return 'Lunas'
+		} else {
+			return 'Belum Lunas'
+		}
+	}
+  const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {
     try {
-      const res = await supplierApi.getSuppliers(query)
+      const res = await purchaseApi.getPurchases(query)
       return res
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
-  const addPurchase = async (supplier: SupplierForm): Promise<Supplier> => {
+	
+	const cratePurchase = async (data: PurchaseForm): Promise<void> => {	
     try {
-      const res = await supplierApi.addSupplier(supplier)
-      return res
+      await purchaseApi.createPurchase({
+				grand_total: data.grand_total,
+				items: data.items!.map(v => ({
+					inventory_item_id: v.item.id,
+					qty: v.qty,
+					price: v.price,
+				})),
+				...(data.taxType == 'value' ? { tax: data.tax } : {tax_percent: data.tax}),
+				...(data.discountType == 'value' ? { discount: data.discount } : {discount_percent: data.discount}),
+				purchase_date: moment(data.purchase_date! ).utc().format(),
+				supplier_id: data.supplier?.id!,
+				payments: data.payments?.map(v => {
+					return {
+						payment_date: moment(v.payment_date!).utc().format(),
+						payment_method: v.payment_method!,
+						amount: v.amount!,
+						note: v.note,
+					}
+				})
+			})
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
-  const getPurchase = async (supplierId: string): Promise<Supplier> => {
-    try {
-      const res = await supplierApi.getSupplier(supplierId)
-      return res
-    } catch (error) {
-      console.log('error', error);
-      throw error
-    }
-  }
-  const editPurchase = async (supplier: Supplier): Promise<Supplier> => {
-    console.log(supplier.id);
-    
-    try {
-      const res = await supplierApi.editSupplier(supplier)
-      return res
-    } catch (error) {
-      console.log('error', error);
-      throw error
-    }
-  }
-  const deletePurchase = async (supplierId: string): Promise<void> => {
-    try {
-      await supplierApi.deleteSupplier(supplierId)
-    } catch (error) {
-      console.log('error', error);
-      throw error
-    }
-  }
+  
   return {
+		paymentStatus,
     getListPurchase,
-    addPurchase,
-    getPurchase,
-    editPurchase,
-    deletePurchase,
+		cratePurchase,
   }
 })

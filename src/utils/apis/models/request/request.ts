@@ -1,3 +1,5 @@
+import type { ItemType } from "../commons";
+
 export type CustomerForm = {
   name: string;
   email?: string;
@@ -15,11 +17,16 @@ export type SupplierForm = {
 }
 
 export type InventoryItemForm = {
-  name: string;
-  brand_id: string;
-  supplier_id: string;
-  sku: string;
-  unit_id: string;
-  price: number;
-  initial_stock: number;
+  sku: string
+	name: string
+  supplier_id: string
+  type: ItemType
+  unit_id: string
+  car_code_id: string
+  valid_from: string
+  initial_stock: number
+  price: number
+  tax_recommendation?: number
+  m_group?: string
+  product_hierarchy?: string
 }

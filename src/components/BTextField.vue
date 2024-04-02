@@ -2,6 +2,7 @@
 import { computed, defineModel } from 'vue';
 import BIcon from './BIcon.vue';
 import type { BIconName } from './types/BIcon';
+import { useSlots } from 'vue';
 
 const model = defineModel()
 const props = defineProps<{
@@ -19,6 +20,8 @@ const props = defineProps<{
   modelValue?: any
   message?: string
   readonly?: boolean
+	loading?: boolean
+	disabled?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -27,12 +30,14 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: any): void
 }>()
 
+const slot = useSlots()
+
 const classProps = computed(() => {
   return props.class})
 </script>
 
 <template>
-  <div :class="classProps">
+  <div :class="`${classProps ?? ''} ${slot['altMessage'] ? 'tw-relative' : ''}`">
     <div v-if="label" :for="label" class="tw-font-semibold tw-text-sm tw-mb-2">
       {{ label }} <span v-if="required" class="tw-text-primary">*</span>
     </div>
@@ -51,6 +56,7 @@ const classProps = computed(() => {
       :hide-details="hideDetails"
       :messages="message"
       :readonly="readonly"
+			:disabled="disabled"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
@@ -75,6 +81,8 @@ const classProps = computed(() => {
       @update:model-value="model => $emit('update:modelValue', model)"
       :messages="message"
       :readonly="readonly"
+			:loading="props.loading"
+			:disabled="disabled"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
@@ -83,6 +91,9 @@ const classProps = computed(() => {
         <BIcon :icon="prependInnerIcon" @click="emit('click:appendInner')"></BIcon>
       </template>
     </VTextField>
+		<div class="tw-absolute tw-right-0 tw-top-[76px]"  v-if="slot['altMessage']">
+			<slot name="altMessage"></slot>
+		</div>
   </div>
 </template>
 <style scoped>
@@ -92,5 +103,17 @@ const classProps = computed(() => {
 
 .v-input :deep(.v-input__details) {
   padding: 0;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.v-input :deep(input::-webkit-outer-spin-button),
+.v-input :deep(input::-webkit-inner-spin-button) {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.v-input :deep(input[type=number]) {
+  -moz-appearance: textfield;
 }
 </style>

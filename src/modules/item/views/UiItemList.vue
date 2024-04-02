@@ -103,7 +103,7 @@ onMounted(() => {
 					<tr class="tw-text-left !tw-p-4">
 						<th
 							v-for="header in [
-								'SKU', 'Nama', 'Merk', 'Pemasok', 'Satuan', 'Harga Beli', 'Stok Awal', 'Tanggal Masuk', 'Aksi']"
+								'SKU', 'Nama', 'Tipe', 'Tipe Mobil', 'Pemasok', 'Harga Barang', 'Stok Awal', 'Berlaku Dari', 'Aksi']"
 							:key="header"
 							class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-font-semibold"
 						>
@@ -113,25 +113,31 @@ onMounted(() => {
 					<tr
 						v-for="item, index in items"
 						:key="index"
-						class="tw-border-t tw-border-outlineVariant tw-py-4 "
+						class="tw-border-t tw-border-outlineVariant tw-py-4 tw-group"
+						@click="router.push('/data/item/' + item.id)"
 					>
 						<td class="tw-pl-4">
 							{{ item.sku }}
 						</td>
-						<td>
-							{{ item.name }}
+						<td class="tw-flex tw-items-center tw-self-center tw-py-4 tw-gap-2">
+							<div class=" tw-rounded-full tw-w-10 tw-h-10 tw-flex tw-place-items-center tw-justify-center group-even:tw-bg-primary group-odd:tw-bg-secondary tw-text-white tw-font-semibold tw-text-sm">
+								{{ item.name.toUpperCase().substring(0,1) }}
+							</div>
+							<span>
+								{{ item.name }}
+							</span>
 						</td>
 						<td>
-							{{ item.brand.name }}
+							{{ item.type }}
+						</td>	
+						<td>
+							{{ item.car_code.car_type.name }}
 						</td>	
 						<td>
 							{{ item.supplier.name }}
 						</td>
 						<td>
-							{{ item.unit.name }}
-						</td>
-						<td>
-							{{ formatIDR(item.price) }}
+							{{ formatIDR(item.price) }}/{{ item.unit.name }}
 						</td>
 						<td>
 							{{ item.initial_stock }}
@@ -140,8 +146,8 @@ onMounted(() => {
 							{{ moment(item.created_at).format('DD MMM yyyy') }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
-							<BIcon @click="onDelete(item)" icon="delete" color="error" class="tw-mr-8" button-color="errorContainer"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/data/item/' + item.id)" button-color="warningContainer"></BIcon>
+							<BIcon @click.stop="onDelete(item)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
+							<BIcon icon="edit_square" color="warning" @click.stop="router.push('/data/item/' + item.id + '/edit')" button-color="warningContainer"></BIcon>
 						</td>
 					</tr>
 				</thead>
