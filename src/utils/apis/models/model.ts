@@ -92,7 +92,7 @@ export type InventoryPurchaseItem = {
   price_before: number
   price: number
   total: number
-  inventory_item: any
+  inventory_item: InventoryItem
 }
 
 export type Purchase = {

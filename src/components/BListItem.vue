@@ -15,7 +15,7 @@ const props = defineProps<{
 		<BIcon :icon="props.icon"></BIcon>
 		<div>
 			<div class="tw-text-onSurfaceVariant tw-font-semibold tw-text-xs">{{ props.title }}</div>
-			<span>{{ props?.data ?? '-' }}</span>
+			<span>{{ props?.data }}</span>
 		</div>
 	</div>
 </template>

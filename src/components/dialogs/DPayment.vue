@@ -9,11 +9,20 @@ import BTextField from '../BTextField.vue';
 import { formatNumber } from '@/plugin/helpers';
 import { formatIDR } from '@/plugin/helpers';
 import BButton from '../BButton.vue';
+import type { PaymentMethod } from '@/utils/apis/models/commons';
 
 const dialog = defineModel<boolean>()
 
 const props = defineProps<{
 	remeaningPayment: number
+	isPaying: boolean
+}>()
+
+const emit = defineEmits<{
+	(e: 'pay', value: {
+		paymentMethod: PaymentMethod,
+		date: string
+	}): void
 }>()
 
 const paymentMethod = ref<PaymentMethodlist>(paymentMethodlist[0])
@@ -48,8 +57,14 @@ const paymentDate = ref<string>(moment().format('yyyy-MM-DD'))
 			</div>
 		</div>
 		<template v-slot:action>
-			<BButton label="Batalkan" variant="text"/>
-			<BButton label="Bayar"/>
+			<BButton :disabled="isPaying" label="Batalkan" variant="text" @click="dialog = false"/>
+			<BButton
+				:is-loading="isPaying"
+				label="Bayar"
+				@click="emit('pay', {
+				date: paymentDate,
+				paymentMethod: paymentMethod.value,
+			})"/>
 		</template>
 	</BDialog>
 </template>

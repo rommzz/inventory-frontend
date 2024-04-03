@@ -114,7 +114,7 @@ class Http {
       const response = await this.instance.delete<T, R>(url, config)
       return response
     } catch (error: any) {
-      throw new error() as AxiosError
+			throw this.errorHandler(error)
     }
   }
 }

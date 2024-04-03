@@ -1,4 +1,5 @@
 import type { ResponseV1 } from '@/utils/apis/http'
+import type { PaymentMethod } from '@/utils/apis/models/commons'
 import type { Payment, Purchase } from '@/utils/apis/models/model'
 import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest'
 import purchaseApi from '@/utils/apis/repo/purchaseApi'
@@ -18,10 +19,44 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
 			return 'Belum Lunas'
 		}
 	}
+
   const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {
     try {
       const res = await purchaseApi.getPurchases(query)
       return res
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  }
+
+	const getPurchase = async (id: string): Promise<ResponseV1<Purchase>> => {
+    try {
+      const res = await purchaseApi.getPurchase(id)
+      return res
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  }
+
+	const payment = async (id: string, payment: {
+		payment_date: string
+		payment_method: PaymentMethod
+		amount: number
+	}): Promise<ResponseV1<Purchase>> => {
+    try {
+      const res = await purchaseApi.payment(id, payment)
+      return res
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  }
+
+	const deletePurchase = async (id: string): Promise<void> => {
+    try {
+      await purchaseApi.deletePurchase(id)
     } catch (error) {
       console.log('error', error);
       throw error
@@ -60,5 +95,8 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
 		paymentStatus,
     getListPurchase,
 		cratePurchase,
+		getPurchase,
+		payment,
+		deletePurchase,
   }
 })

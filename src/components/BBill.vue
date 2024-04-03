@@ -33,7 +33,7 @@ const discountValue = (): number => {
 			</div>
 			<div>
 				<span>Diskon</span>
-				<h5>{{ percentIdrView(props.discount ?? 0, props.discountPercent ?? 0, props.total) }}</h5>
+				<h5>{{ percentIdrView(props.discountPercent ?? 0, props.discount ?? 0, props.total) }}</h5>
 			</div>
 			<div>
 				<span>Pajak</span>

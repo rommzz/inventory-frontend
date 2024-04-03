@@ -15,7 +15,7 @@ const props = defineProps<{
 
 const lastPayment = (): Payment | undefined => {
 	if (props.payments?.length) {
-		props.payments[(props.payments?.length ?? 1) - 1]
+		return props.payments[props.payments.length - 1]
 	} else {
 		return undefined
 	}
@@ -78,7 +78,7 @@ const lastPayment = (): Payment | undefined => {
 					Sisa Bayar
 				</span>
 				<span>
-					{{ formatIDR(lastPayment()?.remaining_payment ?? grandTotal) }}
+					{{ formatIDR(lastPayment()?.remaining_payment ?? 0) }}
 				</span>
 			</div>
 			<div class="tw-mt-2">
@@ -86,7 +86,7 @@ const lastPayment = (): Payment | undefined => {
 					Terbayar
 				</span>
 				<span>
-					{{ formatIDR(paid) }}
+					{{ formatIDR(grandTotal - (lastPayment()?.remaining_payment ?? 0)) }}
 				</span>
 			</div>
 		</div>

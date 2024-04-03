@@ -27,7 +27,7 @@ export const percentIdrView = (percent: number, value: number, valueOf: number, 
 	}
 	if (percent > 0) {
 		const v: number = valueOf * (percent/100)
-		return `${percent}% (${isMinus && '-'}${formatIDR(v)})`
+		return `${percent}% (${isMinus ? '-' : ''}${formatIDR(v)})`
 	}
 	return formatIDR(value);
 }
