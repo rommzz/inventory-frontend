@@ -43,6 +43,9 @@ const props = defineProps({
 	color: {
 		type: String as () => keyof typeof pallete.schemes.light,
 		default: 'primary'
+	},
+	textColor: {
+		type: String as () => keyof typeof pallete.schemes.light,
 	}
 })
 defineEmits(['click'])
@@ -65,6 +68,6 @@ const classProps = computed(() => {
     <template v-slot:prepend>
       <BIcon :icon="prependIcon" :color="prependIconColor"></BIcon>
     </template>
-    <span class="tw-font-semibold">{{ label }}</span>
+    <span :style="`${props.textColor && 'color: ' + pallete.schemes.light[props.textColor] + ' !important'}`" class="tw-font-semibold">{{ label }}</span>
   </VBtn>
 </template>

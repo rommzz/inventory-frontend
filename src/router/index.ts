@@ -5,6 +5,7 @@ import storage from '@/utils/storage'
 import itemRoutes from '@/modules/item/routes'
 import customerRoutes from '@/modules/customer/routes'
 import purchaseRoutes from '@/modules/purchase/routes'
+import stockRoutes from '@/modules/stock/routes'
 
 export interface Breadcrumbs {
   title: string,
@@ -44,7 +45,8 @@ const router = createRouter({
         ...supplierRoutes,
         ...itemRoutes,
         ...customerRoutes,
-        ...purchaseRoutes
+        ...purchaseRoutes,
+				...stockRoutes,
       ]
     }
   ]
