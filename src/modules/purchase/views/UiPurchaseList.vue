@@ -129,7 +129,12 @@ onMounted(() => {
 							{{ purchase.id }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.items[0].inventory_item?.name ?? '-' }}
+							<div>
+								{{ purchase.items[0].inventory_item?.name ?? '-' }}
+							</div>
+							<span v-if="purchase.items.length > 1" class="tw-text-sm tw-text-outline">
+								+ {{ purchase.items.length - 1 }} barang lainnya
+							</span>
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ formatIDR(purchase.grand_total) }}
