@@ -45,7 +45,9 @@ const menus: Menu[] = [
         routeName: 'item-list',
       },
       {
-        title: 'Daftar Harga Barang',},
+        title: 'Daftar Harga Barang',
+				routeName: 'stock-list',
+			},
       {
         title: 'Daftar Pelanggan',
         routeName: 'customer-list',
