@@ -14,6 +14,8 @@ import { computed, onMounted, ref } from 'vue';
 import DDeleteConfirmation from '../components/dialog/DDeleteConfirmation.vue';
 import { usePurchaseStore } from '../stores';
 import { toast } from 'vue3-toastify';
+import router from '@/router';
+import btoast from '@/plugin/btoast';
 
 const props = defineProps<{
 	id: string;
@@ -148,6 +150,10 @@ onMounted(() => {
 		<DDeleteConfirmation
 			:purchase-id="props.id"
 			v-model="dialog"
+			@success-delete="() => {
+				btoast('Berhasil Menghapus Pembelian', 'success')
+				router.replace('/purchase	')
+			}"
 		/>
 		<DPayment
 			:is-paying="isLoadingPay"
