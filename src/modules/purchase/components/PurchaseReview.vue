@@ -65,7 +65,7 @@ const purchaseData: {
   {
     icon: 'calendar_today',
     title: 'Tanggal Pembelian',
-    value: moment(props.data?.purchase_date).format('DD MM yyyy')
+    value: moment(props.data?.purchase_date).format('DD MMMM yyyy')
   }
 ]
 

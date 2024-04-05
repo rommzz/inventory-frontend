@@ -87,7 +87,7 @@ const supplierList = ref<Supplier[]>([]);
             :max-date="moment().format('yyyy-MM-DD')"
             v-model="purchaseDate"
             required
-            :rules="[ v => !!v || 'supplier Wajib diisi', ]"
+            :rules="[ v => !!v || 'tanggal Wajib diisi', ]"
           />
         </div>
       </div>

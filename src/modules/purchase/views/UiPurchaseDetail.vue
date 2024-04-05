@@ -13,6 +13,7 @@ import moment from 'moment';
 import { computed, onMounted, ref } from 'vue';
 import DDeleteConfirmation from '../components/dialog/DDeleteConfirmation.vue';
 import { usePurchaseStore } from '../stores';
+import { toast } from 'vue3-toastify';
 
 const props = defineProps<{
 	id: string;
@@ -23,16 +24,16 @@ const store = usePurchaseStore()
 const dialog = ref<boolean>(false)
 const dialogPayment = ref<boolean>(false)
 const isLoading = ref<boolean>(true)
-const isLoadingPay = ref<boolean>(true)
+const isLoadingPay = ref<boolean>(false)
 
 const data = ref<Purchase>()
 
 const paymentStatus = computed(() => store.paymentStatus(data!.value?.payments ?? []))
-const purchaseData: {
+const purchaseData = ref<{
 	icon: BIconName,
 	title: string,
 	value: string,
-}[] = [
+}[]>([
 	{
 		icon: 'receipt_long',
 		title: "ID Pembelian",
@@ -48,7 +49,7 @@ const purchaseData: {
 		title: "Tanggal Pembelian",
 		value: moment(data?.value?.purchase_date).format('DD MMM yyyy'),
 	},
-]
+]) 
 
 const getData = async () => {
 	isLoading.value = true
@@ -71,10 +72,14 @@ const onPay = async ({paymentMethod, paymentDate}: {
 	}).then(() => {
 		getData()
 	}).catch(e => {
-		console.log(e);
+		toast(e.msg ?? e, {
+			type: 'error'
+		})
 	}).finally(() => {
 		dialog.value = false
 		isLoading.value = false
+		isLoadingPay.value = false
+		dialogPayment.value = false
 	})
 }
 
@@ -133,10 +138,10 @@ onMounted(() => {
 				:paid="data?.paid ?? 0"
 				class="tw-mt-4"
 			/>
-			<BDetailCard title="Aksi" class="tw-mt-4">
+			<BDetailCard title="Aksi" class="tw-mt-4" v-if="paymentStatus !== 'Lunas'">
 				<div class="tw-flex tw-justify-end tw-gap-2">
 					<BButton color="error" label="Hapus Pembelian" @click="dialog = true"></BButton>
-					<BButton :disabled="paymentStatus == 'Lunas'" label="Bayar Pembelian" @click="dialogPayment = true"></BButton>
+					<BButton label="Bayar Pembelian" @click="dialogPayment = true"></BButton>
 				</div>
 			</BDetailCard>
 		</div>

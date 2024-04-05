@@ -5,6 +5,7 @@ import BDetailCard from './BDetailCard.vue';
 import { formatIDR } from '@/plugin/helpers';
 import moment from 'moment';
 import { paymentMethodlist } from '@/plugin/globalVar';
+import { computed } from 'vue';
 
 const props = defineProps<{
 	payments: Payment[]
@@ -21,6 +22,7 @@ const lastPayment = (): Payment | undefined => {
 	}
 }
 
+const reversePayment = computed<Payment[]>(() => props.payments!.reverse())
 </script>
 <template>
 	<BDetailCard title="Rincian Pembayaran" :class="props.class" class="tw-text-base">
@@ -29,7 +31,7 @@ const lastPayment = (): Payment | undefined => {
 		</div>
 		<template v-else>
 			<template
-				v-for="payment, key in payments"
+				v-for="payment, key in reversePayment"
 				:key="payment.id"
 			>
 				<VDivider v-if="key > 0" class="tw-my-2"></VDivider>
@@ -65,7 +67,7 @@ const lastPayment = (): Payment | undefined => {
 							Tanggal Pembayaran
 						</span>
 						<span>
-							{{ moment(payment.payment_date).format('DD MMM yyyy') }}
+							{{ moment(payment.payment_date).format('DD MMMM yyyy') }}
 						</span>
 					</div>
 				</div>
@@ -78,7 +80,7 @@ const lastPayment = (): Payment | undefined => {
 					Sisa Bayar
 				</span>
 				<span>
-					{{ formatIDR(lastPayment()?.remaining_payment ?? 0) }}
+					{{ formatIDR(lastPayment()?.remaining_payment ?? grandTotal) }}
 				</span>
 			</div>
 			<div class="tw-mt-2">
@@ -86,7 +88,7 @@ const lastPayment = (): Payment | undefined => {
 					Terbayar
 				</span>
 				<span>
-					{{ formatIDR(grandTotal - (lastPayment()?.remaining_payment ?? 0)) }}
+					{{ formatIDR(grandTotal - (lastPayment()?.remaining_payment ?? grandTotal)) }}
 				</span>
 			</div>
 		</div>

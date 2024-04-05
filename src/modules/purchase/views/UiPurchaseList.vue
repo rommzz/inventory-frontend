@@ -128,11 +128,22 @@ onMounted(() => {
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							<div>
-								{{ purchase.items[0].inventory_item?.name ?? '-' }}
+								<div>
+									{{ purchase.items[0].inventory_item?.name ?? '-' }}
+								</div>
+								<span v-if="purchase.items.length > 1" class="tw-text-sm tw-text-outline">
+									+ {{ purchase.items.length - 1 }} barang lainnya
+								</span>
 							</div>
-							<span v-if="purchase.items.length > 1" class="tw-text-sm tw-text-outline">
-								+ {{ purchase.items.length - 1 }} barang lainnya
-							</span>
+							<v-tooltip
+								v-if="purchase.items.length > 1"
+								activator="parent"
+								location="right"
+							>
+								<p v-for="item in purchase.items" :key="item.id">
+									{{ item.inventory_item.name }}
+								</p>
+							</v-tooltip>
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ formatIDR(purchase.grand_total) }}
@@ -141,7 +152,7 @@ onMounted(() => {
 							{{ formatIDR(remeaningPayment(purchase.payments ?? [], purchase.grand_total)) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.paid ? 'Lunas' : 'Belum Lunas' }}
+							{{ purchase.paid ? 'Lunas' : purchase.payments?.length ? 'Belum Lunas' : 'Belum Bayar' }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ moment(purchase.purchase_date).format('DD MMM yyy') }}
