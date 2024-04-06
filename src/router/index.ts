@@ -6,6 +6,7 @@ import itemRoutes from '@/modules/item/routes'
 import customerRoutes from '@/modules/customer/routes'
 import purchaseRoutes from '@/modules/purchase/routes'
 import stockRoutes from '@/modules/stock/routes'
+import saleRoutes from '@/modules/sale/routes'
 
 export interface Breadcrumbs {
   title: string,
@@ -47,6 +48,7 @@ const router = createRouter({
         ...customerRoutes,
         ...purchaseRoutes,
 				...stockRoutes,
+				...saleRoutes,
       ]
     }
   ]

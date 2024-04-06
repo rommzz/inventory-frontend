@@ -67,6 +67,7 @@ const menus: Menu[] = [
     title: 'Penjualan',
     icon: 'unarchive',
     iconColor: 'success',
+		route: '/sale',
   },
   {
     title: 'Laporan',

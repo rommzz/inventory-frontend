@@ -3,6 +3,7 @@ const master: string = '/master'
 const user: string = `${auth}/user`
 const meta: string = `${master}/meta`
 const purchase: string = '/inventory/item-purchase/'
+const sale: string = '/inventory/item-sale'
 const car: string = `${master}/car`
 
 export default {
@@ -31,6 +32,10 @@ export default {
   },
 	purchase: {
 		purchase: `${purchase}`,
+		payment: (purchaseId: string) => `${purchase}${purchaseId}/payment`
+	},
+	sales: {
+		sale: `${sale}`,
 		payment: (purchaseId: string) => `${purchase}${purchaseId}/payment`
 	}
 }

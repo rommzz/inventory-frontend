@@ -1,4 +1,4 @@
-import type { TimeStamp } from "./commons"
+import type { PaymentMethod, TimeStamp } from "./commons"
 
 export type User = {
   id: string
@@ -130,3 +130,33 @@ export type CarGroupType = {
   name: string
 } & TimeStamp
 
+
+export type PurchaseItemForm = {
+  item: InventoryItem,
+  qty: number,
+  price: number
+}
+
+export type PurchasePaymentForm = {
+  payment_date?: string;
+  payment_method?: PaymentMethod;
+  amount?: number;
+  note?: string;
+}
+
+export type Sales = {
+  id: string
+  customer_id: string
+  total: number
+  discount?: number
+  discount_percent?: number
+  tax?: number
+  tax_percent?: number
+  grand_total: number
+  created_by: string
+  paid: number
+  sale_date: string
+  items: InventoryItem[]
+  customer: Customer
+  payments: Payment[]
+} & TimeStamp

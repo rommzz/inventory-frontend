@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
-import { ref } from 'vue';
-import PurchaseAddItems from '../components/PurchaseAddItems.vue';
-import PurchasePayment from '../components/PurchasePayment.vue';
-import PurchaseReview from '../components/PurchaseReview.vue';
-import DConfirmPurchase from '../components/dialog/DConfirmPurchase.vue';
 import type { PurchasePaymentForm as PP } from '@/utils/apis/models/model';
-
+import type { SalesForm } from '@/utils/apis/models/request/salesCreateRequest';
+import { ref } from 'vue';
+import SaleAddItems from '../components/SaleAddItems.vue';
+import SalePayment from '../components/SalePayment.vue';
+import SaleReview from '../components/SaleReview.vue';
+import DConfirmSale from '../components/dialog/DConfirmSale.vue';
 
 type Step = {
   step: number,
@@ -31,10 +30,10 @@ const step: Step[] = [
 ]
 
 
-const formField = ref<PurchaseForm>({});
+const formField = ref<SalesForm>({});
 
 const submit = async (payment?: PP) => {
-	formField.value.grand_total = grandTotal
+	// formField.value.grand_total = grandTotal
 	if (payment) {
 		formField.value.payments = []
 		formField.value.payments.push(payment)
@@ -43,7 +42,7 @@ const submit = async (payment?: PP) => {
 	dialog.value = true
 }
 
-const next = (data: PurchaseForm, gt?: number) => {
+const next = (data: SalesForm, gt?: number) => {
 	if (gt) {
 		grandTotal = gt
 	}
@@ -80,19 +79,19 @@ const next = (data: PurchaseForm, gt?: number) => {
     </VStepperHeader>
     <VStepperWindow>
       <VStepperWindowItem>
-        <PurchaseAddItems
+        <SaleAddItems
           @next="next"
         />
       </VStepperWindowItem>
       <VStepperWindowItem>
-        <PurchaseReview
+        <SaleReview
           :data="formField"
           @next="v => next(v.data, v.grandTotal)"
           @back="currentStep--"
         />
       </VStepperWindowItem>
       <VStepperWindowItem>
-        <PurchasePayment
+        <SalePayment
 					@back="currentStep--"
 					:grand-total="grandTotal"
 					@next="submit"
@@ -100,7 +99,7 @@ const next = (data: PurchaseForm, gt?: number) => {
       </VStepperWindowItem>
     </VStepperWindow>
   </VStepper>
-	<DConfirmPurchase
+	<DConfirmSale
 		:data="formField"
 		v-model="dialog"
 	/>

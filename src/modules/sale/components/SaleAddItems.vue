@@ -6,24 +6,24 @@ import BInputDate from '@/components/BInputDate.vue';
 import BInputNumber from '@/components/BInputNumber.vue';
 import BStepperWindowItem from '@/components/BStepperWindowItem.vue';
 import DInventoryItemPicker from '@/components/dialogs/DInventoryItemPicker.vue';
-import { useSupplierStore } from '@/modules/supplier/stores';
+import { useCustomerStore } from '@/modules/customer/stores';
 import { formatIDR } from '@/plugin/helpers';
-import type { InventoryItem, PurchaseItemForm, Supplier } from '@/utils/apis/models/model';
-import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
+import type { Customer, InventoryItem, PurchaseItemForm } from '@/utils/apis/models/model';
+import type { SalesForm } from '@/utils/apis/models/request/salesCreateRequest';
 import moment from 'moment';
 import { onMounted, ref } from 'vue';
 
-const supplierStore = useSupplierStore()
+const customerStore = useCustomerStore()
 const dInventoryItem = ref<boolean>(false)
 const form = ref()
 
 // const listItem = defineModel<PurchaseItem[]>('item', {default: []})
 const listItem = ref<PurchaseItemForm[]>([])
-const purchaseDate = ref<string>(moment().format('yyyy-MM-DD'))
-const supplier = ref<Supplier>()
+const saleDate = ref<string>(moment().format('yyyy-MM-DD'))
+const customer = ref<Customer>()
 
 const emit = defineEmits<{
-  (e: 'next', value: PurchaseForm): void
+  (e: 'next', value: SalesForm): void
 }>()
 
 const show = ref<boolean>(true)
@@ -31,8 +31,8 @@ onMounted(() => {
   getData()
 })
 const getData = async () => {
-  supplierStore.getListSupplier().then(r => {
-    supplierList.value = r.data ?? []
+  customerStore.getListCustomer().then(r => {
+    customerList.value = r.data ?? []
   }).catch(e => {
     console.log(e);
   }).finally(() => {
@@ -47,8 +47,8 @@ const validate =async () => {
   if (valid.valid && listItem.value.length) {
     emit('next', {
       items: listItem.value,
-      supplier: supplier.value,
-      purchase_date: purchaseDate.value,
+      customer: customer.value,
+      saleDate: saleDate.value,
     });
   }
 }
@@ -67,7 +67,7 @@ const onSelect = (item: InventoryItem) => {
   show.value = true
   dInventoryItem.value = false
 }
-const supplierList = ref<Supplier[]>([]);
+const customerList = ref<Customer[]>([]);
 </script>
 <template>
   <BStepperWindowItem title="Data Pembelian">
@@ -75,17 +75,18 @@ const supplierList = ref<Supplier[]>([]);
       <div>
         <div class="tw-grid tw-grid-cols-2 tw-gap-5">
           <BAutoComplete
-            label="Pemasok"
-            :items="supplierList"
+            label="Pelanggan"
+            :items="customerList"
             :item-title="v => v.name ?? ''"
-            v-model="supplier"
+            v-model="customer"
             required
-            :rules="[ v => !!v || 'supplier Wajib diisi', ]"
+						placeholder="Pilih Pelanggan"
+            :rules="[ v => !!v || 'Pelanggan Wajib diisi', ]"
           />
           <BInputDate
-            label="Tanggal Pembelian"
+            label="Tanggal Penjualan"
             :max-date="moment().format('yyyy-MM-DD')"
-            v-model="purchaseDate"
+            v-model="saleDate"
             required
             :rules="[ v => !!v || 'tanggal Wajib diisi', ]"
           />
@@ -114,8 +115,7 @@ const supplierList = ref<Supplier[]>([]);
             </div>
             <VSpacer/>
             <BInputNumber label="Jumlah" v-model.number="item.qty" class="tw-mr-4"></BInputNumber>
-            <BInputNumber label="Harga" v-model.number="item.price" hide-button class="tw-mr-14"></BInputNumber>
-            <div class="tw-mr-12 tw-font-semibold tw-text-sm">{{ formatIDR(item.qty * item.price, true) }}</div>
+            <div class="tw-mr-12 tw-font-semibold tw-text-sm tw-min-w-24">{{ formatIDR(item.qty * item.price, true) }}</div>
 						<BIcon
 							icon="delete"
 							button-color="errorContainer"
