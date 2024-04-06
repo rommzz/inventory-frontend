@@ -3,7 +3,7 @@ import type { PaymentMethod } from '@/utils/apis/models/commons'
 import type { Payment, Purchase, Sales } from '@/utils/apis/models/model'
 import type { SalesForm } from '@/utils/apis/models/request/salesCreateRequest'
 import purchaseApi from '@/utils/apis/repo/purchaseApi'
-import salesApi from '@/utils/apis/repo/salesApi'
+import salesApi, { type SalesFilter } from '@/utils/apis/repo/salesApi'
 import { defineStore } from 'pinia'
 
 export type PaymentStatus = 'Lunas' | 'Belum Lunas' | 'Belum Dibayar'
@@ -20,9 +20,10 @@ export const useSaleStore = defineStore('saleStore', () => {
 		}
 	}
 
-  const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {
+  const getListSales = async (query?: Record<string, any>, filter?: SalesFilter): Promise<ResponseV1<Sales[]>> => {
     try {
-      const res = await purchaseApi.getPurchases(query)
+			console.log(filter);
+      const res = await salesApi.getListSales(query, filter)
       return res
     } catch (error) {
       console.log('error', error);
@@ -75,7 +76,7 @@ export const useSaleStore = defineStore('saleStore', () => {
   
   return {
 		paymentStatus,
-    getListPurchase,
+    getListSales,
 		createSale,
 		getPurchase,
 		payment,

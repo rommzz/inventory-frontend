@@ -7,6 +7,8 @@ import type { BTableLimit, BTableQuery } from './types/BTable';
 
 const page = ref<number>(1)
 
+const loading = defineModel<boolean>('loading')
+
 const props = defineProps<{
   query: BTableQuery
   search?: string
@@ -52,7 +54,21 @@ const slot = useSlots()
 
 </script>
 <template>
-  <div class="!tw-bg-onPrimary tw-rounded-xl tw-shadow">
+  <div class="!tw-bg-onPrimary tw-rounded-xl tw-shadow tw-relative">
+		<VOverlay
+      v-model="loading"
+      contained
+      class="tw-items-center tw-justify-center tw-bg-onPrimary tw-opacity-50 tw-bg-opacity-50"
+      persistent
+      scrim
+    >
+    <v-progress-circular
+        color="primary"
+        indeterminate
+        size="64"
+        class="tw-z-10"
+      ></v-progress-circular>
+    </VOverlay>
     <div class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant tw-bg-onPrimary tw-rounded-t-xl">
       <div class="tw-flex tw-gap-4">
         <VMenu>

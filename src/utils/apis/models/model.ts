@@ -156,7 +156,7 @@ export type Sales = {
   created_by: string
   paid: number
   sale_date: string
-  items: InventoryItem[]
+  items: InventoryPurchaseItem[]
   customer: Customer
   payments: Payment[]
 } & TimeStamp

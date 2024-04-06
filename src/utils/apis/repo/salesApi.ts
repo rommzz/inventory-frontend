@@ -1,16 +1,27 @@
 import { shallowRef } from "vue";
 import endpoints from "../endpoints";
 import http, { type ResponseV1 } from "../http";
-import type { PaymentMethod } from "../models/commons";
+import type { PaymentMethod, PaymentStatusList } from "../models/commons";
 import type { Purchase, Sales } from "../models/model";
 import type { SalesForm } from "../models/request/salesCreateRequest";
 import moment from "moment";
 
+export type SalesFilter = {
+	startDate?: string
+	endDate?: string
+	saleStatus?: PaymentStatusList
+}
+
 export default {
-  getPurchases: async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {  
+  getListSales: async (query?: Record<string, any>, filter?: SalesFilter): Promise<ResponseV1<Sales[]>> => {  
     try {
-      const res = await http.get<ResponseV1<Purchase[]>>('/v1' + endpoints.purchase.purchase, {
-				params: query
+      const res = await http.get<ResponseV1<Sales[]>>('/v1' + endpoints.sales.sale, {
+				params: {
+					...query,
+					start_date: filter?.startDate,
+					end_date: filter?.endDate,
+					paid: filter?.saleStatus?.value
+				}
 			})
       return res.data
     } catch (error) {
