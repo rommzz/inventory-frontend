@@ -37,7 +37,7 @@ const discountValue = (): number => {
 			</div>
 			<div>
 				<span>Pajak</span>
-				<h5>{{ percentIdrView(props.tax ?? 0, props.taxPercent ?? 0, props.total - discountValue()) }}</h5>
+				<h5>{{ percentIdrView(props.taxPercent ?? 0, props.tax ?? 0, props.total - discountValue()) }}</h5>
 			</div>
 			<div class="tw-mt-2 tw-font-bold tw-text-base">
 				<div>Grand Total</div>

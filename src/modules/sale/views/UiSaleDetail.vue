@@ -5,20 +5,20 @@ import BDetailCard from '@/components/BDetailCard.vue';
 import BListItem from '@/components/BListItem.vue';
 import BPayments from '@/components/BPayments.vue';
 import DPayment from '@/components/dialogs/DPayment.vue';
-import type { BIconName } from '@/components/types/BIcon';
+import btoast from '@/plugin/btoast';
 import { formatIDR } from '@/plugin/helpers';
+import router from '@/router';
 import type { PaymentMethod } from '@/utils/apis/models/commons';
-import type { Purchase } from '@/utils/apis/models/model';
+import type { Sales } from '@/utils/apis/models/model';
 import moment from 'moment';
 import { computed, onMounted, ref } from 'vue';
+import { toast } from 'vue3-toastify';
 import DDeleteConfirmation from '../components/dialog/DDeleteConfirmation.vue';
 import { useSaleStore } from '../stores';
-import { toast } from 'vue3-toastify';
-import router from '@/router';
-import btoast from '@/plugin/btoast';
 
 const props = defineProps<{
 	id: string;
+	sale?: Sales
 }>()
 
 const store = useSaleStore()
@@ -28,35 +28,18 @@ const dialogPayment = ref<boolean>(false)
 const isLoading = ref<boolean>(true)
 const isLoadingPay = ref<boolean>(false)
 
-const data = ref<Purchase>()
+const data = ref<Sales>()
 
 const paymentStatus = computed(() => store.paymentStatus(data!.value?.payments ?? []))
-const purchaseData = ref<{
-	icon: BIconName,
-	title: string,
-	value: string,
-}[]>([
-	{
-		icon: 'receipt_long',
-		title: "ID Pembelian",
-		value: props.id,
-	},
-	{
-		icon: 'person_outline',
-		title: "Pemasok",
-		value: data.value?.supplier.company_name!,
-	},
-	{
-		icon: 'calendar_today',
-		title: "Tanggal Pembelian",
-		value: moment(data?.value?.purchase_date).format('DD MMM yyyy'),
-	},
-]) 
 
 const getData = async () => {
+	if (props.sale) {
+		data.value = props.sale
+		return
+	}
 	isLoading.value = true
-	store.getPurchase(props.id).then(r => {
-		data.value = r.data
+	store.getSale(props.id).then(r => {
+		data.value = r
 	}).catch(e => {
 		console.log(e);
 	}).finally(() => isLoading.value = false)
@@ -91,13 +74,21 @@ onMounted(() => {
 </script>
 <template>
 	<div class="tw-grid tw-grid-cols-2 tw-gap-8" v-if="!isLoading">
-		<BDetailCard title="Data Pembelian" class="tw-self-start" >
+		<BDetailCard title="Data Penjualan" class="tw-self-start" >
 			<BListItem
-				v-for="detail, index in purchaseData"
-				:key="index"
-				:title="detail.title"
-				:icon="detail.icon"
-				:data="detail.value"
+				icon="receipt_long"
+				title="ID Penjualan"
+				:data="data?.id"
+			/>
+			<BListItem
+				title="Pelanggan"
+				icon="person_outline"
+				:data="data?.customer.name"
+			/>
+			<BListItem
+				icon='calendar_today'
+				title="Tanggal Penjualan"
+				:data="moment(data?.sale_date!).format('DD MMMM yyyy')"
 			/>
 			<div>
 				<div
@@ -142,16 +133,16 @@ onMounted(() => {
 			/>
 			<BDetailCard title="Aksi" class="tw-mt-4" v-if="paymentStatus !== 'Lunas'">
 				<div class="tw-flex tw-justify-end tw-gap-2">
-					<BButton color="error" label="Hapus Pembelian" @click="dialog = true"></BButton>
-					<BButton label="Bayar Pembelian" @click="dialogPayment = true"></BButton>
+					<BButton color="error" label="Hapus Penjualan" @click="dialog = true"></BButton>
+					<BButton label="Bayar Penjualan" @click="dialogPayment = true"></BButton>
 				</div>
 			</BDetailCard>
 		</div>
 		<DDeleteConfirmation
-			:purchase-id="props.id"
+			:sale-id="props.id"
 			v-model="dialog"
 			@success-delete="() => {
-				btoast('Berhasil Menghapus Pembelian', 'success')
+				btoast('Berhasil Menghapus Penjualan', 'success')
 				router.replace('/purchase	')
 			}"
 		/>

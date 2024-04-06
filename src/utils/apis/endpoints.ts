@@ -36,6 +36,6 @@ export default {
 	},
 	sales: {
 		sale: `${sale}`,
-		payment: (purchaseId: string) => `${purchase}${purchaseId}/payment`
+		payment: (purchaseId: string) => `${sale}/${purchaseId}/payment`
 	}
 }

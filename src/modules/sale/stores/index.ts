@@ -1,8 +1,7 @@
 import type { ResponseV1 } from '@/utils/apis/http'
 import type { PaymentMethod } from '@/utils/apis/models/commons'
-import type { Payment, Purchase, Sales } from '@/utils/apis/models/model'
+import type { Payment, Sales } from '@/utils/apis/models/model'
 import type { SalesForm } from '@/utils/apis/models/request/salesCreateRequest'
-import purchaseApi from '@/utils/apis/repo/purchaseApi'
 import salesApi, { type SalesFilter } from '@/utils/apis/repo/salesApi'
 import { defineStore } from 'pinia'
 
@@ -31,10 +30,10 @@ export const useSaleStore = defineStore('saleStore', () => {
     }
   }
 
-	const getPurchase = async (id: string): Promise<ResponseV1<Purchase>> => {
+	const getSale = async (id: string): Promise<Sales> => {
     try {
-      const res = await purchaseApi.getPurchase(id)
-      return res
+      const res = await salesApi.getSale(id)
+      return res.data!
     } catch (error) {
       console.log('error', error);
       throw error
@@ -45,19 +44,18 @@ export const useSaleStore = defineStore('saleStore', () => {
 		payment_date: string
 		payment_method: PaymentMethod
 		amount: number
-	}): Promise<ResponseV1<Purchase>> => {
+	}): Promise<void> => {
     try {
-      const res = await purchaseApi.payment(id, payment)
-      return res
+			await salesApi.payment(id, payment)
     } catch (error) {
       console.log('error', error);
       throw error
     }
   }
 
-	const deletePurchase = async (id: string): Promise<void> => {
+	const deleteSale = async (id: string): Promise<void> => {
     try {
-      await purchaseApi.deletePurchase(id)
+      await salesApi.deleteSale(id)
     } catch (error) {
       console.log('error', error);
       throw error
@@ -78,8 +76,8 @@ export const useSaleStore = defineStore('saleStore', () => {
 		paymentStatus,
     getListSales,
 		createSale,
-		getPurchase,
+		getSale,
 		payment,
-		deletePurchase,
+		deleteSale,
   }
 })

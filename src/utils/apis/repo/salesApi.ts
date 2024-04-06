@@ -29,9 +29,9 @@ export default {
       throw error
     }
   },
-	getPurchase: async (id: string): Promise<ResponseV1<Purchase>> => {  
+	getSale: async (id: string): Promise<ResponseV1<Sales>> => {  
     try {
-      const res = await http.get<ResponseV1<Purchase>>('/v1' + endpoints.purchase.purchase + id)
+      const res = await http.get<ResponseV1<Sales>>('/v1' + endpoints.sales.sale + `/${id}`)
       return res.data
     } catch (error) {
       console.log('error', error);
@@ -44,16 +44,16 @@ export default {
 		amount: number
 	}): Promise<ResponseV1<Purchase>> => {  
     try {
-      const res = await http.post<ResponseV1<Purchase>>('/v1' + endpoints.purchase.payment(purhcaseId), payment)
+      const res = await http.post<ResponseV1<Purchase>>('/v1' + endpoints.sales.payment(purhcaseId), payment)
       return res.data
     } catch (error) {
       console.log('error', error);
       throw error
     }
   },
-	deletePurchase: async (purhcaseId: string): Promise<void> => {  
+	deleteSale: async (purhcaseId: string): Promise<void> => {  
     try {
-      await http.delete<ResponseV1<Purchase>>('/v1' + endpoints.purchase.purchase + purhcaseId)
+      await http.delete<ResponseV1>('/v1' + endpoints.sales.sale + `/${purhcaseId}`)
     } catch (error) {
       console.log('error', error);
       throw error

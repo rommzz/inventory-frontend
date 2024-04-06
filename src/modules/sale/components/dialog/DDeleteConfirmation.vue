@@ -6,7 +6,7 @@ import { useSaleStore } from '../../stores';
 import { toast } from 'vue3-toastify';
 
 const props = defineProps<{
-	purchaseId: string
+	saleId: string
 }>()
 
 const store = useSaleStore()
@@ -27,7 +27,7 @@ const isDeleting = ref<boolean>(false)
 		:persistent="isDeleting"
 	>
 		<p class="tw-text-sm tw-text-onSurfaceVariant">
-			Proses penghapusan pembelian dengan ID <span class="tw-font-semibold">“{{ purchaseId }}”</span> akan mengakibatkan data tersebut tidak dapat dikembalikan.
+			Proses penghapusan penjualan dengan ID <span class="tw-font-semibold">“{{ saleId }}”</span> akan mengakibatkan data tersebut tidak dapat dikembalikan.
 		</p>
 		<template v-slot:action>
 			<BButton :disabled="isDeleting" label="Batalkan" @click="dialog = false"></BButton>
@@ -38,7 +38,7 @@ const isDeleting = ref<boolean>(false)
 				color="error"
 				@click="async () => {
 					isDeleting = true
-					store.deletePurchase(props.purchaseId).then(() => {
+					store.deleteSale(props.saleId).then(() => {
 						emit('successDelete')
 					}).catch(e => {
 						toast(e.msg ?? e, {

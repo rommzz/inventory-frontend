@@ -13,7 +13,7 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
 		if (payment.length == 0) {
 			return 'Belum Dibayar'
 		} 
-		if (payment[payment.length - 1].remaining_payment === 0) {
+		if (payment[0].remaining_payment === 0) {
 			return 'Lunas'
 		} else {
 			return 'Belum Lunas'

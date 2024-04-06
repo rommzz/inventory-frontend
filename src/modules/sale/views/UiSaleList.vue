@@ -159,7 +159,7 @@ onMounted(() => {
 							{{ formatIDR(sale.grand_total) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ formatIDR(remeaningPayment(sale.payments ?? [], sale.grand_total)) }}
+							{{ formatIDR(sale.paid == 1 ? 0 : remeaningPayment(sale.payments ?? [], sale.grand_total)) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ sale.paid ? 'Lunas' : sale.payments?.length ? 'Belum Lunas' : 'Belum Bayar' }}
@@ -186,7 +186,7 @@ onMounted(() => {
     </BTable>
   </div>
 	<DDeleteConfirmation
-		:purchase-id="deleteDialogData?.id ?? '-'"
+		:sale-id="deleteDialogData?.id ?? '-'"
 		v-model="deleteDialog"
 		@success-delete="() => {
 			toast('Berhasil Menghapus Pembelian', {
