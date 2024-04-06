@@ -24,7 +24,7 @@ let query = reactive<BTableQuery>({
 })
 let filter = reactive<InventoryItemFilter>({})
 const isLoading = ref<boolean>(false)
-const isDeleting = ref<boolean>(false)
+const isImporting = ref<boolean>(false)
 const metaData = ref<MetaData>({});
 const items = ref<InventoryItem[]>([]);
 
@@ -119,6 +119,15 @@ const onApply = (v: InventoryItemFilter): void => {
 	getItems()
 }
 
+const onImport = async (file: string) => {
+	console.log(file);
+	isImporting.value = true
+	setTimeout(() => {
+		isImporting.value = false
+	}, 500);
+	
+}
+
 onMounted(() => {
   getItems();
 	const {limit, offset} = router.currentRoute.value.query
@@ -140,9 +149,9 @@ onMounted(() => {
     >
 			<template v-slot:action:group>
 				<BButton
-					label="Barang Baru"
-					prepend-icon="add" 
-					@click="router.push('/data/item/add')"
+					label="Impor Daftar Harga"
+					prepend-icon="cloud_upload" 
+					@click="importDialog = true"
 				/>
 			</template>
 			<table class="tw-table-auto tw-w-full tw-text-sm tw-text-onSurface">
@@ -212,6 +221,8 @@ onMounted(() => {
   </div>
 	<DFileImport
 		v-model="importDialog"
+		:loading="isImporting"
+		:on-import="onImport"
 	/>
 	<DFilterItem
 		:filter="filter"

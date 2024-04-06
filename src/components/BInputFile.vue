@@ -8,6 +8,7 @@ const props = defineProps<{
   class?: string
   accept?: string
 }>()
+const fileName = ref<string>()
 const inputImage = ref<HTMLInputElement | null>(null)
 const onChangeFile = () => {
   const file = inputImage.value?.files?.[0]
@@ -15,6 +16,7 @@ const onChangeFile = () => {
     const reader = new FileReader()
     reader.onload = (e) => {
       model.value = e.target?.result as string
+			fileName.value = file.name
     }
     reader.readAsDataURL(file)
   }
@@ -27,13 +29,16 @@ const classProps = computed(() => props.class)
     :class="classProps"
     @click="inputImage?.click()"
   >
-    <template  v-if="model">
-      <BIcon @click.stop="model = null" icon="close" class="tw-absolute tw-right-1 tw-top-1" color="warning"></BIcon>
-      <img :src="model" alt="" class="tw-w-36 tw-h-36 tw-p-1 tw-object-cover tw-rounded-xl">
-    </template>
-    <div v-else class="tw-text-onSurfaceVariant tw-mx-auto tw-flex tw-items-center tw-gap-1">
-      <BIcon icon="upload"></BIcon>
-      <span class="tw-text-xs tw-font-semibold">Unggah file</span>
+    <div class="tw-text-onSurfaceVariant tw-mx-auto tw-flex tw-items-center tw-gap-1 tw-overflow-hidden">
+			<v-tooltip
+				v-if="model"
+				activator="parent"
+				location="top"
+			>
+				{{fileName}}
+			</v-tooltip>
+      <BIcon v-if="!model" icon="upload"></BIcon>
+      <span class="tw-text-xs tw-font-semibold">{{ model ? fileName : 'Unggah File' }}</span>
       <input type="file" :accept="accept" v-show="false" ref="inputImage" @change="onChangeFile()">
     </div>
   </div>  
