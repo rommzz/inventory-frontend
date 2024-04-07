@@ -119,12 +119,15 @@ const onApply = (v: InventoryItemFilter): void => {
 	getItems()
 }
 
-const onImport = async (file: string) => {
-	console.log(file);
-	isImporting.value = true
-	setTimeout(() => {
-		isImporting.value = false
-	}, 500);
+const onImport = async (file: string): Promise<void> => {
+	return new Promise<void>((resolve, reject) => {
+		console.log(file);
+		isImporting.value = true
+		setTimeout(() => {
+			isImporting.value = false
+			resolve()
+		}, 500);
+	})
 	
 }
 
