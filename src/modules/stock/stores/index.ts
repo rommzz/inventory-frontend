@@ -2,11 +2,29 @@ import type { BTableQuery } from '@/components/types/BTable'
 import type { ResponseV1 } from '@/utils/apis/http'
 import type { InventoryItem } from '@/utils/apis/models/model'
 import type { InventoryItemForm } from '@/utils/apis/models/request/request'
+import type { GetProgressResponse } from '@/utils/apis/models/response'
+import importApi from '@/utils/apis/repo/importApi'
 import inventoryItemApi, { type InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
-export const useItemStore = defineStore('itemStore', () => {
+export const useStockStore = defineStore('priceListStore', () => {
+	
+	const importPriceList = async (file: File) => {
+		return await importApi.importPriceList(file)
+	}
+	const getImportProgress = async (): Promise<GetProgressResponse> => {
+		try {
+			const res = await importApi.getImportPriceListProgress()
+			return res
+		} catch (error) {
+			console.log(error);	
+			throw error
+		}
+	}
+	const cancelImport = async () => {
+		return await importApi.cancelImport()
+	}
   const getListItem = async (query?: BTableQuery, filter?: InventoryItemFilter): Promise<ResponseV1> => {
     try {
 			console.log(toRaw(filter));
@@ -76,5 +94,8 @@ export const useItemStore = defineStore('itemStore', () => {
     addItem,
     editItem,
     deleteItem,
+		importPriceList,
+		getImportProgress,
+		cancelImport,
   }
 })

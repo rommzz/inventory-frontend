@@ -33,9 +33,9 @@ const menus: Menu[] = [
     icon: 'folder',
     iconColor: 'warning',
     children: [
-      {
-        title: 'Jenis Satuan',
-      },
+      // {
+      //   title: 'Jenis Satuan',
+      // },
       {
         title: 'Daftar Pemasok',
         routeName: 'supplier-list',
@@ -52,9 +52,9 @@ const menus: Menu[] = [
         title: 'Daftar Pelanggan',
         routeName: 'customer-list',
       },
-      {
-        title: 'Promo Member',
-      },
+      // {
+      //   title: 'Promo Member',
+      // },
     ]
   },
   {

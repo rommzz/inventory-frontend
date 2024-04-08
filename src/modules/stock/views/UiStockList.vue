@@ -2,21 +2,22 @@
 import BButton from '@/components/BButton.vue';
 import BTable from '@/components/BTable.vue';
 import type { BTableQuery } from '@/components/types/BTable';
+import bToast from '@/plugin/btoast';
 import { formatIDR } from '@/plugin/helpers';
 import type { MetaData } from '@/utils/apis/http';
-import type { ItemType } from '@/utils/apis/models/commons';
 import type { InventoryItem } from '@/utils/apis/models/model';
 import type { InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
 import moment from 'moment';
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
 import DFileImport from '../components/dialog/DFileImport.vue';
 import DFilterItem from '../components/dialog/DFilterItem.vue';
 import DPriceEdit from '../components/dialog/DPriceEdit.vue';
-import { useItemStore } from '../stores';
-import { toast } from 'vue3-toastify';
+import { useStockStore } from '../stores';
+import { onBeforeUnmount } from 'vue';
 const router = useRouter();
-const store = useItemStore();
+const store = useStockStore();
 
 let query = reactive<BTableQuery>({
 	limit: 10,
@@ -26,71 +27,12 @@ let filter = reactive<InventoryItemFilter>({})
 const isLoading = ref<boolean>(false)
 const isImporting = ref<boolean>(false)
 const metaData = ref<MetaData>({});
-const items = ref<InventoryItem[]>([]);
-
-const stocks: {
-    name: string;
-    type: ItemType;
-    carType: string;
-    price: number;
-    priceBefore: number;
-    stock: number;
-    created_at: string;
-    updated_at: string;
-		unit: {
-			name: string
-			id: string
-		}
-}[] = [
-    {
-        name: "Brake Pad",
-        type: "PART",
-        carType: "SUV",
-        price: 50,
-        priceBefore: 60,
-        stock: 100,
-        created_at: "2023-01-01",
-        updated_at: "2023-01-01",
-        unit: {
-            name: "Pair",
-            id: "1234"
-        }
-    },
-    {
-        name: "Engine Oil",
-        type: "OLI",
-        carType: "All",
-        price: 30,
-        priceBefore: 35,
-        stock: 150,
-        created_at: "2023-02-15",
-        updated_at: "2023-03-10",
-        unit: {
-            name: "Liter",
-            id: "5678"
-        }
-    },
-    {
-        name: "Headlight Bulb",
-        type: "PART",
-        carType: "Sedan",
-        price: 10,
-        priceBefore: 12,
-        stock: 200,
-        created_at: "2023-03-20",
-        updated_at: "2023-04-05",
-        unit: {
-            name: "Piece",
-            id: "91011"
-        }
-    },
-    // Add more items here
-];
+const stocks = ref<InventoryItem[]>([]);
+const interval = ref()
 
 const filterDialog = ref<boolean>(false)
 const importDialog = ref<boolean>(false)
 const priceEditDialog = ref<boolean>(false)
-const deleteDialogData = ref<InventoryItem | null>(null)
 
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
@@ -101,7 +43,7 @@ const onChangeQuery = (q: BTableQuery) => {
 const getItems = async () => {
 	isLoading.value = true;
 	store.getListItem(query, filter).then((res) => {
-		items.value = res.data;
+		stocks.value = res.data;
 		metaData.value = res.meta ?? {};
 	}).catch((err) => {
 		console.error(err);
@@ -109,7 +51,6 @@ const getItems = async () => {
 		isLoading.value = false;
 	});
 }
-
 
 let selectedItem: any = null
 
@@ -119,24 +60,42 @@ const onApply = (v: InventoryItemFilter): void => {
 	getItems()
 }
 
-const onImport = async (file: string): Promise<void> => {
+const onImport = async (file: File): Promise<void> => {
+	isImporting.value = true
 	return new Promise<void>((resolve, reject) => {
-		console.log(file);
-		isImporting.value = true
-		setTimeout(() => {
-			isImporting.value = false
-			resolve()
-		}, 500);
+		store.importPriceList(file).then(r => {
+			console.log(r);
+			resolve
+		}).catch(e => {
+			bToast(e.msg ?? e, 'error')
+			reject
+		})
+		.finally(() => isImporting.value = false)
 	})
-	
+}
+
+const checkImportProgress = () => {
+	const check = () => {
+		store.getImportProgress().then(r => {
+			if (r.progress == 100) {
+				interval.value == undefined
+			}
+		})
+	}
+	check();
+	interval.value = setInterval(() => {
+		check();
+	}, 5000)
 }
 
 onMounted(() => {
+	checkImportProgress();
   getItems();
 	const {limit, offset} = router.currentRoute.value.query
 	Object.assign(query, {limit: limit ?? 10, offset: offset ?? 0})
 })
 
+onBeforeUnmount(() => clearInterval(interval.value))
 
 </script>
 <template>
@@ -146,7 +105,7 @@ onMounted(() => {
       :total-items="metaData.count ?? 0"
 			filter
 			search-placeholder="cari barang"
-			:displayed-total="items.length"
+			:displayed-total="stocks.length"
 			@change:query="v => onChangeQuery(v)"
 			@click:filter="filterDialog = true"
     >
@@ -155,6 +114,12 @@ onMounted(() => {
 					label="Impor Daftar Harga"
 					prepend-icon="cloud_upload" 
 					@click="importDialog = true"
+				/>
+				<BButton
+					label="Batalkan Impor"
+					prepend-icon="dangerous"
+					color="error"
+					@click="store.cancelImport()"
 				/>
 			</template>
 			<table class="tw-table-auto tw-w-full tw-text-sm tw-text-onSurface">
@@ -186,16 +151,16 @@ onMounted(() => {
 							{{ item.type }}
 						</td>	
 						<td>
-							{{ item.carType }}
+							{{ item.car_code.car_type.name }}
 						</td>	
 						<td>
 							{{  formatIDR(item.price) }}/{{ item.unit.name }}
 						</td>
 						<td>
-							{{ formatIDR(item.priceBefore) }}/{{ item.unit.name }}
+							{{ formatIDR(item.stock.price_before) }}/{{ item.unit.name }}
 						</td>
 						<td>
-							{{ item.stock }}
+							{{ item.stock.stock }}
 						</td>
 						<td>
 							{{ moment(item.created_at).format('DD MMM yyyy') }}

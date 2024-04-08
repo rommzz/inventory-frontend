@@ -5,28 +5,20 @@ import BIcon from '@/components/BIcon.vue';
 import { ref } from 'vue';
 
 const props =  defineProps<{
-	onImport(file: any): Promise<void>
+	onImport(file: File): Promise<void>
 	loading?: boolean
 }>()
 
-const file = ref()
+const file = ref<File>()
 
 const dialog = defineModel<boolean>()
-const modelFile = ref<string | null>()
 
 const isSuccess = ref<boolean>(false)
-const fileName = ref<string>()
 const inputImage = ref<HTMLInputElement | null>(null)
 const onChangeFile = () => {
-  const file = inputImage.value?.files?.[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      modelFile.value = e.target?.result as string
-			fileName.value = file.name
-    }
-    reader.readAsDataURL(file)
-  }
+  file.value = inputImage.value?.files?.[0]
+	console.log(file);
+	
 }
 </script>
 <template>
@@ -39,14 +31,14 @@ const onChangeFile = () => {
 				class="tw-mx-auto tw-border-2 tw-border-dotted tw-border-outline tw-flex tw-rounded-xl hover:tw-cursor-pointer tw-relative"
 				@click="inputImage?.click()"
 			>
-				<div class="tw-text-onSurfaceVariant tw-flex tw-gap-1 tw-overflow-hidden tw-items-center tw-p-3">
+				<div class="tw-text-onSurfaceVariant tw-flex tw-gap-1 tw-overflow-hidden tw-items-center tw-p-3 tw-w-full">
 					<template v-if="loading">
 						<VProgressCircular indeterminate color="primary"/>
 						<span class="tw-text-xs tw-font-semibold">Proses Mengupload File...</span>
 					</template>
 					<template v-else>
 						<BIcon icon="upload"></BIcon>
-						<span class="tw-text-xs tw-font-semibold">{{ modelFile ? fileName : 'Unggah File' }}</span>
+						<span class="tw-text-xs tw-font-semibold">{{ file?.name ?? 'Unggah File' }}</span>
 						<input
 							type="file"
 							accept=".xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx,application/vnd.ms-excel.sheet.binary.macroEnabled.12"
@@ -55,9 +47,8 @@ const onChangeFile = () => {
 							@change="onChangeFile()"
 						>
 						<VSpacer></VSpacer>
-						<BIcon v-if="modelFile" icon="dangerous" color="error" class="tw-cursor-pointer" @click.stop="() => {
-							modelFile = null
-							fileName = ''
+						<BIcon v-if="file" icon="dangerous" color="error" class="tw-cursor-pointer" @click.stop="() => {
+							file = undefined
 						}"></BIcon>
 					</template>
 				</div>
@@ -67,7 +58,9 @@ const onChangeFile = () => {
 					<BButton label="Batalkan" variant="text" @click="dialog = false" :disabled="loading"></BButton>
 					<BButton
 						label="Impor"
-						@click="() => onImport(file).then(() => isSuccess = true)"
+						@click="() => {
+							onImport(file!).then(() => isSuccess = true)
+						}"
 						:disabled="loading"
 					/>
 				</template>

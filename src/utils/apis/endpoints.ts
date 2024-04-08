@@ -5,6 +5,7 @@ const meta: string = `${master}/meta`
 const purchase: string = '/inventory/item-purchase/'
 const sale: string = '/inventory/item-sale'
 const car: string = `${master}/car`
+const imports: string =`${master}/import`
 
 export default {
   auth: {
@@ -25,6 +26,11 @@ export default {
 			code: `${car}/code`,
 			groupType: `${car}/group-type`,
 			type: `${car}/type`,
+		},
+		import: {
+			priceList: `${imports}/price-list`,
+			progress: (key: string) => `${imports}/progress/${key}`,
+			cancel: `${imports}/cancel`,
 		},
     customer: `${master}/customer`,
     inventoryItem: `${master}/inventory-item`,
