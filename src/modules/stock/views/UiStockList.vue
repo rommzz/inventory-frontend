@@ -65,6 +65,7 @@ const onImport = async (file: File): Promise<void> => {
 	return new Promise<void>((resolve, reject) => {
 		store.importPriceList(file).then(r => {
 			console.log(r);
+			checkImportProgress()
 			resolve
 		}).catch(e => {
 			bToast(e.msg ?? e, 'error')
@@ -74,12 +75,21 @@ const onImport = async (file: File): Promise<void> => {
 	})
 }
 
+const setClearInterval = () => {
+	clearInterval(interval.value)
+	interval.value == undefined
+}
+
 const checkImportProgress = () => {
 	const check = () => {
 		store.getImportProgress().then(r => {
 			if (r.progress == 100) {
-				interval.value == undefined
+				setClearInterval()
+			} else {
+				isImporting.value = true
 			}
+		}).catch(() => {
+			setClearInterval()
 		})
 	}
 	check();
@@ -95,7 +105,7 @@ onMounted(() => {
 	Object.assign(query, {limit: limit ?? 10, offset: offset ?? 0})
 })
 
-onBeforeUnmount(() => clearInterval(interval.value))
+onBeforeUnmount(() => setClearInterval())
 
 </script>
 <template>
@@ -116,6 +126,7 @@ onBeforeUnmount(() => clearInterval(interval.value))
 					@click="importDialog = true"
 				/>
 				<BButton
+					v-if="isImporting"
 					label="Batalkan Impor"
 					prepend-icon="dangerous"
 					color="error"
