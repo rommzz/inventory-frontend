@@ -160,3 +160,9 @@ export type Sales = {
   customer: Customer
   payments: Payment[]
 } & TimeStamp
+
+export type ChartModel = {
+  params: string;
+  title: string;
+  value: number;
+}

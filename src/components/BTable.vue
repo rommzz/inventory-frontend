@@ -11,13 +11,14 @@ const loading = defineModel<boolean>('loading')
 
 const props = defineProps<{
   query: BTableQuery
-  search?: string
   totalItems: number
-  emptyText?: string
   labelAddButton?: string
+  search?: string
+  emptyText?: string
   displayedTotal?: number
   filter?: boolean
   searchPlaceholder?: string
+	hideFooter?: boolean
 }>()
 
 let debounce = ref();
@@ -69,7 +70,8 @@ const slot = useSlots()
         class="tw-z-10"
       ></v-progress-circular>
     </VOverlay>
-    <div class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant tw-bg-onPrimary tw-rounded-t-xl">
+		<slot name="header" v-if="slot['header']"></slot>
+    <div v-else class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant tw-bg-onPrimary tw-rounded-t-xl">
       <div class="tw-flex tw-gap-4">
         <VMenu>
           <template v-slot:activator="{ props }">
@@ -117,7 +119,9 @@ const slot = useSlots()
       {{ emptyText || 'Tidak ada data' }}
     </div>
     <slot v-else/>
-    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm tw-text-onSurfaceVariant">
+    <div
+			v-if="!hideFooter"
+			class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm tw-text-onSurfaceVariant">
       <span>Menampilkan 1 hingga {{ displayedTotal }} dari {{ totalItems }} entri</span>
       <VPagination
         variant="elevated"

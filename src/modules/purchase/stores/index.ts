@@ -20,6 +20,14 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
 		}
 	}
 
+	const remeaningPayment = (payment: Payment[], grandTotal: number): number => {
+		if (!payment.length) {
+			return grandTotal
+		} else {
+			return payment[payment.length - 1].remaining_payment
+		}
+	} 
+
   const getListPurchase = async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {
     try {
       const res = await purchaseApi.getPurchases(query)
@@ -98,5 +106,6 @@ export const usePurchaseStore = defineStore('purchaseStore', () => {
 		getPurchase,
 		payment,
 		deletePurchase,
+		remeaningPayment,
   }
 })

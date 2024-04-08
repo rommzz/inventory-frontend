@@ -61,4 +61,13 @@ export default {
       throw error
     }
   },
+	countInventoryItem: async (): Promise<number> => {  
+    try {
+      const res = await http.get<ResponseV1<{count: number}>>('/v1' + endpoints.master.inventoryItemCount)
+			return res.data.data?.count ?? 0
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
 }

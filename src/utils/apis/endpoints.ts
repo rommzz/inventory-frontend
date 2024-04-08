@@ -1,8 +1,9 @@
 const auth: string = '/auth'
 const master: string = '/master'
+const inventory: string = '/inventory'
 const user: string = `${auth}/user`
 const meta: string = `${master}/meta`
-const purchase: string = '/inventory/item-purchase/'
+const purchase: string = '/inventory/item-purchase'
 const sale: string = '/inventory/item-sale'
 const car: string = `${master}/car`
 const imports: string =`${master}/import`
@@ -33,12 +34,16 @@ export default {
 			cancel: `${imports}/cancel`,
 		},
     customer: `${master}/customer`,
+		countCustomer: `${master}/customer-count`,
     inventoryItem: `${master}/inventory-item`,
+		inventoryItemCount: `${master}/inventory-item-count`,
+		inventorySalesToday: `${inventory}/sales-today`,
+		salesChart: `${inventory}/sales-chart`,
     supplier: `${master}/supplier`,
   },
 	purchase: {
 		purchase: `${purchase}`,
-		payment: (purchaseId: string) => `${purchase}${purchaseId}/payment`
+		payment: (purchaseId: string) => `${purchase}/${purchaseId}/payment`
 	},
 	sales: {
 		sale: `${sale}`,

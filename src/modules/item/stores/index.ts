@@ -70,11 +70,15 @@ export const useItemStore = defineStore('itemStore', () => {
       throw error
     }
   }
+	const countInventoryItem = async (): Promise<number> => {
+		return inventoryItemApi.countInventoryItem()
+	}
   return {
     getListItem,
     getItem,
     addItem,
     editItem,
     deleteItem,
+		countInventoryItem,
   }
 })

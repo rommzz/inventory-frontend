@@ -60,7 +60,7 @@ const onPay = async ({paymentMethod, paymentDate,}: {
 }) => {
 	isLoadingPay.value = true
 	store.payment(purchaseData.id, {
-		amount: remeaningPayment(purchaseData.payments ?? [], purchaseData.grand_total),
+		amount: store.remeaningPayment(purchaseData.payments ?? [], purchaseData.grand_total),
 		payment_date: moment(paymentDate).utc().format(),
 		payment_method: paymentMethod,
 	}).then(() => {
@@ -72,14 +72,6 @@ const onPay = async ({paymentMethod, paymentDate,}: {
 		isLoading.value = false
 	})
 }
-
-const remeaningPayment = (payment: Payment[], grandTotal: number): number => {
-	if (!payment.length) {
-		return grandTotal
-	} else {
-		return payment[payment.length - 1].remaining_payment
-	}
-} 
 
 const onChangeQuery = (q: BTableQuery) => {
 	Object.assign(query, q)
@@ -149,7 +141,7 @@ onMounted(() => {
 							{{ formatIDR(purchase.grand_total) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ formatIDR(remeaningPayment(purchase.payments ?? [], purchase.grand_total)) }}
+							{{ formatIDR(store.remeaningPayment(purchase.payments ?? [], purchase.grand_total)) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
 							{{ purchase.paid ? 'Lunas' : purchase.payments?.length ? 'Belum Lunas' : 'Belum Bayar' }}
@@ -189,7 +181,7 @@ onMounted(() => {
 	<DPayment
 		:is-paying="isLoadingPay"
 		v-model="dialogPayment"
-		:remeaning-payment="remeaningPayment(purchaseData?.payments ?? [], purchaseData?.grand_total ?? 0)"
+		:remeaning-payment="store.remeaningPayment(purchaseData?.payments ?? [], purchaseData?.grand_total ?? 0)"
 		@pay="(v) => onPay({
 			paymentDate: v.date,
 			paymentMethod: v.paymentMethod
