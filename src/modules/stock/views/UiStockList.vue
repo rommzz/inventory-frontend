@@ -63,19 +63,18 @@ const onApply = (v: InventoryItemFilter): void => {
 const onImport = async (file: File): Promise<void> => {
 	isImporting.value = true
 	return new Promise<void>((resolve, reject) => {
-		store.importPriceList(file).then(r => {
-			console.log(r);
+		store.importPriceList(file).then(() => {
 			checkImportProgress()
-			resolve
+			resolve()
 		}).catch(e => {
 			bToast(e.msg ?? e, 'error')
-			reject
-		})
-		.finally(() => isImporting.value = false)
+			reject()
+		}).finally(() => isImporting.value = false)
 	})
 }
 
 const setClearInterval = () => {
+	isImporting.value = false
 	clearInterval(interval.value)
 	interval.value == undefined
 }
@@ -130,7 +129,9 @@ onBeforeUnmount(() => setClearInterval())
 					label="Batalkan Impor"
 					prepend-icon="dangerous"
 					color="error"
-					@click="store.cancelImport()"
+					@click="store.cancelImport().then(() => {
+						setClearInterval()
+					})"
 				/>
 			</template>
 			<table class="tw-table-auto tw-w-full tw-text-sm tw-text-onSurface">
