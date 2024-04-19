@@ -30,3 +30,13 @@ export type InventoryItemForm = {
   m_group?: string
   product_hierarchy?: string
 }
+
+export type UserForm = {
+  name: string;
+  username: string;
+  password: string;
+  email?: string;
+  phone?: string;
+  role_id: string;
+	address?: string;
+}

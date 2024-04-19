@@ -6,11 +6,10 @@ import BSelect from '@/components/BSelect.vue';
 import { useCarStore } from '@/modules/car/stores';
 import { useSupplierStore } from '@/modules/supplier/stores';
 import { itemTypeList } from '@/plugin/globalVar';
-import { useMetaStore } from '@/stores/meta';
 import type { Supplier } from '@/utils/apis/models/model';
 import { type InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
 import { reactive, ref, watch } from 'vue';
-const metaStore = useMetaStore()
+
 const supplierStore = useSupplierStore()
 const carStore = useCarStore()
 

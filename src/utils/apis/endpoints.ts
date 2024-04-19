@@ -13,9 +13,10 @@ export default {
     login: `${auth}/login`,
     logout: `${auth}/logout`,
     user: {
+			index: `${auth}/user`,
       me: `${user}/me`,
       users: `${user}/users`,
-      userById: `${user}/user/:id`,
+      userById: (id: string) => `${user}/${id}`,
     },
   },
   master: {

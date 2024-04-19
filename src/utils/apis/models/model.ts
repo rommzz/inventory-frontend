@@ -1,11 +1,12 @@
-import type { PaymentMethod, TimeStamp } from "./commons"
+import type { PaymentMethod, Role, TimeStamp } from "./commons"
 
 export type User = {
   id: string
   name?: string
   email?: string
   phone?: string
-  role_id?: string
+  role_id?: Role
+	address?: string
   password?: string
   username?: string
 } & TimeStamp

@@ -82,7 +82,8 @@ const menus: Menu[] = [
   {
     title: 'Manajemen Karyawan',
     icon: 'people',
-    iconColor: 'seed'
+    iconColor: 'seed',
+		route: '/user',
   }
 ]
 const model = defineModel<boolean>()

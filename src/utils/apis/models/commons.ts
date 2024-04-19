@@ -1,5 +1,3 @@
-import type { InventoryItem } from "./model"
-
 export type TimeStamp = {
   created_at?: string
   updated_at?: string
@@ -11,6 +9,8 @@ export type PaymentMethod = 'cash' | 'transfer' | 'ewallet' | 'qris' | 'other'
 export type DiscountType = 'percent' | 'value'
 
 export type ItemType = 'PART' | 'OLI' | 'ACC'
+
+export type Role = 'ADMIN' | 'USER' | 'OWNER' | 'EMPLOYEE'
 
 export type PaymentStatusList = {
 	label: string,
@@ -26,4 +26,20 @@ export const paymentStatusList: PaymentStatusList[] = [
 		label: 'Belum Lunas',
 		value: 0
 	}
+]
+
+export type RoleList = {
+	label: string,
+	value: Role
+}
+
+export const roleList: RoleList[] = [
+	{
+		label: 'Owner',
+		value: 'OWNER'
+	},
+	{
+		label: 'Karyawan',
+		value: 'EMPLOYEE'
+	}	
 ]
