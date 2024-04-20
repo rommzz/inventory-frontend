@@ -8,4 +8,5 @@ export type BListItemProps = {
 	rightIcon?: BIconName,
 	color?: keyof typeof pallete.schemes.light,
 	classData?: string,
+	class?: string
 }

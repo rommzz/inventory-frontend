@@ -24,6 +24,10 @@ export const useUserStore = defineStore('userStore', () => {
 	const deleteUser = async (id: string): Promise<void> => {
     return await userApi.deleteUser(id)
   }
+
+	const accountUpdate = async (username: string, password: string, id: string): Promise<void> => {
+		return await userApi.accountUpdate(username, password, id)
+	}
   
   return {
     createUser,
@@ -31,5 +35,6 @@ export const useUserStore = defineStore('userStore', () => {
 		getUsers,
 		updateUser,
 		deleteUser,
+		accountUpdate,
   }
 })

@@ -7,6 +7,7 @@ const props = defineProps<BListItemProps>()
 <template>
 	<div
 		class="tw-flex tw-items-center tw-gap-4 tw-p-4"
+		:class="props.class"
 	>
 		<BIcon :color="props.color" :icon="props.icon"></BIcon>
 		<div :class=" props.color ? `text-${props.color}` : ''">

@@ -3,6 +3,7 @@ import { computed, defineModel } from 'vue';
 import BIcon from './BIcon.vue';
 import type { BIconName } from './types/BIcon';
 import { useSlots } from 'vue';
+import type {ValidationRules} from '@/plugin/validation';
 
 const model = defineModel()
 const props = defineProps<{
@@ -14,7 +15,7 @@ const props = defineProps<{
   required?: boolean,
   appendInnerIcon?: BIconName,
   prependInnerIcon?: BIconName,
-  rules?: string[] | ((value: string) => string | boolean)[],
+  rules?: ValidationRules,
   density?: "comfortable" | "compact" | "default",
   hideDetails?: boolean,
   modelValue?: any

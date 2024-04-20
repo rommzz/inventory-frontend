@@ -9,6 +9,7 @@ import type { UserForm } from '@/utils/apis/models/request/request';
 import { roleList, type Role, type RoleList } from '@/utils/apis/models/commons';
 import BSelect from '@/components/BSelect.vue';
 import bToast from '@/plugin/btoast';
+import { validation } from '@/plugin/validation';
 
 const props = defineProps<{
   id?: string;
@@ -110,11 +111,7 @@ const createUser = async (userForm: UserForm) => {
 					label="Username"
 					placeholder="Username Karyawan"
 					required
-					:rules="[
-						value => !!value || 'Nama pengguna diperlukan',
-						value => (value && value.length >= 3 && value.length <= 16) || 'Nama pengguna harus terdiri dari 3 hingga 16 karakter',
-						value => /^[a-zA-Z0-9_-]*$/.test(value) || 'Hanya diperbolehkan huruf, angka, garis bawah, dan tanda hubung.'
-					]"
+					:rules="validation.password"
 				/>
 				<BTextField
 					v-model="formField.password"
@@ -124,14 +121,7 @@ const createUser = async (userForm: UserForm) => {
 					required
 					:append-inner-icon="showPassword ? 'visibility_off' : 'visibility'"
 					@click:append-inner="showPassword = !showPassword"
-					:rules="[
-						value => !!value || 'Password diperlukan',
-						value => (value && value.length >= 8) || 'Password harus terdiri dari minimal 8 karakter',
-						value => /[a-z]/.test(value) || 'Password harus mengandung minimal 1 huruf kecil',
-						value => /[A-Z]/.test(value) || 'Password harus mengandung minimal 1 huruf besar',
-						value => /\d/.test(value) || 'Password harus mengandung minimal 1 angka',
-						value => /[@$!%*?&]/.test(value) || 'Password harus mengandung minimal 1 karakter khusus'
-					]"
+					:rules="validation.password"
 				/>
 			</template>
     </div>

@@ -8,6 +8,7 @@ import type { User } from '@/utils/apis/models/model';
 import { computed, onMounted, ref } from 'vue';
 import DDeleteUser from '../component/dialog/DDeleteUser.vue';
 import { useUserStore } from '../stores';
+import DAccountEdit from '../component/dialog/DAccountEdit.vue';
 
 const props = defineProps<{
   id?: string;
@@ -16,9 +17,13 @@ const props = defineProps<{
 const store = useUserStore();
 
 let user = ref<User>()
+const editDialog = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const isLoading = ref<boolean>(false);
 const isEdit = props.id !== undefined;
+const valueCheck = (v?: string): string => {
+	return v == '' || v == undefined ? '-' : v;
+}
 
 onMounted(() => {
   // isEdit.value = props.id !== undefined;
@@ -51,22 +56,22 @@ const userData = computed<BListItemProps[]>(() => [
 	},
 	{
 		icon: 'email',
-		data: user.value?.email ?? '-',
+		data: valueCheck(user.value?.email),
 		title: 'Email'
 	},
 	{
 		icon: 'call',
-		data: user.value?.phone ?? '-',
+		data: valueCheck(user.value?.phone),
 		title: 'No. Telepon'
 	},
 	{
 		icon: 'account_circle',
-		data: user.value?.phone,
+		data: valueCheck(user.value?.phone),
 		title: 'No. Telepon'
 	},
 	{
 		icon: 'location_on',
-		data: user.value?.address == '' ? '-' : user.value?.address ,
+		data: valueCheck(user.value?.phone),
 		title: 'Alamat'
 	},
 ])
@@ -77,7 +82,7 @@ const userInfo: (BListItemProps & {onclick: () => void})[] = [
     title: 'Edit Karyawan',
 		data: 'Perbarui informasi karyawan',
 		onclick: () => {
-			router.push({path: `user/${user.value!.id}/edit`})
+			router.push(`/user/${user.value!.id}/edit`)
 		}
 	},
   {
@@ -85,14 +90,8 @@ const userInfo: (BListItemProps & {onclick: () => void})[] = [
     title: 'Edit Akun Karyawan',
 		data: 'Perbarui informasi akun karyawan',
 		onclick: () => {
-			
+			editDialog.value = true
 		}
-	},
-  {
-		icon: 'block',
-    title: 'Blokir Akses',
-		data: 'Batasai sementara akses karyawan ini',
-		onclick : () => {}
 	},
   {
 		icon: 'delete',
@@ -134,6 +133,7 @@ const userInfo: (BListItemProps & {onclick: () => void})[] = [
 						:color="info.color"
 						right-icon="chevron_right"
 						class-data="tw-text-sm tw-text-onSurfaceVariant"
+						class="tw-cursor-pointer"
 						@click="info.onclick()"
 					/>
         </BDetailCard>
@@ -143,6 +143,10 @@ const userInfo: (BListItemProps & {onclick: () => void})[] = [
 			v-model="deleteDialog"
 			v-model:user-data="user"
 			@on-delete="router.push({path: '/user'})"
+		/>
+		<DAccountEdit
+			v-model="editDialog"
+			:user="user!"
 		/>
   </div>
 </template>

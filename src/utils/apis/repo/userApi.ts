@@ -70,4 +70,16 @@ export default {
       throw error
     }
   },
+
+	accountUpdate: async (username: string, password: string, id: string): Promise<void> => {
+    try {
+      await http.patch<ResponseV1<User[]>>('/v1' + endpoints.auth.user.userById(id), {
+				username: username,
+				password: password,
+			})
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
 }
