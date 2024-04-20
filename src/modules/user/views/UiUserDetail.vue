@@ -2,17 +2,19 @@
 import BDetailCard from '@/components/BDetailCard.vue';
 import BListItem from '@/components/BListItem.vue';
 import type { BListItemProps } from '@/components/types/BListItem';
-import router from '@/router';
 import { roleList } from '@/utils/apis/models/commons';
 import type { User } from '@/utils/apis/models/model';
 import { computed, onMounted, ref } from 'vue';
 import DDeleteUser from '../component/dialog/DDeleteUser.vue';
 import { useUserStore } from '../stores';
 import DAccountEdit from '../component/dialog/DAccountEdit.vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   id?: string;
 }>();
+
+const router = useRouter()
 
 const store = useUserStore();
 

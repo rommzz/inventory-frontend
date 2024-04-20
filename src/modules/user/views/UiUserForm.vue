@@ -94,17 +94,17 @@ const createUser = async (userForm: UserForm) => {
 <template>
   <VForm class="tw-bg-white tw-rounded-xl tw-p-5 tw-shadow" ref="form">
     <div class="tw-grid tw-grid-cols-2 tw-gap-x-5">
-      <BTextField v-model="formField.name" label="Pelanggan" placeholder="Nama Pelanggan" :rules="[ v => !!v || 'Nama pelanggan wajib diisi', ]" required/>
+      <BTextField v-model="formField.name" label="Nama" placeholder="Nama Karyawan" :rules="[ v => !!v || 'Nama wajib diisi', ]" required/>
       <BSelect
 				:items="roleList"
 				v-model="formField.role"
 				:item-title="v => v.label"
 				label="Role"
 				required
-				:rules="[ v => !!v || 'Role pelanggan wajib diisi', ]"
+				:rules="[ v => !!v || 'Role karyawan wajib diisi', ]"
 			/>
       <BTextField v-model="formField.email" label="Email" placeholder="Email Pelangan"></BTextField>
-      <BTextField v-model="formField.phone" label="No. Telephone" type="number" placeholder="No. Telepon Pelanggan"></BTextField>
+      <BTextField v-model="formField.phone" label="No. Telephone" type="number" placeholder="No. Telepon"></BTextField>
 			<template v-if="!isEdit">
 				<BTextField
 					v-model="formField.username"
@@ -125,7 +125,7 @@ const createUser = async (userForm: UserForm) => {
 				/>
 			</template>
     </div>
-    <BTextField label="Alamat" type="textarea" placeholder="Alamat Pelanggan"></BTextField>
+    <BTextField label="Alamat" type="textarea" placeholder="Alamat Karyawan"></BTextField>
     <div class="tw-flex tw-justify-end tw-gap-5">
       <BButton :disabled="true" variant="outlined" label="Batalkan"></BButton>
       <BButton :is-loading="isLoading" :label="`Simpan ${isEdit ? 'Perubahan  ' : 'Karyawan'}`" @click="submit()"></BButton>

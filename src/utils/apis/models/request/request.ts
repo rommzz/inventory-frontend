@@ -34,7 +34,7 @@ export type InventoryItemForm = {
 export type UserForm = {
   name: string;
   username: string;
-  password: string;
+  password?: string;
   email?: string;
   phone?: string;
   role_id: string;

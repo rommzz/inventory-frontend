@@ -45,6 +45,14 @@ const router = createRouter({
             ...isRequiredAuth,
           }
         },
+				{
+          path: '/setting',
+          name: 'Setting',
+          component: () => import('@/modules/setting/views/UiSettingView.vue'),
+          meta: {
+            ...isRequiredAuth,
+          }
+        },
         ...authRoutes,
         ...supplierRoutes,
         ...itemRoutes,

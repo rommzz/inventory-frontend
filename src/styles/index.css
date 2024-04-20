@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+	.card {
+		@apply tw-rounded-2xl tw-shadow-md tw-bg-white
+	}
+}

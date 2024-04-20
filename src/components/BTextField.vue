@@ -29,6 +29,7 @@ const emit = defineEmits<{
   (e: 'click:appendInner'): void
   (e: 'click:prependInner'): void
   (e: 'update:modelValue', value: any): void
+	(e: 'update:focused', value: any): void
 }>()
 
 const slot = useSlots()
@@ -84,6 +85,7 @@ const classProps = computed(() => {
       :readonly="readonly"
 			:loading="props.loading"
 			:disabled="disabled"
+			@update:focused="model => $emit('update:focused', model)"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
