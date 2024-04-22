@@ -71,9 +71,10 @@ const submitPassword = async () => {
 	const valid = await pForm.value.validate()
 	if (!valid.valid) return
 	updatingPassword.value = true
-	setTimeout(() => {
-		updatingPassword.value = false
-	}, 300);
+	userStore.changePassword(passwordForm.newPassword!, passwordForm.oldPassword!).then(() => {
+		bToast('Data berhasil diubah', 'success')
+		authStore.getUserInformation(true)
+	}).catch(e => bToast(e.msg ?? e, 'error')).finally(() => updatingPassword.value = false)
 }
 
 </script>

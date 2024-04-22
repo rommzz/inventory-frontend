@@ -18,6 +18,7 @@ export default {
       users: `${user}/users`,
       userById: (id: string) => `${user}/${id}`,
     },
+		userPassword: `${auth}/user-password`,
   },
   master: {
     meta: {

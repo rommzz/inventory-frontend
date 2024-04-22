@@ -28,6 +28,8 @@ export const useUserStore = defineStore('userStore', () => {
 	const accountUpdate = async (username: string, password: string, id: string): Promise<void> => {
 		return await userApi.accountUpdate(username, password, id)
 	}
+
+	const changePassword = async (newPassword: string, oldPassword: string): Promise<void> => await userApi.changePassword(newPassword, oldPassword)
   
   return {
     createUser,
@@ -36,5 +38,6 @@ export const useUserStore = defineStore('userStore', () => {
 		updateUser,
 		deleteUser,
 		accountUpdate,
+		changePassword,
   }
 })

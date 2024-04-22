@@ -82,4 +82,16 @@ export default {
       throw error
     }
   },
+
+	changePassword: async (newPassword: string, oldPassword: string): Promise<void> => {
+    try {
+      await http.patch<ResponseV1<User[]>>('/v1' + endpoints.auth.userPassword, {
+				new_password: newPassword,
+				old_password: oldPassword,
+			})
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
 }
