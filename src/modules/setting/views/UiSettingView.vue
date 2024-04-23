@@ -4,6 +4,7 @@ import type { BIconName } from '@/components/types/BIcon';
 import { ref } from 'vue';
 import ProfilePage from '../components/ProfilePage.vue';
 import type { User } from '@/utils/apis/models/model';
+import UnitPage from '../components/UnitPage.vue';
 
 type Menu = 'profile' | 'car' | 'unit'
 
@@ -48,6 +49,7 @@ const menus: {
 		</ul>
 		<div class="tw-flex-grow">
 			<ProfilePage v-if="currentMenu == 'profile'"/>
+			<UnitPage v-if="currentMenu == 'unit'"/>
 		</div>
 	</div>
 </template>

@@ -47,9 +47,8 @@ app.use(
   } as ToastContainerOptions,
 );
 
-app.use(createPinia())
 app.use(router)
 app.use(vuetify)
 app.use(vuetifyPlugin)
-
+app.use(createPinia())
 app.mount('#app')
