@@ -13,7 +13,7 @@ import { onMounted } from 'vue';
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
-const userForm = reactive<{
+let userForm = reactive<{
 	name?: string
 	email?: string
 	phone?: string
@@ -24,6 +24,12 @@ const passwordForm = reactive<{
 	oldPassword?: string
 	newPassword?: string
 	repeatPassword?: string
+}>({})
+
+const showPassword = reactive<{
+	oldPassword?: boolean
+	newPassword?: boolean
+	repeatPassword?: boolean
 }>({})
 
 const repeatPassword = ref()
@@ -71,7 +77,11 @@ const submitPassword = async () => {
 	const valid = await pForm.value.validate()
 	if (!valid.valid) return
 	updatingPassword.value = true
-	userStore.changePassword(passwordForm.newPassword!, passwordForm.oldPassword!).then(() => {
+	userStore.changePassword(passwordForm.newPassword!, passwordForm.oldPassword!).then(() => 
+	{
+		passwordForm.oldPassword = undefined
+		passwordForm.newPassword = undefined
+		passwordForm.repeatPassword = undefined
 		bToast('Data berhasil diubah', 'success')
 		authStore.getUserInformation(true)
 	}).catch(e => bToast(e.msg ?? e, 'error')).finally(() => updatingPassword.value = false)
@@ -108,12 +118,16 @@ const submitPassword = async () => {
 				</div>
 			</form>
 		</BDetailCard>
-		<BDetailCard title="Informasi Dasar" class="tw-mb-8">
+		<BDetailCard title="Ubah Password" class="tw-mb-8">
 			<VForm ref="pForm">
 				<BTextField
 					label="Password Sekarang"
 					:rules="validation.password"
 					v-model="passwordForm.oldPassword"
+					:type="showPassword.oldPassword ? undefined : 'password'"
+					:append-inner-icon="showPassword.oldPassword ? 'visibility_off' : 'visibility'"
+					@click:append-inner="showPassword.oldPassword = !showPassword.oldPassword"
+					placeholder="Masukkan Password Sekarang"
 				/>
 				<BTextField
 					label="Password Baru"
@@ -122,6 +136,10 @@ const submitPassword = async () => {
 					@update:model-value="() => {
 						pForm.items[2].validate()
 					}"
+					:type="showPassword.newPassword ? undefined : 'password'"
+					:append-inner-icon="showPassword.newPassword ? 'visibility_off' : 'visibility'"
+					@click:append-inner="showPassword.newPassword = !showPassword.newPassword"
+					placeholder="Masukkan Password Baru"
 				/>
 				<BTextField
 					label="Ulangi Password Baru"
@@ -131,6 +149,10 @@ const submitPassword = async () => {
 					]"
 					v-model="passwordForm.repeatPassword"
 					:ref="repeatPassword"
+					:type="showPassword.repeatPassword ? undefined : 'password'"
+					:append-inner-icon="showPassword.repeatPassword ? 'visibility_off' : 'visibility'"
+					@click:append-inner="showPassword.repeatPassword = !showPassword.repeatPassword"
+					placeholder="Masukkan Password Baru"
 				/>
 				<div class="tw-text-right">
 					<BButton label="Ubah Password" @click="submitPassword" :is-loading="updatingPassword"/>

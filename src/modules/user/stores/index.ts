@@ -29,7 +29,9 @@ export const useUserStore = defineStore('userStore', () => {
 		return await userApi.accountUpdate(username, password, id)
 	}
 
-	const changePassword = async (newPassword: string, oldPassword: string): Promise<void> => await userApi.changePassword(newPassword, oldPassword)
+	const changePassword = async (newPassword: string, oldPassword: string): Promise<void> => {
+		return await userApi.changePassword(newPassword, oldPassword)
+	}
   
   return {
     createUser,
