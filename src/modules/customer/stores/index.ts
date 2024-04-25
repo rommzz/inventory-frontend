@@ -49,11 +49,15 @@ export const useCustomerStore = defineStore('customerStore', () => {
       throw error
     }
   }
+	const getCountCustomer = async (): Promise<number> => {
+    return customerApi.customerCount()
+  }
   return {
     getListCustomer,
     addCustomer,
     getCustomer,
     editCustomer,
     deleteCustomer,
+		getCountCustomer,
   }
 })

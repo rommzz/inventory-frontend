@@ -4,10 +4,13 @@ import type { InventoryItem } from '@/utils/apis/models/model'
 import type { InventoryItemForm } from '@/utils/apis/models/request/request'
 import inventoryItemApi, { type InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi'
 import { defineStore } from 'pinia'
+import { toRaw } from 'vue'
 
 export const useItemStore = defineStore('itemStore', () => {
   const getListItem = async (query?: BTableQuery, filter?: InventoryItemFilter): Promise<ResponseV1> => {
     try {
+			console.log(toRaw(filter));
+			
       const q: {
         limit?: number,
         offset?: number,
@@ -67,11 +70,15 @@ export const useItemStore = defineStore('itemStore', () => {
       throw error
     }
   }
+	const countInventoryItem = async (): Promise<number> => {
+		return inventoryItemApi.countInventoryItem()
+	}
   return {
     getListItem,
     getItem,
     addItem,
     editItem,
     deleteItem,
+		countInventoryItem,
   }
 })

@@ -1,7 +1,8 @@
 import { shallowRef } from "vue";
 import endpoints from "../endpoints";
 import http, { type ResponseV1 } from "../http";
-import type { Purchase } from "../models/model";
+import type { Payment, Purchase } from "../models/model";
+import type { PaymentMethod } from "../models/commons";
 
 export default {
   getPurchases: async (query?: Record<string, any>): Promise<ResponseV1<Purchase[]>> => {  
@@ -10,6 +11,36 @@ export default {
 				params: query
 			})
       return res.data
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
+	getPurchase: async (id: string): Promise<ResponseV1<Purchase>> => {  
+    try {
+      const res = await http.get<ResponseV1<Purchase>>('/v1' + endpoints.purchase.purchase + id)
+      return res.data
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
+	payment: async (purhcaseId: string, payment: {
+		payment_date: string
+		payment_method: PaymentMethod
+		amount: number
+	}): Promise<ResponseV1<Purchase>> => {  
+    try {
+      const res = await http.post<ResponseV1<Purchase>>('/v1' + endpoints.purchase.payment(purhcaseId), payment)
+      return res.data
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
+	deletePurchase: async (purhcaseId: string): Promise<void> => {  
+    try {
+      await http.delete<ResponseV1<Purchase>>('/v1' + endpoints.purchase.purchase + purhcaseId)
     } catch (error) {
       console.log('error', error);
       throw error

@@ -50,4 +50,13 @@ export default {
       throw error
     }
   },
+	customerCount: async (): Promise<number> => {  
+    try {
+      const res = await http.get<ResponseV1<{count: number}>>('/v1' + endpoints.master.countCustomer)	
+			return res.data.data?.count ?? 0
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
 }

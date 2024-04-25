@@ -7,15 +7,19 @@ import type { BTableLimit, BTableQuery } from './types/BTable';
 
 const page = ref<number>(1)
 
+const loading = defineModel<boolean>('loading')
+
 const props = defineProps<{
   query: BTableQuery
-  search?: string
   totalItems: number
-  emptyText?: string
   labelAddButton?: string
+  search?: string
+  emptyText?: string
   displayedTotal?: number
   filter?: boolean
   searchPlaceholder?: string
+	hideFooter?: boolean
+	hideHeader?: boolean
 }>()
 
 let debounce = ref();
@@ -52,56 +56,75 @@ const slot = useSlots()
 
 </script>
 <template>
-  <div class="!tw-bg-onPrimary tw-rounded-xl tw-shadow">
-    <div class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant tw-bg-onPrimary tw-rounded-t-xl">
-      <div class="tw-flex tw-gap-4">
-        <VMenu>
-          <template v-slot:activator="{ props }">
-            <div class="tw-flex tw-items-center tw-gap-1 px-2 tw-border tw-rounded-lg tw-border-outline hover:tw-cursor-pointer" v-bind="props" >
-              <span>{{ query.limit }}</span>
-              <BIcon icon="expand_more" size="16"></BIcon>
-            </div>
-          </template>
-          <v-list>
-          <v-list-item
-              v-for="item, in [10, 15, 20]"
-              :key="item"
-              :value="query.limit"
-            >
-              <v-list-item-title @click="changeLimit(item as 10 | 15 | 20)">{{ item }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </VMenu>
-        <BTextField
-          label=""
-          density="compact"
-          :placeholder="searchPlaceholder ?? 'cari pemasok'"
-          class="tw-min-w-52"
-          hide-details prepend-inner-icon="search"
-          :model-value="props.query.search"
-          @update:model-value="onSearch"
-        />
-        <BButton
-          v-if="filter"
-          label="Filter"
-          prepend-icon="filter_list"
-          prepend-icon-color="primary"
-          variant="outlined"
-          @click="emit('click:filter')"
-        />
-      </div>
-      <div  v-if="slot['action:group']" class="tw-flex tw-gap-2">
-        <slot name="action:group"/>
-      </div>
-      <template v-else>
-        <BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
-      </template>
-    </div>
+  <div class="!tw-bg-onPrimary tw-rounded-xl tw-shadow tw-relative">
+		<VOverlay
+      v-model="loading"
+      contained
+      class="tw-items-center tw-justify-center tw-bg-onPrimary tw-opacity-50 tw-bg-opacity-50"
+      persistent
+      scrim
+    >
+    <v-progress-circular
+        color="primary"
+        indeterminate
+        size="64"
+        class="tw-z-10"
+      ></v-progress-circular>
+    </VOverlay>
+		<template v-if="!hideHeader">
+			<slot name="header" v-if="slot['header']"></slot>
+			<div v-else class="tw-flex tw-justify-between tw-p-5 tw-border-b tw-border-outlineVariant tw-bg-onPrimary tw-rounded-t-xl">
+				<div class="tw-flex tw-gap-4">
+					<VMenu>
+						<template v-slot:activator="{ props }">
+							<div class="tw-flex tw-items-center tw-gap-1 px-2 tw-border tw-rounded-lg tw-border-outline hover:tw-cursor-pointer" v-bind="props" >
+								<span>{{ query.limit }}</span>
+								<BIcon icon="expand_more" size="16"></BIcon>
+							</div>
+						</template>
+						<v-list>
+						<v-list-item
+								v-for="item, in [10, 15, 20]"
+								:key="item"
+								:value="query.limit"
+							>
+								<v-list-item-title @click="changeLimit(item as 10 | 15 | 20)">{{ item }}</v-list-item-title>
+							</v-list-item>
+						</v-list>
+					</VMenu>
+					<BTextField
+						label=""
+						density="compact"
+						:placeholder="searchPlaceholder ?? 'cari pemasok'"
+						class="tw-min-w-52"
+						hide-details prepend-inner-icon="search"
+						:model-value="props.query.search"
+						@update:model-value="onSearch"
+					/>
+					<BButton
+						v-if="filter"
+						label="Filter"
+						prepend-icon="filter_list"
+						prepend-icon-color="primary"
+						variant="outlined"
+						@click="emit('click:filter')"
+					/>
+				</div>
+				<div  v-if="slot['action:group']" class="tw-flex tw-gap-2">
+					<slot name="action:group"/>
+				</div>
+				<template v-else>
+					<BButton v-if="labelAddButton" :label="labelAddButton ?? 'Tambah'" prepend-icon="add" @click="emit('click:action')"/>
+				</template>
+			</div>
+		</template>
 		<div v-if="totalItems == 0" class="tw-text-center tw-pt-4 tw-pb-6 tw-text-onSurfaceVariant">
       {{ emptyText || 'Tidak ada data' }}
     </div>
     <slot v-else/>
-    <div class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm tw-text-onSurfaceVariant">
+    <div
+			v-if="!hideFooter"
+			class="tw-flex tw-justify-between tw-items-center tw-pb-6 tw-pt-4 tw-border-t tw-px-5 tw-border-outlineVariant tw-text-sm tw-text-onSurfaceVariant">
       <span>Menampilkan 1 hingga {{ displayedTotal }} dari {{ totalItems }} entri</span>
       <VPagination
         variant="elevated"

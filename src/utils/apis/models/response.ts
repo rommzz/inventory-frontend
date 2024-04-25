@@ -5,3 +5,9 @@ export type LoginResponse = {
   token: string
   refresh_token: string
 }
+
+export type GetProgressResponse = {
+  progress: number
+  step: string
+  error: string
+}

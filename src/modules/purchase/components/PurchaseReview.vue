@@ -10,8 +10,7 @@ import { formatIDR } from '@/plugin/helpers';
 import type { DiscountType } from '@/utils/apis/models/commons';
 import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
 import moment from 'moment';
-import { computed } from 'vue';
-import { reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
   data: PurchaseForm
@@ -35,15 +34,22 @@ const taxValueType: TaxType[] = [
 const discountType = ref<DiscountType>()
 
 const emit = defineEmits<{
-  (event: 'next', value: PurchaseForm): void,
+  (event: 'next', value: {data: PurchaseForm, grandTotal: number}): void,
   (event: 'back'): void,
 }>()
 
 const next = () => {
-  const nextData = Object.assign(props.data, {
-
-  })
-  emit('next', nextData)
+	const asignedData: PurchaseForm = {
+		discount: discount.value,
+		discountType: discountType.value,
+		tax: tax.value,
+		taxType: taxType.value.value,
+	}
+  const nextData = Object.assign(props.data, asignedData)
+  emit('next', {
+		data: nextData,
+		grandTotal: (subtotal.value - discountValue.value) + taxValue.value
+	})
 }
 
 const purchaseData: {
@@ -59,7 +65,7 @@ const purchaseData: {
   {
     icon: 'calendar_today',
     title: 'Tanggal Pembelian',
-    value: moment(props.data?.purchase_date).format('DD MM yyyy')
+    value: moment(props.data?.purchase_date).format('DD MMMM yyyy')
   }
 ]
 
@@ -113,7 +119,7 @@ const percentvalue = (type: DiscountType, value: number, valueOf: number): numbe
 }
 
 const discountValue = computed(() => percentvalue(discountType.value!, discount.value!, subtotal.value) ?? 0)
-const taxValue = computed(() => percentvalue(taxType.value.value!, tax.value!, discountValue.value) ?? 0)
+const taxValue = computed(() => percentvalue(taxType.value.value!, tax.value!, subtotal.value - discountValue.value) ?? 0)
 
 const discountSummary = computed(() => {
 	if (discount.value == undefined) {
@@ -131,9 +137,9 @@ const taxSummary = computed(() => {
 		return '-'
 	}
 	if (taxType.value.value == 'value') {
-		return formatIDR(subtotal.value - (discountValue.value) + tax.value)
+		return formatIDR(tax.value)
 	} else {
-		return `${tax.value}% (-${formatIDR((subtotal.value - discountValue.value) * (tax.value / 100))})`
+		return `${tax.value}% (${formatIDR((subtotal.value - discountValue.value) * (tax.value / 100))})`
 	}
 })
 
@@ -162,7 +168,7 @@ const grandTotalSummary = computed<string>(() => {
         <div class="tw-grid tw-grid-cols-2 tw-gap-3 ">
           <div v-for="item in data.items" :key="item.item.id" class="tw-p-3 tw-rounded-xl tw-border tw-border-outlineVariant tw-bg-surface">
             <div class="tw-text-sm tw-font-semibold tw-text-onSurface tw-mb-2">
-              {{ item.item.name }} - {{ item.item.brand.name }}
+              {{ item.item.name }}
             </div>
             <div class="tw-grid tw-grid-cols-2 tw-text-xs tw-text-onSurfaceVariant">
               <div>

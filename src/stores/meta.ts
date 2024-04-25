@@ -1,4 +1,4 @@
-import type { Brand, Unit } from '@/utils/apis/models/model'
+import type { Brand, ChartModel, Unit } from '@/utils/apis/models/model'
 import brandApi from '@/utils/apis/repo/brandApi'
 import metaApi from '@/utils/apis/repo/metaApi'
 import { defineStore } from 'pinia'
@@ -34,5 +34,19 @@ export const useMetaStore = defineStore('meta', () => {
       throw error
     }
   }
-  return { units, brand, getListUnits, getListBrand, addBrand}
+	const getTodaySales = (): Promise<number> => {
+		return metaApi.getTodaySales()
+	}
+	const getSalesChart = (period: string): Promise<ChartModel[]> => {
+		return metaApi.getSalesChart(period)
+	}
+  return {
+		units,
+		brand,
+		getListUnits,
+		getListBrand,
+		addBrand,
+		getTodaySales,
+		getSalesChart,
+	}
 })

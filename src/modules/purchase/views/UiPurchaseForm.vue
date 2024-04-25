@@ -1,29 +1,20 @@
 <script setup lang="ts">
-import type { PurchasePayment as PP, PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
-import { computed, ref } from 'vue';
+import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddRequest';
+import { ref } from 'vue';
 import PurchaseAddItems from '../components/PurchaseAddItems.vue';
 import PurchasePayment from '../components/PurchasePayment.vue';
 import PurchaseReview from '../components/PurchaseReview.vue';
 import DConfirmPurchase from '../components/dialog/DConfirmPurchase.vue';
+import type { PurchasePaymentForm as PP } from '@/utils/apis/models/model';
 
 
 type Step = {
   step: number,
   caption: string,
 }
-
 const dialog = ref<boolean>(false)
-
-const grandTotal = computed<number>(() => {
-	let gt = 0;
-	formField.value.items?.forEach(item => {
-		gt += (item.price * item.qty)
-	})
-	return gt;
-})
-
 const currentStep = ref<number>(0)
-
+let grandTotal: number = 0
 const step: Step[] = [
   {
     step: 0,
@@ -39,15 +30,23 @@ const step: Step[] = [
   },
 ]
 
+
 const formField = ref<PurchaseForm>({});
 
-const submit = async (payment: PP) => {
-  formField.value.payments = []
-	formField.value.payments.push(payment)
+const submit = async (payment?: PP) => {
+	formField.value.grand_total = grandTotal
+	if (payment) {
+		formField.value.payments = []
+		formField.value.payments.push(payment)
+	}
+	console.log(formField.value);
 	dialog.value = true
 }
 
-const next = (data: PurchaseForm) => {
+const next = (data: PurchaseForm, gt?: number) => {
+	if (gt) {
+		grandTotal = gt
+	}
   Object.assign(formField.value, data)
   currentStep.value++
 }
@@ -88,7 +87,7 @@ const next = (data: PurchaseForm) => {
       <VStepperWindowItem>
         <PurchaseReview
           :data="formField"
-          @next="next"
+          @next="v => next(v.data, v.grandTotal)"
           @back="currentStep--"
         />
       </VStepperWindowItem>

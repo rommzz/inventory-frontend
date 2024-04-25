@@ -5,19 +5,25 @@ import type { PurchaseForm } from '@/utils/apis/models/request/purchaseAddReques
 import { toRaw } from 'vue';
 import { usePurchaseStore } from '../../stores';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	data: PurchaseForm
 }>()
 
 const store = usePurchaseStore()
+const router = useRouter()
 
 const dialog = defineModel<boolean>()
 const loading = ref<boolean>(false)
 
 const submit = async () => {
 	loading.value = true
-	store.cratePurchase(props.data).catch(e => {
+	store.cratePurchase(props.data).then(() => {
+		router.replace('/purchase')
+		loading.value = false
+	})
+	.catch(e => {
 		console.log(e);
 	}).finally(() => {
 		loading.value = false

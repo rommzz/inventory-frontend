@@ -1,11 +1,12 @@
-import type { TimeStamp } from "./commons"
+import type { PaymentMethod, Role, TimeStamp } from "./commons"
 
 export type User = {
   id: string
   name?: string
   email?: string
   phone?: string
-  role_id?: string
+  role_id?: Role
+	address?: string
   password?: string
   username?: string
 } & TimeStamp
@@ -31,17 +32,23 @@ export type InventoryItemStock = {
 }
 
 export type InventoryItem = {
-  id: string
-  name: string
-  brand_id: string
-  supplier_id: string
-  sku: string
-  price: number
-  initial_stock: number
-  stock: InventoryItemStock
-  supplier: Supplier
-  brand: Brand
-  unit: Unit
+  id: string;
+  name: string;
+  supplier_id: string;
+  unit_id: string;
+  sku: string;
+  price: number;
+  initial_stock: number;
+  car_code_id: string;
+  supplier: Supplier;
+  stock: InventoryItemStock;
+  unit: Unit;
+  car_code: CarCode;
+  m_group?: string;
+  product_hierarchy?: string;
+  type: string;
+  valid_from: string;
+  tax_recommendation?: number;
 } & TimeStamp
 
 export type Brand = {
@@ -75,16 +82,88 @@ export type Payment = {
   note: string;
 } & TimeStamp
 
+export type InventoryPurchaseItem = {
+  id: string
+  created_at: string
+  updated_at: string
+  deleted_at: any
+  item_purchase_id: string
+  inventory_item_id: string
+  qty: number
+  price_before: number
+  price: number
+  total: number
+  inventory_item: InventoryItem
+}
+
 export type Purchase = {
   id: string;
   total: number;
   tax?: number;
+	tax_percent?: number;
   discount?: number;
+	discount_percent?: number;
   grand_total: number;
   paid?: number;
   purchase_date: string;
   supplier_id: string;
   supplier: Supplier;
-  items: InventoryItem[];
+  items: InventoryPurchaseItem[];
   payments?: Payment[];
 } & TimeStamp
+
+export type CarCode = {
+  id: string
+  code: string
+  car_type_id: string
+  car_type: CarType
+} & TimeStamp
+
+export type CarType = {
+  id: string
+  name: string
+  car_group_type_id: string
+  car_group_type: CarGroupType
+} & TimeStamp
+
+export type CarGroupType = {
+  id: string
+  name: string
+} & TimeStamp
+
+
+export type PurchaseItemForm = {
+  item: InventoryItem,
+  qty: number,
+  price: number
+}
+
+export type PurchasePaymentForm = {
+  payment_date?: string;
+  payment_method?: PaymentMethod;
+  amount?: number;
+  note?: string;
+}
+
+export type Sales = {
+  id: string
+  customer_id: string
+  total: number
+  discount?: number
+  discount_percent?: number
+  tax?: number
+  tax_percent?: number
+  grand_total: number
+  created_by: string
+  paid: number
+  sale_date: string
+  items: InventoryPurchaseItem[]
+  customer: Customer
+  payments: Payment[]
+} & TimeStamp
+
+export type ChartModel = {
+  params: string;
+  title: string;
+  value: number;
+}

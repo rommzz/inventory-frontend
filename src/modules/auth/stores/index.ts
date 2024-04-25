@@ -40,8 +40,8 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
   }
-  const getUserInformation = async (): Promise<void> => {
-    if (auth.value !== null) {
+  const getUserInformation = async (forceUpdate?: boolean): Promise<void> => {
+    if (auth.value !== null && !forceUpdate) {
       return
     }
     try {

@@ -33,9 +33,9 @@ const menus: Menu[] = [
     icon: 'folder',
     iconColor: 'warning',
     children: [
-      {
-        title: 'Jenis Satuan',
-      },
+      // {
+      //   title: 'Jenis Satuan',
+      // },
       {
         title: 'Daftar Pemasok',
         routeName: 'supplier-list',
@@ -45,14 +45,16 @@ const menus: Menu[] = [
         routeName: 'item-list',
       },
       {
-        title: 'Daftar Harga Barang',},
+        title: 'Daftar Harga Barang',
+				routeName: 'stock-list',
+			},
       {
         title: 'Daftar Pelanggan',
         routeName: 'customer-list',
       },
-      {
-        title: 'Promo Member',
-      },
+      // {
+      //   title: 'Promo Member',
+      // },
     ]
   },
   {
@@ -65,6 +67,7 @@ const menus: Menu[] = [
     title: 'Penjualan',
     icon: 'unarchive',
     iconColor: 'success',
+		route: '/sale',
   },
   {
     title: 'Laporan',
@@ -79,7 +82,8 @@ const menus: Menu[] = [
   {
     title: 'Manajemen Karyawan',
     icon: 'people',
-    iconColor: 'seed'
+    iconColor: 'seed',
+		route: '/user',
   }
 ]
 const model = defineModel<boolean>()
