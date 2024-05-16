@@ -63,6 +63,8 @@
           "white": "#FFFFFF",
           "warningContainer": "#FFE9E4",
           "seed": "#596CFF",
+					"successContainer": "#E4FFF4",
+					"bgSecondary": '#E5E5E5',
       },
       "light-medium-contrast": {
           "primary": "#004961",

@@ -4,7 +4,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 //tailwind style
-import "./style.css";
+import "./styles/index.css";
 
 
 // Vuetify
@@ -18,7 +18,8 @@ import {  mdi } from 'vuetify/iconsets/mdi'
 import "@mdi/font/css/materialdesignicons.css";
 import 'material-symbols/outlined.css';
 import { aliases, md } from "vuetify/iconsets/md";
-
+import Vue3Toasity, { type ToastContainerOptions } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const vuetify = createVuetify({
   components,
@@ -33,11 +34,21 @@ const vuetify = createVuetify({
   },
 })
 
+
 const app = createApp(App)
 
-app.use(createPinia())
+app.use(
+  Vue3Toasity,
+  {
+    autoClose: 3000,
+		theme:'colored',
+    position: 'top-center',
+		transition: 'slide',
+  } as ToastContainerOptions,
+);
+
 app.use(router)
 app.use(vuetify)
 app.use(vuetifyPlugin)
-
+app.use(createPinia())
 app.mount('#app')

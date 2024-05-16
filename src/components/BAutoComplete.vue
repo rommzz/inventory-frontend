@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import { computed } from 'vue';
+import { computed, ref, useSlots } from 'vue';
 import { defineModel } from 'vue';
 import type { BIconName } from './types/BIcon';
 import BIcon from './BIcon.vue';
@@ -26,11 +26,16 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'click:appendInner'): void
   (e: 'click:prependInner'): void
-  (e: '@update:model-value', value: T | T[]): void
-}>()
+  (e: 'update:model-value', value: T | T[]): void
+	(e: 'update:search', value: string): void
+}>() 
+
+const search = ref<any>()
 
 const classProps = computed(() => {
   return props.class})
+
+const slot = useSlots()
 </script>
 
 <template>
@@ -56,13 +61,26 @@ const classProps = computed(() => {
       return-object
       :loading="loading"
       :multiple="multiple"
-      @update:model-value="v => emit('@update:model-value', v)"
+      @update:search="v => {
+				search = v
+				let s: string = v
+				if (s.length == 0 || s.length > 2) {
+					emit('update:search', v)
+				}
+			}"
+      @update:model-value="v => emit('update:model-value', v)"
     >
       <template v-slot:append-inner v-if="appendInnerIcon">
         <BIcon :icon="appendInnerIcon" @click="emit('click:appendInner')"></BIcon>
       </template>
       <template v-slot:prepend-inner v-if="prependInnerIcon">
         <BIcon :icon="prependInnerIcon" @click="emit('click:appendInner')"></BIcon>
+      </template>
+      <template
+        v-if="slot['no-data'] && search"
+        v-slot:no-data
+      >
+        <slot name="no-data" :search="search"></slot>
       </template>
     </VAutocomplete>
   </div>

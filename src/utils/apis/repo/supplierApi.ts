@@ -1,7 +1,7 @@
 import endpoints from "../endpoints";
 import http, { type ResponseV1 } from "../http";
 import type { Supplier } from "../models/model";
-import type { SupplierForm } from "../models/request";
+import type { SupplierForm } from "../models/request/request";
 
 export default {
   addSupplier: async (supplier: SupplierForm): Promise<Supplier> => {  

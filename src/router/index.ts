@@ -5,6 +5,11 @@ import storage from '@/utils/storage'
 import itemRoutes from '@/modules/item/routes'
 import customerRoutes from '@/modules/customer/routes'
 import purchaseRoutes from '@/modules/purchase/routes'
+import stockRoutes from '@/modules/stock/routes'
+import saleRoutes from '@/modules/sale/routes'
+import userRoutes from '@/modules/user/routes'
+import bToast from '@/plugin/btoast'
+import { useAuthStore } from '@/modules/auth/stores'
 
 export interface Breadcrumbs {
   title: string,
@@ -35,7 +40,15 @@ const router = createRouter({
         {
           path: '',
           name: 'Dashboard',
-          component: () => import('@/views/DashboardView.vue'),
+          component: () => import('@/modules/dashboard/views/DashboardView.vue'),
+          meta: {
+            ...isRequiredAuth,
+          }
+        },
+				{
+          path: '/setting',
+          name: 'Setting',
+          component: () => import('@/modules/setting/views/UiSettingView.vue'),
           meta: {
             ...isRequiredAuth,
           }
@@ -44,7 +57,10 @@ const router = createRouter({
         ...supplierRoutes,
         ...itemRoutes,
         ...customerRoutes,
-        ...purchaseRoutes
+        ...purchaseRoutes,
+				...stockRoutes,
+				...saleRoutes,
+				...userRoutes
       ]
     }
   ]
@@ -52,9 +68,15 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const auth = storage.getToken()
+	const user = useAuthStore().auth
+	console.log(user);
   if (to.matched.some((record) => record.meta.requiredAuth) && !auth) {
     next({ name: 'Login' })
   } else {
+		// if (to.matched.some((record) => record.meta.isAdmin) && !(user?.role_id == 'ADMIN')) {
+		// 	bToast('Hanya Admin', 'error')
+		// 	return
+		// }
     next()
   }
 })

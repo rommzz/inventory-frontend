@@ -20,7 +20,7 @@ const listMenu: {
     title: 'Pengaturan',
     icon: 'settings',
     action: () => {
-      
+      router.push('setting')
     }
   },
   {

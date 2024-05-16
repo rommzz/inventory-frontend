@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import BButton from '@/components/BButton.vue';
-import BDialog from '@/components/BDialog.vue';
 import BIcon from '@/components/BIcon.vue';
 import BTable from '@/components/BTable.vue';
+import DPayment from '@/components/dialogs/DPayment.vue';
 import type { BTableQuery } from '@/components/types/BTable';
+import { formatIDR } from '@/plugin/helpers';
 import type { MetaData } from '@/utils/apis/http';
-import type { Supplier } from '@/utils/apis/models/model';
+import type { PaymentMethod } from '@/utils/apis/models/commons';
+import type { Payment, Purchase } from '@/utils/apis/models/model';
+import type { InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
+import moment from 'moment';
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import DDeleteConfirmation from '../components/dialog/DDeleteConfirmation.vue';
 import { usePurchaseStore } from '../stores';
-import type { InventoryItemFilter } from '@/utils/apis/repo/inventoryItemApi';
 
 const router = useRouter();
 const store = usePurchaseStore();
@@ -20,16 +24,18 @@ let query = reactive<BTableQuery>({
 })
 
 let filter = reactive<InventoryItemFilter>({})
-const purchases = ref<Supplier[]>([]);
+const purchases = ref<Purchase[]>([]);
 const isLoading = ref<boolean>(false);
+const isLoadingPay = ref<boolean>(false);
 const isDeleting = ref<boolean>(false);
 const metaData = ref<MetaData>({});
 
 const deleteDialog = ref<boolean>(false)
-const deleteDialogData = ref<Supplier | null>(null)
+const dialogPayment = ref<boolean>(false)
+const deleteDialogData = ref<Purchase | null>(null)
 
-const onDelete = (supplier: Supplier) => {
-	deleteDialogData.value = supplier;
+const onDelete = (purchase: Purchase) => {
+	deleteDialogData.value = purchase;
 	deleteDialog.value = true;
 }
 
@@ -46,16 +52,25 @@ const getPurchase = async () => {
 	});
 }
 
-const deletePurchase = async (supplierId: string) => {
-	isDeleting.value = true
-	try {
-		await store.deletePurchase(supplierId)
-	} catch (error) {
-		console.log(error);
-	}
-	isDeleting.value = false
-	deleteDialog.value = false
-	getPurchase()
+let purchaseData: Purchase
+
+const onPay = async ({paymentMethod, paymentDate,}: {
+	paymentMethod: PaymentMethod,
+	paymentDate: string,
+}) => {
+	isLoadingPay.value = true
+	store.payment(purchaseData.id, {
+		amount: store.remeaningPayment(purchaseData.payments ?? [], purchaseData.grand_total),
+		payment_date: moment(paymentDate).utc().format(),
+		payment_method: paymentMethod,
+	}).then(() => {
+		getPurchase()
+	}).catch(e => {
+		console.log(e);
+	}).finally(() => {
+		dialogPayment.value = false
+		isLoading.value = false
+	})
 }
 
 const onChangeQuery = (q: BTableQuery) => {
@@ -87,55 +102,89 @@ onMounted(() => {
 				<thead>
 					<tr class="tw-text-left !tw-p-4">
 						<th
-							v-for="header in ['Perusahaan', 'Nama', 'Email', 'No. Telepon', 'Alamat', 'Aksi']"
+							v-for="header in [ 'ID', 'Nama Barang', 'Grand Total', 'Sisa Bayar', 'Status Lunas', 'Tanggal Pembelian', 'Aksi',]"
 							:key="header"
 							class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-font-semibold"
 						>
 							{{ header }}
 						</th>
 					</tr>
-					<tr v-for="purchase, index in purchases" :key="index" class="tw-border-t tw-border-outlineVariant tw-group">
-						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-flex tw-items-center tw-gap-2">
-							<img v-if="purchase.logo" :src="purchase.logo" class="tw-w-9 tw-h-9 tw-rounded-xl tw-object-cover" alt="">
-							<div v-else class=" tw-rounded-full tw-w-10 tw-h-10 tw-flex tw-place-items-center tw-justify-center group-even:tw-bg-primary group-odd:tw-bg-secondary tw-text-white tw-font-semibold tw-text-sm">
-								{{ purchase.company_name?.toUpperCase().substring(0,1) }}
+					<tr
+						v-for="purchase, index in purchases"
+						:key="index"
+						class="tw-border-t tw-border-outlineVariant tw-group tw-cursor-pointer"
+						@click="router.push('/purchase/' + purchase.id)"
+					>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 tw-gap-2">
+							{{ purchase.id }}
+						</td>
+						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
+							<div>
+								<div>
+									{{ purchase.items[0].inventory_item?.name ?? '-' }}
+								</div>
+								<span v-if="purchase.items.length > 1" class="tw-text-sm tw-text-outline">
+									+ {{ purchase.items.length - 1 }} barang lainnya
+								</span>
 							</div>
-							<span>{{ purchase.company_name }}</span>
+							<v-tooltip
+								v-if="purchase.items.length > 1"
+								activator="parent"
+								location="right"
+							>
+								<p v-for="item in purchase.items" :key="item.id">
+									{{ item.inventory_item.name }}
+								</p>
+							</v-tooltip>
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.name }}
+							{{ formatIDR(purchase.grand_total) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.email == '' ? '-' : purchase.email }}
+							{{ formatIDR(store.remeaningPayment(purchase.payments ?? [], purchase.grand_total)) }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.phone == '' ? '-' : purchase.phone }}
+							{{ purchase.paid ? 'Lunas' : purchase.payments?.length ? 'Belum Lunas' : 'Belum Bayar' }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4">
-							{{ purchase.address == '' ? '-' : purchase.address }}
+							{{ moment(purchase.purchase_date).format('DD MMM yyy') }}
 						</td>
 						<td class="tw-py-4 first:tw-pl-4 last:tw-pr-4 [&>*]:hover:tw-cursor-pointer">
-							<BIcon @click="onDelete(purchase)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
-							<BIcon icon="edit_square" color="warning" @click="router.push('/purchase/' + purchase.id)" button-color="warningContainer"></BIcon>
+							<BIcon @click.stop="onDelete(purchase)" icon="delete" color="error" class="tw-mr-2" button-color="errorContainer"></BIcon>
+							<BIcon
+								icon="payments"
+								:color="purchase.paid ? 'outline' : 'success'"
+								:button-color="purchase.paid ? 'bgSecondary' : 'successContainer'"
+								@click.stop="() => {
+									if (purchase.paid) return
+									purchaseData = purchase
+									dialogPayment = true
+								}"
+							/>
 						</td>
 					</tr>
 				</thead>
 			</table>
     </BTable>
   </div>
-	<BDialog
-		title="Apakah anda yakin?"
+	<DDeleteConfirmation
+		:purchase-id="deleteDialogData?.id ?? '-'"
 		v-model="deleteDialog"
-		:persistent="isDeleting"
-	>
-		<div class="tw-px-5">
-			<p class="tw-text-onSurfaceVariant tw-text-sm">
-				Proses penghapusan pemasok dengan nama <b>“{{deleteDialogData?.name}}”</b> akan mengakibatkan data tersebut tidak dapat dikembalikan.
-			</p>
-			<div class="tw-p-5 tw-text-right tw-pt-8">
-				<BButton class="tw-mr-2" label="Batalkan" @click="deleteDialog = false"></BButton>
-				<BButton @click="deletePurchase(deleteDialogData!.id!)" :is-loading="isDeleting"  variant="text" color="danger" label="Lanjutkan"></BButton>
-			</div>
-		</div>
-	</BDialog>
+		@success-delete="() => {
+			toast('Berhasil Menghapus Pembelian', {
+				type: 'success',
+			})
+			deleteDialog = false
+			getPurchase()
+		}"
+	/>
+	<DPayment
+		:is-paying="isLoadingPay"
+		v-model="dialogPayment"
+		:remeaning-payment="store.remeaningPayment(purchaseData?.payments ?? [], purchaseData?.grand_total ?? 0)"
+		@pay="(v) => onPay({
+			paymentDate: v.date,
+			paymentMethod: v.paymentMethod
+		})"
+	/>
 </template>

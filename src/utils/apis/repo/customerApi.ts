@@ -1,7 +1,7 @@
 import endpoints from "../endpoints";
 import http, { type ResponseV1 } from "../http";
 import type { Customer } from "../models/model";
-import type { CustomerForm } from "../models/request";
+import type { CustomerForm } from "../models/request/request";
 
 export default {
   addCustomer: async (customer: CustomerForm): Promise<Customer> => {  
@@ -45,6 +45,15 @@ export default {
   deleteCustomer: async (customerId: string): Promise<void> => {  
     try {
       await http.delete<ResponseV1>('/v1' + endpoints.master.customer + '/' + customerId)
+    } catch (error) {
+      console.log('error', error);
+      throw error
+    }
+  },
+	customerCount: async (): Promise<number> => {  
+    try {
+      const res = await http.get<ResponseV1<{count: number}>>('/v1' + endpoints.master.countCustomer)	
+			return res.data.data?.count ?? 0
     } catch (error) {
       console.log('error', error);
       throw error
